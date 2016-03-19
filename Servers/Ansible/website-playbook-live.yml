@@ -1,0 +1,9 @@
+---
+- hosts: webservers-live
+  remote_user: root
+  vars:
+    remotesql: 192.168.40.%
+  vars_files:
+    - ./vars.yml
+  tasks:
+    - include: website-tasks.yml

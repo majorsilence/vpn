@@ -1,0 +1,11 @@
+[webservers-live]
+majorsilencevpn.com
+
+[webservers-test]
+192.168.40.4
+
+[vpnservers-live]
+192.168.40.4
+
+[vpnservers-test]
+192.168.50.4

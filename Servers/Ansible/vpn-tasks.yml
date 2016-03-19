@@ -1,0 +1,33 @@
+---
+  - name: Execute start.sh on server
+    script: ../vpnscripts/start.sh
+
+  - name: Copy sudosetup.sh to server
+    script: ../vpnscripts/sudosetup.sh
+
+  - name: Copy configureopenvpnauthority.sh to server
+    script: ../vpnscripts/configureopenvpnauthority.sh {{ adminemail }} {{ webaddress }} {{ companyname }}
+
+  - name: Copy configureopenvpnserver.sh to server
+    script: ../vpnscripts/configureopenvpnserver.sh 
+
+  - name: Copy configurebind.sh to server
+    script: ../vpnscripts/configurebind.sh
+
+  - name: Copy configuressh.sh to server
+    script: ../vpnscripts/configuressh.sh {{ vpnsshuser }} {{ vpnsshpassword }}
+
+  - name: Copy configurefail2ban.sh to server
+    script: ../vpnscripts/configurefail2ban.sh
+
+  - name: Copy configurepptpserver.sh to server
+    script: ../vpnscripts/configurepptpserver.sh
+
+  - name: Copy configurefirewall.sh to server
+    script: ../vpnscripts/configurefirewall.sh
+
+  - name: Copy configureautosecurityupdates.sh to server
+    script: ../vpnscripts/configureautosecurityupdates.sh
+
+  - name: Copy majorsilencevpninitversion.sh to server
+    script: ../vpnscripts/majorsilencevpninitversion.sh

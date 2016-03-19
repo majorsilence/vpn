@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LibLogic</RootNamespace>
+    <AssemblyName>LibLogic</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Dapper">
+      <HintPath>..\References\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.Contrib">
+      <HintPath>..\References\Dapper.Contrib.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="Renci.SshNet">
+      <HintPath>..\packages\SSH.NET.2013.4.7\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\DotNetZip.1.9.3\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Stripe.net">
+      <HintPath>..\packages\Stripe.net.2.5.1\lib\net40\Stripe.net.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentMigrator">
+      <HintPath>..\packages\FluentMigrator.1.6.1\lib\40\FluentMigrator.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentMigrator.Runner">
+      <HintPath>..\packages\FluentMigrator.Runner.1.6.1\lib\40\FluentMigrator.Runner.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Admin\Regions.cs" />
+    <Compile Include="Admin\VpnServers.cs" />
+    <Compile Include="OpenVpn\CertsOpenVpnDownload.cs" />
+    <Compile Include="OpenVpn\CertsOpenVpnGenerateCommand.cs" />
+    <Compile Include="OpenVpn\CertsOpenVpnRevokeCommand.cs" />
+    <Compile Include="Counters.cs" />
+    <Compile Include="DailyProcessing.cs" />
+    <Compile Include="DTO\AccessTokenResponse.cs" />
+    <Compile Include="DTO\PaypalPayExecuteResponse.cs" />
+    <Compile Include="DTO\PaypalPaymentRequest.cs" />
+    <Compile Include="DTO\PaypalPaymentResponse.cs" />
+    <Compile Include="Helpers\GenerateResetCode.cs" />
+    <Compile Include="Helpers\Hashes.cs" />
+    <Compile Include="Helpers\Logging.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="Login.cs" />
+    <Compile Include="Payments\Payments.cs" />
+    <Compile Include="Payments\PaypalPayment.cs" />
+    <Compile Include="Payments\StripePayment.cs" />
+    <Compile Include="Payments\StripWebHook.cs" />
+    <Compile Include="ServerDetails.cs" />
+    <Compile Include="Setup.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ppp\ManagePPTP.cs" />
+    <Compile Include="Ppp\PppBase.cs" />
+    <Compile Include="Ppp\IpSec.cs" />
+    <Compile Include="Exceptions\NotLoggedInException.cs" />
+    <Compile Include="Exceptions\SshException.cs" />
+    <Compile Include="Exceptions\InvalidDataException.cs" />
+    <Compile Include="Exceptions\AccountNotActiveException.cs" />
+    <Compile Include="Migrations\0002-BetaAccounts.cs" />
+    <Compile Include="Migrations\0001-InitialDatabase.cs" />
+    <Compile Include="Email\IEmail.cs" />
+    <Compile Include="Email\FakeEmail.cs" />
+    <Compile Include="Email\LiveEmail.cs" />
+    <Compile Include="Ssh\ISsh.cs" />
+    <Compile Include="Ssh\LiveSsh.cs" />
+    <Compile Include="Ssh\FakeSsh.cs" />
+    <Compile Include="Ssh\ISftp.cs" />
+    <Compile Include="Ssh\LiveSftp.cs" />
+    <Compile Include="Ssh\FakeSftp.cs" />
+    <Compile Include="Migrations\0003-TestBetaKeys.cs" />
+    <Compile Include="Exceptions\PasswordMismatchException.cs" />
+    <Compile Include="Exceptions\EmailMismatchException.cs" />
+    <Compile Include="Exceptions\PasswordLengthException.cs" />
+    <Compile Include="Exceptions\BetaKeyAlreadyUsedException.cs" />
+    <Compile Include="Exceptions\InvalidBetaKeyException.cs" />
+    <Compile Include="Exceptions\EmailAddressAlreadyUsedException.cs" />
+    <Compile Include="Exceptions\InvalidUserIdException.cs" />
+    <Compile Include="Accounts\BetaKeys.cs" />
+    <Compile Include="Accounts\CreateAccount.cs" />
+    <Compile Include="Accounts\CreateAccountInfo.cs" />
+    <Compile Include="Email\EmailTemplates.cs" />
+    <Compile Include="Migrations\0004-TermsOfService.cs" />
+    <Compile Include="Site\SiteInfo.cs" />
+    <Compile Include="Site\TermsOfService.cs" />
+    <Compile Include="Migrations\0005-Privacy.cs" />
+    <Compile Include="Site\Privacy.cs" />
+    <Compile Include="Accounts\UserInfo.cs" />
+    <Compile Include="Accounts\UserServerDetails.cs" />
+    <Compile Include="Accounts\UserServerDetailsInfo.cs" />
+    <Compile Include="Accounts\CreatePasswords.cs" />
+    <Compile Include="Accounts\ResetPassword.cs" />
+    <Compile Include="Migrations\0006-BetaKeyIsSent.cs" />
+    <Compile Include="Admin\ErrorReports.cs" />
+    <Compile Include="Migrations\0007-PptpPasswords.cs" />
+    <Compile Include="Migrations\0008-TermsOfServiceRemoveHistoryLink.cs" />
+    <Compile Include="Migrations\0009-StripePublicKey.cs" />
+    <Compile Include="Migrations\0010-TestBetaKeys2.cs" />
+    <Compile Include="Helpers\SslSecurity.cs" />
+    <Compile Include="Migrations\0011-ChangePaymentRates.cs" />
+    <Compile Include="Exceptions\StripeSubscriptionException.cs" />
+    <Compile Include="Migrations\0012-UsersStripeSubscriptionId.cs" />
+    <Compile Include="Exceptions\InvalidStripeTokenException.cs" />
+    <Compile Include="Migrations\0013-TermsOfServiceBandwidth.cs" />
+    <Compile Include="OpenVpn\InlineOvpnProfile.cs" />
+    <Compile Include="Migrations\0014-StripePlanAndCurrency.cs" />
+    <Compile Include="Migrations\0015-UserApiTokens.cs" />
+    <Compile Include="Accounts\UserApiTokens.cs" />
+    <Compile Include="DTO\ApiAuthResponse.cs" />
+    <Compile Include="Accounts\ModifyAccount.cs" />
+    <Compile Include="Migrations\0016-ActionLog.cs" />
+    <Compile Include="ActionLog.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\LibPoco\LibPoco.csproj">
+      <Project>{45F7ECD1-4362-42A8-86A8-1FABF559F935}</Project>
+      <Name>LibPoco</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+    <Folder Include="Email\" />
+    <Folder Include="Ssh\" />
+    <Folder Include="Accounts\" />
+    <Folder Include="Site\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Email\EmailTemplate.txt" />
+  </ItemGroup>
+</Project>

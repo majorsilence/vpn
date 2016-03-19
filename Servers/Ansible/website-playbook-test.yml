@@ -1,0 +1,10 @@
+---
+- hosts: webservers-test
+  remote_user: vagrant
+  sudo: yes
+  vars:
+    remotesql: 127.0.0.1
+  vars_files:
+    - ./vars.yml
+  tasks:
+    - include: website-tasks.yml

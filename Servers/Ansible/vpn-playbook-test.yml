@@ -1,0 +1,8 @@
+---
+- hosts: vpnservers-test
+  remote_user: vagrant
+  vars_files:
+    - ./vars.yml
+  sudo: yes
+  tasks:
+    - include: vpn-tasks.yml

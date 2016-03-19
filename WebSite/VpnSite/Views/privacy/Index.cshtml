@@ -1,0 +1,10 @@
+﻿@model VpnSite.Models.Privacy
+@{
+    ViewBag.Title = "Privacy Policy";
+    Layout = "~/Views/GeneralLayout.cshtml";
+}
+
+<h1>@Resources.Main.FooterPPolicy</h1>
+
+@Html.Raw(Model.CurrentPrivacy.Policy)
+

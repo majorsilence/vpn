@@ -1,0 +1,9 @@
+﻿@model VpnSite.Models.Terms
+@{
+    ViewBag.Title = "Terms of Service";
+    Layout = "~/Views/GeneralLayout.cshtml";
+}
+
+ <h1>@Resources.Main.FooterTos</h1>
+
+ @Html.Raw(Model.TOS.Terms)

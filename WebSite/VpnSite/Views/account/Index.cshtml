@@ -1,0 +1,129 @@
+﻿@model VpnSite.Models.Account
+@{
+    ViewBag.Title = "Account Payments";
+    Layout = "~/Views/LoggedInView.cshtml";
+
+}
+
+<div id="PanelIsLoggedIn">
+	<div class="row">
+
+	<div class="col-md-2">
+		   <ul class="nav nav-stacked nav-pills" id="accounttabs">
+		    <li class="active"><a href="#profile" data-toggle="tab">Profile</a></li>
+		    <li><a href="#accountsettings" data-toggle="tab">Account Settings</a></li>
+		    <li><a href="#billing" data-toggle="tab">Billing</a></li>
+		    <li><a href="#paymenthistory" data-toggle="tab">Payment History</a></li>
+		  </ul>
+	  </div>
+	   <div class="col-md-8 tab-content">
+	   		<div id="profile" class="tab-pane active">
+		   		First Name<input type="text" name="firstname" id="firstname" class="form-control" value="@Model.FirstName" /><br />
+		   		Last Name<input type="text" name="lastname" id="lastname" class="form-control" value="@Model.LastName" /><br />
+		   		Email<input type="email" name="email" class="form-control" id="email" autocorrect="off" autocapitalize="off" value="@Model.UsersEmail" /><br />
+		   		<input type="submit" value="Update Profile" name="saveprofile" class="btn btn-primary btn-lg" />
+	   		</div>
+	   		<div id="accountsettings" class="tab-pane">
+	   			Old Password<input type="password" name="oldpassword" id="oldpassword" class="form-control" autocorrect="off" autocapitalize="off" /><br />
+		   		New password<input type="password" name="newpassword" id="newpassword" class="form-control" autocorrect="off" autocapitalize="off" /><br />
+		   		Confirm new password<input type="password" name="confirmnewpassword" class="form-control" id="confirmnewpassword" autocorrect="off" autocapitalize="off" /><br />
+		   		<input type="submit" value="Update Password" name="savepassword" class="btn btn-primary btn-lg" />
+	   		</div>
+	       <div id="billing" class="tab-pane">
+				<div id="PanelMakePayment">
+
+					<h3>Make Payments</h3>
+					 <h4>30 day free trial</h4>
+					<input type="checkbox" id="tos" name="termsofservice" onclick="showMe('paymentform', this)">
+					 I agree to the <a href="/terms" target="blank">terms of service</a><br>
+
+					 <div id="paymentform">
+						<form action="/account/charge" method="POST">
+							Coupon: <input type="text" name="discount" placeholder="Coupon Code" />
+
+							<br />
+							<script
+							src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+							data-key="@LibLogic.Helpers.SiteInfo.StripeAPIPublicKey"
+							data-image="/assets/images/striplogo.png"
+							data-name="Majorsilence VPN Solutions"
+							data-description="VPN Subscription $@Model.ChargeAmount @LibLogic.Helpers.SiteInfo.Currency"
+							data-currency="@LibLogic.Helpers.SiteInfo.Currency"
+							data-email="@Model.UsersEmail"
+							data-label="Subscribe">
+							</script>
+						</form>
+					 </div>
+					  
+
+				</div>
+			        
+			    <div id="PanelCancelPayments">
+			 
+			          <h3>Cancel Subscription</h3>
+			            To cancel your subscription click the below button.  Recurring payments will end.  Your account
+			                access will remain until your current payment expires. <br />
+			               <input type="submit" value="Cancel Subscription" name="cancelsubscription" class="btn btn-primary btn-lg" />
+			     </div>  
+	   		</div>
+
+	   		<div id="paymenthistory" class="tab-pane">
+	   		@{
+	   			var html = new System.Text.StringBuilder();
+				html.Append("<table class=\"table\">");
+				html.Append("<tr>");
+				html.Append("<th>Time Paid</th>");
+				html.Append("<th>Amount</th>");
+				html.Append("</tr>");
+
+				foreach (var pay in @Model.PaymentHistory)
+				{
+					html.Append("<tr>");
+				
+				    html.Append("<td>");
+				    html.Append(pay.CreateTime);
+				    html.Append("</td>");
+
+				    html.Append("<td>");
+				    html.Append(pay.AmountPaid);
+				    html.Append("</td>");
+
+				    html.Append("</tr>");
+				}
+				html.Append("</table>");
+
+				@Html.Raw(html.ToString());
+			}
+	   		</div>
+	   </div>
+   </div>
+
+    <script src="/assets/javascript/account.js" type="text/javascript"></script>
+     <script type="text/javascript">
+     
+         @{
+	     <text>   
+	    $(document).ready(function () {
+		     Account.Init(@(VpnSite.Helpers.SessionVariables.Instance.LoggedIn.ToString().ToLower() + ", " + Model.AccountExpired.ToString().ToLower()));  
+	    
+         });
+		     
+
+
+	     </text>
+    	 }
+
+
+		function showMe (it, box) {
+			var vis = (box.checked) ? "block" : "none";
+			document.getElementById(it).style.display = vis;
+		}
+
+    	  $(document).ready(function () {
+			showMe('paymentform', $('#tos'));
+		});
+    </script>
+
+
+</div>
+

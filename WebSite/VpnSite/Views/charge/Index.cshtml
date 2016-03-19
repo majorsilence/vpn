@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Account Charged";
+    Layout = "~/Views/GeneralLayout.cshtml";
+}
+
+<br />
+@{
+    string status = VpnSite.Helpers.GlobalHelper.RequestParam("status");
+
+    if(status=="ok")
+    {
+     @Html.Raw("Your payment has been processed.  You can now <a href=\"/setup\">download your vpn certificates</a> and connect.");
+    }
+    else
+    {
+     @Html.Raw("There was an error processing your payment.  Please try again later.");
+    }
+}
+
+
+

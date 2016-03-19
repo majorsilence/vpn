@@ -1,0 +1,35 @@
+---
+  - name: Execute start.sh on server
+    script: ../websitescripts/start.sh
+
+  - name: Execute configuresudo.sh on server
+    script: ../websitescripts/configuresudo.sh {{ vpnsshuser }}
+
+  - name: Execute configuremono.sh on server
+    script: ../websitescripts/configuremono.sh
+
+  - name: Execute configuressh.sh on server
+    script: ../websitescripts/configuressh.sh {{ vpnsshuser }} {{ vpnsshpassword }}
+
+  - name: Execute configurenginxbasic.sh on server
+    script: ../websitescripts/configurenginxbasic.sh {{ webaddress }}
+
+  - name: Execute configurenginxssl.sh on server
+    script: ../websitescripts/configurenginxssl.sh {{ webaddress }}
+
+  - name: Execute configurefail2ban.sh on server
+    script: ../websitescripts/configurefail2ban.sh
+
+  - name: Execute configuremysql.sh on server
+    script: ../websitescripts/configuremysql.sh {{ remotesql }}
+
+  - name: Execute configureautosecurityupdates.sh on server
+    script: ../websitescripts/configureautosecurityupdates.sh
+
+  - name: Execute configurefirewall.sh on server
+    script: ../websitescripts/configurefirewall.sh {{ remotesql }}
+
+  - name: Execute cronjob.sh on server
+    script: ../websitescripts/cronjob.sh
+
+

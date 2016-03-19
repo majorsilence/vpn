@@ -1,0 +1,7 @@
+---
+# in the above example, this would be vars/external_vars.yml
+vpnsshuser: avpnSshUser
+vpnsshpassword: aPassword
+adminemail: yourAdminEmail
+webaddress: majorsilencevpn.com
+companyname: YourCompanyName

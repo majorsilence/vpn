@@ -1,0 +1,128 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VpnSite", "VpnSite\VpnSite.csproj", "{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteTests", "SiteTests\SiteTests.csproj", "{038CDF2A-0D94-4A74-B387-19CDA0AD333A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibLogic", "LibLogic\LibLogic.csproj", "{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibPoco", "LibPoco\LibPoco.csproj", "{45F7ECD1-4362-42A8-86A8-1FABF559F935}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteTestsFast", "SiteTestsFast\SiteTestsFast.csproj", "{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteTestsFastDebugger", "SiteTestsFastDebugger\SiteTestsFastDebugger.csproj", "{AD628056-C701-4729-97D5-49A4FE21EF6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MajorsilenceTypes", "MajorsilenceTypes\MajorsilenceTypes.csproj", "{7DCB49F1-5840-456B-803C-F987A9CA8192}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Debug|x86.ActiveCfg = Debug|x86
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Debug|x86.Build.0 = Debug|x86
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Release|x86.ActiveCfg = Release|Any CPU
+		{038CDF2A-0D94-4A74-B387-19CDA0AD333A}.Release|x86.Build.0 = Release|Any CPU
+		{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}.Debug|x86.Build.0 = Debug|Any CPU
+		{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}.Release|x86.ActiveCfg = Release|Any CPU
+		{45F7ECD1-4362-42A8-86A8-1FABF559F935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45F7ECD1-4362-42A8-86A8-1FABF559F935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45F7ECD1-4362-42A8-86A8-1FABF559F935}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45F7ECD1-4362-42A8-86A8-1FABF559F935}.Debug|x86.Build.0 = Debug|Any CPU
+		{45F7ECD1-4362-42A8-86A8-1FABF559F935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45F7ECD1-4362-42A8-86A8-1FABF559F935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45F7ECD1-4362-42A8-86A8-1FABF559F935}.Release|x86.ActiveCfg = Release|Any CPU
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Debug|x86.ActiveCfg = Debug|x86
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Debug|x86.Build.0 = Debug|x86
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Release|x86.ActiveCfg = Release|x86
+		{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}.Release|x86.Build.0 = Release|x86
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Debug|x86.Build.0 = Debug|Any CPU
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Release|x86.ActiveCfg = Release|Any CPU
+		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Release|x86.Build.0 = Release|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Debug|x86.Build.0 = Debug|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Release|x86.ActiveCfg = Release|Any CPU
+		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Release|x86.Build.0 = Release|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|x86.Build.0 = Debug|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|x86.ActiveCfg = Release|Any CPU
+		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.TabsToSpaces = False
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$0.TextStylePolicy = $2
+		$2.EolMarker = Windows
+		$2.inheritsSet = VisualStudio
+		$2.inheritsScope = text/plain
+		$2.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $3
+		$3.IndentSwitchBody = True
+		$3.AnonymousMethodBraceStyle = NextLine
+		$3.PropertyBraceStyle = NextLine
+		$3.PropertyGetBraceStyle = NextLine
+		$3.PropertySetBraceStyle = NextLine
+		$3.EventBraceStyle = NextLine
+		$3.EventAddBraceStyle = NextLine
+		$3.EventRemoveBraceStyle = NextLine
+		$3.StatementBraceStyle = NextLine
+		$3.ElseNewLinePlacement = NewLine
+		$3.CatchNewLinePlacement = NewLine
+		$3.FinallyNewLinePlacement = NewLine
+		$3.WhileNewLinePlacement = DoNotCare
+		$3.ArrayInitializerWrapping = DoNotChange
+		$3.ArrayInitializerBraceStyle = NextLine
+		$3.BeforeMethodDeclarationParentheses = False
+		$3.BeforeMethodCallParentheses = False
+		$3.BeforeConstructorDeclarationParentheses = False
+		$3.BeforeDelegateDeclarationParentheses = False
+		$3.NewParentheses = False
+		$3.SpacesBeforeBrackets = False
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/x-csharp
+		$3.scope = text/x-csharp
+		$0.StandardHeader = $4
+		$4.Text = 
+		$4.IncludeInNewFiles = True
+		$0.DotNetNamingPolicy = $5
+		$5.DirectoryNamespaceAssociation = None
+		$5.ResourceNamePolicy = FileFormatDefault
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

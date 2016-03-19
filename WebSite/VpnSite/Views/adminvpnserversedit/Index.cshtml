@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Admin Edit Servers";
+    Layout = "~/Views/AdminView.cshtml";
+}
+
+<form method="post" action="/adminvpnserversedit/editservers" role="form">
+	<p>
+	    ID: <input id="id" name="id" readonly="readonly" type="text" 
+	    value="@(VpnSite.Helpers.GlobalHelper.RequestParam("id").Trim().ToLower())" class="form-control" />
+	    </p>
+	<p>
+	    Address:
+	    <input id="address" name="address" type="text" 
+	    value="@(VpnSite.Helpers.GlobalHelper.RequestParam("address").Trim())" class="form-control" />
+	</p>
+	<p>
+	    Vpn Port:
+	    <input id="port" name="port" type="text" 
+	    value="@(VpnSite.Helpers.GlobalHelper.RequestParam("port").Trim().ToLower())" class="form-control" />
+	</p>
+	<p>
+	    Description:
+	    <input id="desc" name="desc" type="text" 
+	    value="@(VpnSite.Helpers.GlobalHelper.RequestParam("desc").Trim())" class="form-control"/>
+	</p>
+	<p>
+	    <a href="/adminregions" target="_blank">RegionId</a>:
+	    <input id="region" name="region" type="text" 
+	    value="@(VpnSite.Helpers.GlobalHelper.RequestParam("region").Trim())" class="form-control" />
+	    </p>
+	    <p>
+	    Active: <input @(VpnSite.Helpers.GlobalHelper.RequestEncodedParam("active")) id = "active" 
+	    name="active" name="CheckBoxActive" type="checkbox" class="form-control" />
+	        
+	</p>
+	<p>
+	     <input type="submit" value="Save" class="form-control" />
+	</p>
+</form>

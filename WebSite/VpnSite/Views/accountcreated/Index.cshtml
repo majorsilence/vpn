@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Account Created";
+    Layout = "~/Views/GeneralLayout.cshtml";
+}
+
+@{
+
+	string status = VpnSite.Helpers.GlobalHelper.RequestParam("status");
+	if (status == "ok")
+	{
+		<h1>Account Created</h1>
+		
+	   <p>Your account as been created.  You may now sign in
+	   and start using your new vpn accounts.
+	   </p> 
+	}
+	else
+	{
+		<h1>Account Creation Failed</h1>
+	     <p>There was an error creating your account.  Please try again.</p> 
+	}
+	
+}
+

@@ -1,0 +1,108 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  config.vm.provider "virtualbox" do |v|
+    v.linked_clone = true if Vagrant::VERSION =~ /^1.8/
+  end
+
+  
+	config.vm.define "website" do |website|
+		# Every Vagrant virtual environment requires a box to build off of.
+		website.vm.box = "trusty64"
+		website.vm.synced_folder "../published-site/VpnSite", "/vpnsite"
+
+		website.vm.provision "ansible" do |ansible|
+			ansible.playbook = "./Ansible/website-playbook-test.yml"
+			ansible.inventory_path = "./Ansible/hosts"
+			ansible.limit = 'all'
+			ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
+			#ansible.verbose = "vvv"
+		end
+
+		# The url from where the 'config.vm.box' box will be fetched if it
+		# doesn't already exist on the user's system.
+		website.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+
+		# Create a forwarded port mapping which allows access to a specific port
+		# within the machine from a port on the host machine. In the example below,
+		# accessing "localhost:8080" will access port 80 on the guest machine.
+		website.vm.network :forwarded_port, guest: 80, host: 8081
+    	website.vm.network :forwarded_port, guest: 443, host: 8082
+		website.vm.network :forwarded_port, guest: 22, host: 8024
+		website.vm.network :forwarded_port, guest: 3306, host: 3306
+
+		website.vm.network "private_network", ip: "192.168.40.4"
+
+	end
+
+
+	config.vm.define "vpnauthorityansible" do |vpnauthorityansible|
+		vpnauthorityansible.vm.box = "precise64"
+		vpnauthorityansible.vm.provision "ansible" do |ansible|
+			ansible.playbook = "./Ansible/vpn-playbook-test.yml"
+			ansible.inventory_path = "./Ansible/hosts"
+			ansible.limit = 'all'
+			ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
+			#ansible.verbose = "vvv"
+		end
+
+		# The url from where the 'config.vm.box' box will be fetched if it
+		# doesn't already exist on the user's system.
+		vpnauthorityansible.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box"
+		
+		vpnauthorityansible.vm.network :forwarded_port, guest: 22, host: 8522
+		vpnauthorityansible.vm.network :forwarded_port, guest: 1194, host: 1196, protocol: 'udp'
+		vpnauthorityansible.vm.network :forwarded_port, guest: 1194, host: 1197, protocol: 'tcp'
+
+		vpnauthorityansible.vm.network "private_network", ip: "192.168.50.4"
+		
+
+	end
+
+	config.vm.define "vpnauthoritytrusty" do |vpnauthoritytrusty|
+		vpnauthoritytrusty.vm.box = "trusty64"
+	
+		if Vagrant::Util::Platform.windows?
+			vpnauthoritytrusty.vm.provision :guest_ansible do |ansible|
+				FileUtils.copy_entry "./Ansible", "./Ansible", false, false, true
+				FileUtils.copy_entry "./Ansible/hosts", "./hosts", false, false, true
+				FileUtils.copy_entry "./vpnscripts", "./vpnscripts", false, false, true
+				ansible.inventory_path = "./hosts"
+				ansible.playbook = "./Ansible/vpn-playbook-test.yml"
+				ansible.limit = 'all'
+				ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
+				#ansible.verbose = "vvv"
+			end
+		else
+			vpnauthoritytrusty.vm.provision "ansible" do |ansible|
+				ansible.playbook = "./Ansible/vpn-playbook-test.yml"
+				ansible.inventory_path = "./Ansible/hosts"
+				ansible.limit = 'all'
+				ansible.extra_vars = { ansible_ssh_user: 'vagrant' }
+				#ansible.verbose = "vvv"
+			end
+		end
+
+		# The url from where the 'config.vm.box' box will be fetched if it
+		# doesn't already exist on the user's system.
+		vpnauthoritytrusty.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+		
+		vpnauthoritytrusty.vm.network :forwarded_port, guest: 22, host: 9522
+		vpnauthoritytrusty.vm.network :forwarded_port, guest: 1194, host: 2196, protocol: 'udp'
+		vpnauthoritytrusty.vm.network :forwarded_port, guest: 1194, host: 2197, protocol: 'tcp'
+		
+		
+		vpnauthoritytrusty.vm.network "private_network", ip: "192.168.50.4"
+		
+
+	end
+
+end

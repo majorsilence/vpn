@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "protect your data";
+    Layout = "~/Views/Vpn.cshtml";
+}
+
+@{
+	string betaemail = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("betaemail");
+	string betacode = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("betacode");
+	if (betaemail == null)
+	{
+		betaemail="";
+	}
+	if (betacode == null)
+	{
+		betacode="";
+	}
+}
+
+
+<div class="jumbotron">
+  <div class="container">
+  	<div style = "text-align:center;">
+				<h1>Simple <a href="/services" 
+					data-toggle="tooltip" id="vpntooltip" title="Virtual Private Network.  A secure channel protecting your data.">VPNs</a>
+				</h1>
+				<h1>built for humans</h1>
+				<h2>Connect to a vpn in minutes.  <a href="/services">Learn more</a>.</h2>		
+				<br />
+				<form name="input" method="post" class="form-inline" role="form">		
+				 <div class="form-group">		
+				 	@{	 
+				 		if(betaemail != "")
+			  			{
+			  				<input type="email" name="email" class="form-control" id="email" autocorrect="off" autocapitalize="off" value="@(betaemail)" />
+			  			}
+			  			else
+			  			{
+			  				<input type="email" name="email" class="form-control" id="email" placeholder = "Email Address" autocorrect="off" autocapitalize="off" />
+			  			}
+	  				}
+			 		
+			  		<input type="password" name="password" class="form-control" id="password" placeholder = "Password" autocorrect="off" autocapitalize="off" />
+			  		@{
+			  			if(betacode != "")
+			  			{
+			  				<input type="text" name="fname" id="betaKeyText" class="form-control" value="@(betacode)" />
+			  			}
+			  			else{
+			  				<input type="text" name="fname" id="betaKeyText" class="form-control" placeholder = "Beta Key" />
+			  			}
+			  		}
+			  		
+			        <input type="submit" value="Create Account" class="btn btn-primary btn-lg" id="createuser" />
+			       </div>
+			    </form>
+			</div>
+  	</div>
+</div>
+
+<script src="/assets/javascript/newuser.js" type="text/javascript"></script>
+
+ <script type="text/javascript">
+    @{
+	     <text>   
+		     $(document).ready(function () {
+		         NewUser.Init(@(LibLogic.Helpers.SiteInfo.LiveSite.ToString().ToLower()), true);
+		         $('#vpntooltip').tooltip({
+		         trigger: 'hover'
+		         });
+		     });
+	     </text>
+     }
+</script>
+
+

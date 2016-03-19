@@ -1,0 +1,19 @@
+﻿@model VpnSite.Models.Account
+@{
+    ViewBag.Title = "Account Payments";
+    Layout = "~/Views/LoggedInView.cshtml";
+
+}
+
+    <ul class="list-group">
+	@{
+		if (VpnSite.Helpers.SessionVariables.Instance.IsAdmin)
+		{
+			<li class="list-group-item"><a href="/admin">Admin</a></li>
+		}
+	}
+
+		<li class="list-group-item"><a href="/account">@Resources.Main.MenuAccount</a></li>
+		<li class="list-group-item"><a href="/invite">Invite Friends</a></li>
+		<li class="list-group-item"><a href="/logout"> @Resources.Main.MenuLogout</a></li>
+	</ul>
