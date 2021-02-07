@@ -2,6 +2,7 @@
 using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
+
 namespace LibLogic.Migrations
 {
     [Migration(1, TransactionBehavior.Default)]
@@ -138,8 +139,8 @@ namespace LibLogic.Migrations
             // Regions
             int usRegionId = 1;
             int canadaRegionId = 2;
-            Insert.IntoTable("Regions").WithIdentityInsert().Row(new {Id = usRegionId, Description = "United States", Active = true});
-            Insert.IntoTable("Regions").WithIdentityInsert().Row(new {Id = canadaRegionId, Description = "Canada", Active = true});
+            Insert.IntoTable("Regions").Row(new {Id = usRegionId, Description = "United States", Active = true});
+            Insert.IntoTable("Regions").Row(new {Id = canadaRegionId, Description = "Canada", Active = true});
             Insert.IntoTable("Regions").Row(new {Description = "Netherlands", Active = true});
             Insert.IntoTable("Regions").Row(new {Description = "Singapore", Active = true});
             Insert.IntoTable("Regions").Row(new {Description = "Brazil", Active = true});

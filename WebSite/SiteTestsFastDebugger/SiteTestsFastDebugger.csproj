@@ -22,6 +22,6 @@
     <ProjectReference Include="..\SiteTestsFast\SiteTestsFast.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="6.9.8" />
+    <PackageReference Include="MySql.Data" Version="8.0.23" />
   </ItemGroup>
 </Project>

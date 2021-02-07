@@ -48,7 +48,7 @@
     <ProjectReference Include="..\VpnSite\VpnSite.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MySql.Web" Version="6.9.8" />
+    <PackageReference Include="MySql.Web" Version="8.0.23" />
     <PackageReference Include="NUnit" Version="2.6.4" />
   </ItemGroup>
   <ItemGroup>
