@@ -62,15 +62,6 @@
     <Reference Include="Dapper">
       <HintPath>..\References\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Web">
-      <HintPath>..\packages\MySql.Web.6.9.8\lib\net45\MySql.Web.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -99,11 +90,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="LibLogic\" />
-    <Folder Include="LibLogic\OpenVpn\" />
-    <Folder Include="LibLogic\Pptp\" />
+    <PackageReference Include="MySql.Web">
+      <Version>6.9.8</Version>
+    </PackageReference>
+    <PackageReference Include="NUnit">
+      <Version>2.6.4</Version>
+    </PackageReference>
   </ItemGroup>
 </Project>
