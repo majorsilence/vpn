@@ -17,13 +17,10 @@
     <DebugType>pdbonly</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Dapper.Contrib">
-      <HintPath>..\References\Dapper.Contrib.dll</HintPath>
-    </Reference>
-    <Reference Include="Dapper">
-      <HintPath>..\References\Dapper.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

@@ -35,19 +35,12 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper.Contrib">
-      <HintPath>..\References\Dapper.Contrib.dll</HintPath>
-    </Reference>
-    <Reference Include="Dapper">
-      <HintPath>..\References\Dapper.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\LibLogic\LibLogic.csproj" />
     <ProjectReference Include="..\LibPoco\LibPoco.csproj" />
     <ProjectReference Include="..\VpnSite\VpnSite.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
     <PackageReference Include="MySql.Web" Version="8.0.23" />
     <PackageReference Include="NUnit" Version="3.13.1" />
   </ItemGroup>

@@ -12,12 +12,6 @@
     <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper">
-      <HintPath>..\References\Dapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Dapper.Contrib">
-      <HintPath>..\References\Dapper.Contrib.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Web" />
@@ -30,6 +24,7 @@
     <ProjectReference Include="..\VpnSite\VpnSite.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
     <PackageReference Include="Moq" Version="4.16.0" />
     <PackageReference Include="MySql.Web" Version="8.0.23" />
