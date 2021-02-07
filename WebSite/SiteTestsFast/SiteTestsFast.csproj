@@ -1,41 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>SiteTestsFast</RootNamespace>
-    <AssemblyName>SiteTestsFast</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>net45</TargetFramework>
+    <DebugType>full</DebugType>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="Dapper">
       <HintPath>..\References\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="Dapper.Contrib">
       <HintPath>..\References\Dapper.Contrib.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Web" />
@@ -43,66 +25,21 @@
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExampleTest.cs" />
-    <Compile Include="BetaSite\CreateAccountTest.cs" />
-    <Compile Include="LiveSite\CreateAccountTest.cs" />
-    <Compile Include="LiveSite\Setup.cs" />
-    <Compile Include="BetaSite\PaymentsTest.cs" />
-    <Compile Include="BetaSite\Setup.cs" />
-    <Compile Include="BetaSite\LoginAdminTest.cs" />
-    <Compile Include="BetaSite\LoginNormalTest.cs" />
-    <Compile Include="LiveSite\UserInfoTest.cs" />
-    <Compile Include="LiveSite\OpenVpn\GenerateCertsTest.cs" />
-    <Compile Include="BetaSite\BetaKeysTest.cs" />
-    <Compile Include="BetaSite\StripePaymentsTest.cs" />
-    <Compile Include="LiveSite\SiteInfo.cs" />
-    <Compile Include="ApiV2\Setup.cs" />
-    <Compile Include="ApiV2\LoginTest.cs" />
-    <Compile Include="MvcFakes\FakeControllerContext.cs" />
-    <Compile Include="MvcFakes\FakeHttpContext.cs" />
-    <Compile Include="MvcFakes\FakeHttpRequest.cs" />
-    <Compile Include="MvcFakes\FakeHttpSessionState.cs" />
-    <Compile Include="MvcFakes\FakeIdentity.cs" />
-    <Compile Include="MvcFakes\FakePrincipal.cs" />
-    <Compile Include="MvcFakes\FakeHttpResponse.cs" />
-    <Compile Include="ApiV2\ServerListTest.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\LibLogic\LibLogic.csproj">
-      <Project>{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}</Project>
-      <Name>LibLogic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LibPoco\LibPoco.csproj">
-      <Project>{45F7ECD1-4362-42A8-86A8-1FABF559F935}</Project>
-      <Name>LibPoco</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VpnSite\VpnSite.csproj">
-      <Project>{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}</Project>
-      <Name>VpnSite</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\LibLogic\LibLogic.csproj" />
+    <ProjectReference Include="..\LibPoco\LibPoco.csproj" />
+    <ProjectReference Include="..\VpnSite\VpnSite.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc">
-      <Version>5.2.7</Version>
-    </PackageReference>
-    <PackageReference Include="Moq">
-      <Version>4.2.1409.1722</Version>
-    </PackageReference>
-    <PackageReference Include="MySql.Web">
-      <Version>6.9.8</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit">
-      <Version>2.6.4</Version>
-    </PackageReference>
-    <PackageReference Include="Stripe.net">
-      <Version>2.5.1</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+    <PackageReference Include="Moq" Version="4.2.1409.1722" />
+    <PackageReference Include="MySql.Web" Version="6.9.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NUnit" Version="2.6.4" />
+    <PackageReference Include="Stripe.net" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <Compile Remove="CreateAccountTest.cs" />
+    <Compile Remove="Setup.cs" />
+    <Compile Remove="Test.cs" />
   </ItemGroup>
 </Project>
