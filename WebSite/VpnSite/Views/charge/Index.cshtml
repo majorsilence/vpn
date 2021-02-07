@@ -5,7 +5,7 @@
 
 <br />
 @{
-    string status = VpnSite.Helpers.GlobalHelper.RequestParam("status");
+    string status = ViewData["status"]?.ToString();
 
     if(status=="ok")
     {

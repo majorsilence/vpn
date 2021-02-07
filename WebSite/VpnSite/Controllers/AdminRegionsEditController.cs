@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
+using Microsoft.AspNetCore.Mvc;
 
-namespace VpnSite.Controllers
+namespace Majorsilence.Vpn.Site.Controllers
 {
     public class AdminRegionsEditController : Controller
     {
 
-        public ActionResult Index()
+        public ActionResult Index(int ?id, string desc, string active)
         {
+            ViewData["id"] = id;
+            ViewData["desc"] = desc;
+            ViewData["active"] = active;
             return View();
         }
 
-        public ActionResult EditRegions()
+        public ActionResult EditRegions(int ?id, string desc, string active)
         {
             if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
             {
@@ -23,26 +25,23 @@ namespace VpnSite.Controllers
             }
 
             int n;
-            bool isNumeric = int.TryParse(VpnSite.Helpers.GlobalHelper.RequestParam("id").Trim().ToLower(), out n);
 
             var edit = new LibLogic.Admin.Regions();
 
-            string description = VpnSite.Helpers.GlobalHelper.RequestParam("desc").Trim().ToLower();
 
-            string activeString = VpnSite.Helpers.GlobalHelper.RequestParam("active");
-            bool active = false;
-            if (activeString != null)
+            bool activeYes = false;
+            if (active != null)
             {
-                active = true;
+                activeYes = true;
             }
 
-            if (isNumeric)
+            if (id.HasValue)
             {
-                edit.Update(n, description, active);
+                edit.Update(id.Value, desc, activeYes);
             }
             else
             {
-                edit.Insert(description, active);
+                edit.Insert(desc, activeYes);
             }
 
 

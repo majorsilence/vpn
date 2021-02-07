@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VpnSite.Models
+namespace Majorsilence.Vpn.Site.Models
 {
     public class Privacy
     {

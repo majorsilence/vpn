@@ -2,60 +2,60 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
+using Microsoft.AspNetCore.Mvc;
 
-namespace VpnSite.Controllers
+namespace Majorsilence.Vpn.Site.Controllers
 {
     public class AdminVpnServersEditController : Controller
     {
 
-        public ActionResult Index()
+        public ActionResult Index(int ?id, string address, int? port, string desc,
+            int? region, string active)
         {
+            ViewData["id"] = id;
+            ViewData["address"] = address;
+            ViewData["port"] = port;
+            ViewData["desc"] = desc;
+            ViewData["region"] = region;
+            ViewData["active"] = active;
             return View();
         }
 
-        public ActionResult EditServers()
+        public ActionResult EditServers(int ? id, string address, int port,
+            string desc, int region, string active)
         {
             if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
             {
                 return null;
             }
 
-            int id;
-            bool isNumeric = int.TryParse(VpnSite.Helpers.GlobalHelper.RequestParam("id").Trim().ToLower(), out id);
 
             try
             {
 
-                string description = VpnSite.Helpers.GlobalHelper.RequestParam("desc").Trim();
-                string address = VpnSite.Helpers.GlobalHelper.RequestParam("address").Trim();
-                string activeString = VpnSite.Helpers.GlobalHelper.RequestParam("active");
-                bool active = false;
-                if (activeString != null)
+                bool activeYes = false;
+                if (active != null)
                 {
-                    active = true;
+                    activeYes = true;
                 }
-                int region = int.Parse(VpnSite.Helpers.GlobalHelper.RequestParam("region"));
-                int port = int.Parse(VpnSite.Helpers.GlobalHelper.RequestParam("port"));
 
                 var vpns = new LibLogic.Admin.VpnServers();
-                if (isNumeric)
+                if (id.HasValue)
                 {
-                    vpns.Update(id, address, 
-                        port, 
-                        description,
+                    vpns.Update(id.Value, address, 
+                        port,
+                        desc,
                         region,
-                        active);
+                        activeYes);
 
                 }
                 else
                 {
                     vpns.Insert(address,
                         port,
-                        description,
+                        desc,
                         region,
-                        active);
+                        activeYes);
                 }
 
 

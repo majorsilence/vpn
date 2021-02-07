@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using LibLogic.Helpers;
 using LibLogic.OpenVpn;
+using Microsoft.AspNetCore.Mvc;
 
-namespace VpnSite.Controllers
+namespace Majorsilence.Vpn.Site.Controllers
 {
     public class AccountController : Controller
     {
@@ -45,7 +46,6 @@ namespace VpnSite.Controllers
             {
                 LibLogic.Helpers.Logging.Log(ex);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                this.HttpContext.Response.Write(ex.Message);
             }
 
 
@@ -56,7 +56,7 @@ namespace VpnSite.Controllers
 
 
         [HttpPost]
-        public void Charge()
+        public void Charge(string stripeToken, string discount)
         {
 
             if (Helpers.SessionVariables.Instance.LoggedIn == false)
@@ -70,12 +70,10 @@ namespace VpnSite.Controllers
             try
             {
 
-                string stripeToken = Helpers.GlobalHelper.RequestParam("stripeToken");
-                string couponDiscount = Helpers.GlobalHelper.RequestEncodedParam("discount");
 
                 var pay = new LibLogic.Payments.StripePayment(Helpers.SessionVariables.Instance.UserId, 
                               new LibLogic.Email.LiveEmail());
-                pay.MakePayment(stripeToken, couponDiscount);
+                pay.MakePayment(stripeToken, discount);
 
                 LibLogic.ActionLog.Log_BackgroundThread("Payment made", Helpers.SessionVariables.Instance.UserId);
               
@@ -129,20 +127,15 @@ namespace VpnSite.Controllers
 
 
         [HttpPost]
-        public void UpdateProfile()
+        public void UpdateProfile(string email, string firstname, string lastname)
         {
             this.HttpContext.Response.ContentType = "text/html";
             if (Helpers.SessionVariables.Instance.LoggedIn == false)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
-                this.HttpContext.Response.Write("Not Logged In");
                 return;
             }
                 
-            string email = Helpers.GlobalHelper.RequestEncodedParam("email");
-            string firstname = Helpers.GlobalHelper.RequestEncodedParam("firstname");
-            string lastname = Helpers.GlobalHelper.RequestEncodedParam("lastname");
-
             var update = new LibLogic.Accounts.UserInfo(Helpers.SessionVariables.Instance.UserId);
             try
             {
@@ -153,19 +146,16 @@ namespace VpnSite.Controllers
                     Helpers.SessionVariables.Instance.UserId);
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                this.HttpContext.Response.Write("Profile Information Updated");
             }
             catch (LibLogic.Exceptions.InvalidDataException ide)
             {
                 LibLogic.Helpers.Logging.Log(ide);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                this.HttpContext.Response.Write(ide.Message);
             }
             catch (LibLogic.Exceptions.EmailAddressAlreadyUsedException eaaue)
             {
                 LibLogic.Helpers.Logging.Log(eaaue);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                this.HttpContext.Response.Write(eaaue.Message);
             }
 
         }
@@ -177,7 +167,6 @@ namespace VpnSite.Controllers
             if (Helpers.SessionVariables.Instance.LoggedIn == false)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
-                this.HttpContext.Response.Write("Not Logged In");
                 return;
             }
 
@@ -192,12 +181,10 @@ namespace VpnSite.Controllers
                 LibLogic.ActionLog.Log_BackgroundThread("Password Changed", 
                     Helpers.SessionVariables.Instance.UserId);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                this.HttpContext.Response.Write("Password Updated");
             }
             catch (LibLogic.Exceptions.InvalidDataException ide)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                this.HttpContext.Response.Write(ide.Message);
             }
 
 

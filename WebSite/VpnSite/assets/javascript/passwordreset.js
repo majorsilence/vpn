@@ -18,7 +18,7 @@
         Helpers.ShowLoading();
         $.ajax({
             type: "POST",
-            url: "/resetpasswordsend",
+            url: "/Generic/ResetPasswordSend",
             data: { username: email},
             success: function (result) {
                 if (result.status = 250) {

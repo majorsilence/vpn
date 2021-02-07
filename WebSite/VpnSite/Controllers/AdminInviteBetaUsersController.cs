@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
+using Microsoft.AspNetCore.Mvc;
 
-namespace VpnSite.Controllers
+namespace Majorsilence.Vpn.Site.Controllers
 {
     public class AdminInviteBetaUsersController : Controller
     {
@@ -21,7 +20,7 @@ namespace VpnSite.Controllers
             return View(model);
         }
 
-        public ActionResult SendMail()
+        public ActionResult SendMail(string emailAddress)
         {
             if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
             {
@@ -29,7 +28,6 @@ namespace VpnSite.Controllers
             }
 
             var model = new Models.AdminInviteBetaUsers();
-            var emailAddress = VpnSite.Helpers.GlobalHelper.RequestParam("emailladdress").Trim();
 
             model.SendMail(emailAddress);
             return View(model);

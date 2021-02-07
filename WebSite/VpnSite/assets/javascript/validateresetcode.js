@@ -35,8 +35,12 @@
         Helpers.ShowLoading();
         $.ajax({
             type: "POST",
-            url: "/resetcodevalidation",
-            data: { code: codeval, cnewpsw: cnewpswval, newpsw: newpswval },
+            url: "/Generic/ResetCodeValidation",
+            data: {
+                code: codeval,
+                cnewpsw: cnewpswval,
+                newpsw: newpswval
+            },
             success: function (result) {
                 Helpers.ShowMessage("Sucessfull.", "Password Reset", Helpers.MessageType.Success /* Success */);
 

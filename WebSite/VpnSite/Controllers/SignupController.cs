@@ -2,44 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-namespace VpnSite.Controllers
+namespace Majorsilence.Vpn.Site.Controllers
 {
     public class SignupController : Controller
     {
         public ActionResult Index()
         {
-            return View ();
+            return View();
         }
 
         [HttpPost]
-        public void CreateUser()
+        public void CreateUser(string email, string emailconfirm, string password, string passwordconfirm,
+            string firstname, string lastname, string betakey)
         {
-   
+
             try
             {
-                string password = Helpers.GlobalHelper.RequestEncodedParam("password");
-                string confirmPassword = Helpers.GlobalHelper.RequestEncodedParam("passwordconfirm");
-                string email = Helpers.GlobalHelper.RequestEncodedParam("email");
-                string confirmEmail = Helpers.GlobalHelper.RequestEncodedParam("emailconfirm");
-                string firstname = Helpers.GlobalHelper.RequestEncodedParam("firstname");
-                string lastname = Helpers.GlobalHelper.RequestEncodedParam("lastname");
-                string betakey = Helpers.GlobalHelper.RequestEncodedParam("betakey");
 
                 var emailFake = new LibLogic.Email.LiveEmail();
 
                 var account = new LibLogic.Accounts.CreateAccount(
                     new LibLogic.Accounts.CreateAccountInfo()
-                {
-                    Email = email,
-                    EmailConfirm = confirmEmail,
-                    Firstname = firstname,
-                    Lastname = lastname,
-                    Password = password,
-                    PasswordConfirm = confirmPassword,
-                    BetaKey = betakey
-                }, 
+                    {
+                        Email = email,
+                        EmailConfirm = emailconfirm,
+                        Firstname = firstname,
+                        Lastname = lastname,
+                        Password = password,
+                        PasswordConfirm = passwordconfirm,
+                        BetaKey = betakey
+                    },
                     emailFake
                 );
                 account.Execute();
@@ -50,14 +44,13 @@ namespace VpnSite.Controllers
             {
                 LibLogic.Helpers.Logging.Log(ide);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                this.HttpContext.Response.Write(ide.Message);
             }
             catch (Exception ex)
             {
                 LibLogic.Helpers.Logging.Log(ex);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
             }
-                
+
         }
 
     }

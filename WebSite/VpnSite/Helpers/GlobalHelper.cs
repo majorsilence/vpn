@@ -1,34 +1,35 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace VpnSite.Helpers
+namespace Majorsilence.Vpn.Site.Helpers
 {
     public class GlobalHelper
     {
-        public static string RequestParam(string paramName)
+        public static string RequestParam(string paramName, HttpContext context)
         {
             string Result = String.Empty;
 
-            if (HttpContext.Current.Request.Form.Count != 0)
+            if (context.Request.Form.Count != 0)
             {
-                Result = Convert.ToString(HttpContext.Current.Request.Form[paramName]);
+                Result = Convert.ToString(context.Request.Form[paramName]);
 
                 if (Result == null)
                 {
                     // for whatever reason the page has both form and QueryString content 
                     // and the value we are looking for is in the query string
-                    if (HttpContext.Current.Request.QueryString.Count != 0)
+                    if (context.Request.QueryString.Count != 0)
                     {
-                        Result = Convert.ToString(HttpContext.Current.Request.QueryString[paramName]);
+                        Result = Convert.ToString(context.Request.QueryString[paramName]);
                     }
                 }
 
             }
-            else if (HttpContext.Current.Request.QueryString.Count != 0)
+            else if (context.Request.QueryString.Count != 0)
             {
-                Result = Convert.ToString(HttpContext.Current.Request.QueryString[paramName]);
+                Result = Convert.ToString(context.Request.QueryString[paramName]);
             }
 
             if (Result != null)
@@ -44,28 +45,28 @@ namespace VpnSite.Helpers
         /// </summary>
         /// <param name="paramName"></param>
         /// <returns></returns>
-        public static string RequestEncodedParam(string paramName)
+        public static string RequestEncodedParam(string paramName, HttpContext context)
         {
             string Result = null;
 
-            if (HttpContext.Current.Request.Form.Count != 0)
+            if (context.Request.Form.Count != 0)
             {
-                Result = UriDecode(Convert.ToString(HttpContext.Current.Request.Form[paramName]));
+                Result = UriDecode(Convert.ToString(context.Request.Form[paramName]));
 
                 if (Result == null)
                 {
                     // for whatever reason the page has both form and QueryString content 
                     // and the value we are looking for is in the query string
-                    if (HttpContext.Current.Request.QueryString.Count != 0)
+                    if (context.Request.QueryString.Count != 0)
                     {
-                        Result = UriDecode(Convert.ToString(HttpContext.Current.Request.QueryString[paramName]));
+                        Result = UriDecode(Convert.ToString(context.Request.QueryString[paramName]));
                     }
                 }
 
             }
-            else if (HttpContext.Current.Request.QueryString.Count != 0)
+            else if (context.Request.QueryString.Count != 0)
             {
-                Result = UriDecode(Convert.ToString(HttpContext.Current.Request.QueryString[paramName]));
+                Result = UriDecode(Convert.ToString(context.Request.QueryString[paramName]));
             }
 
 

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-namespace VpnSite.Controllers
+
+namespace Majorsilence.Vpn.Site.Controllers
 {
     public class ApiV2Controller : Controller
     {
@@ -44,15 +45,15 @@ namespace VpnSite.Controllers
             return credentials;
         }
 
-        private bool IsAuthenticateUserWithToken(HttpContextBase context, out int UserId)
+        private bool IsAuthenticateUserWithToken(HttpContext context, out int UserId)
         {
 
             UserId = -1;
-            if (!context.Request.Headers.AllKeys.Contains("VpnAuthToken", StringComparer.OrdinalIgnoreCase))
+            if (!context.Request.Headers.Keys.Contains("VpnAuthToken", StringComparer.OrdinalIgnoreCase))
             {
                 return false;
             }
-            if (!context.Request.Headers.AllKeys.Contains("VpnUserId", StringComparer.OrdinalIgnoreCase))
+            if (!context.Request.Headers.Keys.Contains("VpnUserId", StringComparer.OrdinalIgnoreCase))
             {
                 return false;
             }
@@ -88,7 +89,7 @@ namespace VpnSite.Controllers
             try
             {
 
-                if (!HttpContext.Request.Headers.AllKeys.Contains("Authorization", StringComparer.OrdinalIgnoreCase))
+                if (!HttpContext.Request.Headers.Keys.Contains("Authorization", StringComparer.OrdinalIgnoreCase))
                 {
                     HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                     return Content("Authorization not sent");
@@ -157,7 +158,7 @@ namespace VpnSite.Controllers
             try
             {
                 int userid = -1;
-                if (!IsAuthenticateUserWithToken(HttpContext, out userid))
+                if (!IsAuthenticateUserWithToken(this.HttpContext, out userid))
                 {
                     Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                     LibLogic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);
@@ -203,7 +204,7 @@ namespace VpnSite.Controllers
             try
             {
 
-                if (!IsAuthenticateUserWithToken(HttpContext, out userid))
+                if (!IsAuthenticateUserWithToken(this.HttpContext, out userid))
                 {
                     Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
                     LibLogic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);

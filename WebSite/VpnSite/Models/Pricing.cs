@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace VpnSite.Models
+namespace Majorsilence.Vpn.Site.Models
 {
     public class Pricing
     {

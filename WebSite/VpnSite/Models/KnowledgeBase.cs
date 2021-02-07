@@ -1,13 +1,13 @@
 using System;
 using MarkdownDeep;
+using Microsoft.AspNetCore.Http;
 
-namespace VpnSite.Models
+namespace Majorsilence.Vpn.Site.Models
 {
     public class KnowledgeBase
     {
-        public KnowledgeBase()
+        public KnowledgeBase(string code)
         {
-            string code = Helpers.GlobalHelper.RequestParam("code");
             string appDataPath = System.Web.HttpContext.Current.Server.MapPath("~/assets");
             string readFilePath = "";
             string input = "Something went wrong";

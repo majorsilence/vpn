@@ -52,8 +52,8 @@ var Setup;
         Helpers.ShowLoading();
         $.ajax({
             type: "POST",
-            url: "/saveuservpnserver",
-            data: { VpnId: serverid, UserVpnPassword: encodeURI(password) },
+            url: "/Generic/SaveUserVpnServer",
+            data: { vpnId: serverid, UserVpnPassword: encodeURI(password) },
             success: function (result) {
                 Helpers.HideLoading();
                 if (result) {
