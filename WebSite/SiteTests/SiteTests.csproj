@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Web" Version="8.0.23" />
-    <PackageReference Include="NUnit" Version="2.6.4" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="obj\x64\Debug\.NETFramework,Version=v4.5.AssemblyAttributes.cs" />

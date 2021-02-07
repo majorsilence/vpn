@@ -99,12 +99,13 @@ namespace SiteTestsFast.BetaSite
         }
 
         [Test()]
-        [ExpectedException(typeof(LibLogic.Exceptions.InvalidStripeTokenException))]
         public void MissingTokenTest()
         {
             LibLogic.Helpers.SslSecurity.Callback();
             var pay = new LibLogic.Payments.StripePayment(userid, new LibLogic.Email.FakeEmail());
-            pay.MakePayment("", "");
+
+            Assert.Throws<LibLogic.Exceptions.InvalidStripeTokenException>(() => pay.MakePayment("", ""));
+           
         }
 
 

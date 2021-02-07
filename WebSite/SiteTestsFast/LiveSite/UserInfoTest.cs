@@ -123,7 +123,6 @@ namespace SiteTestsFast.LiveSite
 
 
         [Test()]
-        [ExpectedException(typeof(LibLogic.Exceptions.InvalidDataException))]
         public void UpdateUserInfoInvalidFirstNameTest()
         {
 
@@ -148,16 +147,16 @@ namespace SiteTestsFast.LiveSite
 
 
             var info = new LibLogic.Accounts.UserInfo(userid);
-           // var profile = info.GetProfile();
+            // var profile = info.GetProfile();
 
-            info.UpdateProfile(unicodeEmailAddress, "", "Dude");
+            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => info.UpdateProfile(unicodeEmailAddress, "", "Dude"));
+          
            
 
 
         }
 
         [Test()]
-        [ExpectedException(typeof(LibLogic.Exceptions.InvalidDataException))]
         public void UpdateUserInfoInvalidLastNameTest()
         {
 
@@ -184,14 +183,14 @@ namespace SiteTestsFast.LiveSite
             var info = new LibLogic.Accounts.UserInfo(userid);
             var profile = info.GetProfile();
 
-            info.UpdateProfile(unicodeEmailAddress, "Happy", "");
+            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => info.UpdateProfile(unicodeEmailAddress, "Happy", ""));
+            
 
 
 
         }
 
         [Test()]
-        [ExpectedException(typeof(LibLogic.Exceptions.InvalidDataException))]
         public void UpdateUserInfoInvalidEmailTest()
         {
 
@@ -218,14 +217,14 @@ namespace SiteTestsFast.LiveSite
             var info = new LibLogic.Accounts.UserInfo(userid);
             var profile = info.GetProfile();
 
-            info.UpdateProfile("", "Happy", "Dude");
+            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => info.UpdateProfile("", "Happy", "Dude"));
+            
 
 
 
         }
 
         [Test()]
-        [ExpectedException(typeof(LibLogic.Exceptions.EmailAddressAlreadyUsedException))]
         public void UpdateUserInfoEmailAddressAlreadyUsedTest()
         {
 
@@ -268,7 +267,8 @@ namespace SiteTestsFast.LiveSite
             var info = new LibLogic.Accounts.UserInfo(userid);
             var profile = info.GetProfile();
 
-            info.UpdateProfile(unicodeEmailAddress, "Happy", "Dude");
+            Assert.Throws<LibLogic.Exceptions.EmailAddressAlreadyUsedException>(() => info.UpdateProfile(unicodeEmailAddress, "Happy", "Dude"));
+            
 
 
 

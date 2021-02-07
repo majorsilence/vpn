@@ -83,7 +83,6 @@ namespace SiteTestsFast.LiveSite
         }
 
         [Test()]
-        [ExpectedException(typeof(LibLogic.Exceptions.AccountNotActiveException))]
         public void InactiveAccount()
         {
   
@@ -93,9 +92,9 @@ namespace SiteTestsFast.LiveSite
             {
                 var vpn = new LibLogic.OpenVpn.CertsOpenVpnGenerateCommand(this.userid, this.vpnseverid, 
                                              sshClient, sshRevokeClient, sftpClient);
-        
-                vpn.Execute();
 
+                Assert.Throws<LibLogic.Exceptions.AccountNotActiveException>(() => vpn.Execute());
+                
             }
 
         }

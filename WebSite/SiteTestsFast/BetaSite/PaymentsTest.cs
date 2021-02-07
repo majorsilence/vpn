@@ -95,7 +95,6 @@ namespace SiteTestsFast.BetaSite
         }
 
         [Test()]
-        [ExpectedException(typeof(LibLogic.Exceptions.InvalidUserIdException))]
         public void PaymentWithInvalidUserIdTest()
         {
             var createDate = DateTime.UtcNow;
@@ -103,7 +102,9 @@ namespace SiteTestsFast.BetaSite
             var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
 
             var pay = new LibLogic.Payments.Payment(-1);
-            pay.SaveUserPayment(payment, createDate, paycode);
+
+            Assert.Throws<LibLogic.Exceptions.InvalidUserIdException>(() => pay.SaveUserPayment(payment, createDate, paycode));
+            
 
    
 
