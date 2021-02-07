@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
     <AssemblyTitle>LibPoco</AssemblyTitle>
     <Product>LibPoco</Product>
     <Copyright>Copyright ©  2014</Copyright>
@@ -13,5 +13,4 @@
   <ItemGroup>
     <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-  </ItemGroup>
-</Project>
+  </ItemGroup></Project>
