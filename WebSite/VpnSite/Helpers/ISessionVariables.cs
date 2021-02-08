@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VpnSite.Helpers
+namespace Majorsilence.Vpn.Site.Helpers
 {
     public interface ISessionVariables
     {

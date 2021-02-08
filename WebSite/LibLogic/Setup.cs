@@ -216,10 +216,10 @@ namespace LibLogic
             var options = new FluentMigrator.Runner.Processors.ProcessorOptions()
             {
                 PreviewOnly = false, // set to true to see the SQL
-                Timeout = 60
+                Timeout = TimeSpan.FromSeconds(60)
             };
 
-            var factory = new FluentMigrator.Runner.Processors.MySql.MySqlProcessorFactory();
+            var factory = new FluentMigrator.Runner.Processors.MySql.MySql5ProcessorFactory();
             var processor = factory.Create(Setup.DbFactory.ConnectionString, announcer, options);
             var runner = new FluentMigrator.Runner.MigrationRunner(assembly, migrationContext, processor);
             runner.MigrateUp(true);

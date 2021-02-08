@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
+using Microsoft.AspNetCore.Mvc;
 
-namespace VpnSite.Models
+namespace Majorsilence.Vpn.Site.Models
 {
     public class AdminInviteBetaUsers
     {

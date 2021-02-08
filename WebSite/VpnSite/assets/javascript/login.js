@@ -38,8 +38,11 @@ var Login;
         Helpers.ShowLoading();
         $.ajax({
             type: "POST",
-            url: "/loginvalidation",
-            data: { username: email, password: password_val },
+            url: "/Generic/LoginValidation",
+            data: {
+                username: email,
+                password: password_val
+            },
             success: function (result) {
                 if (result.status == 250) {
                     document.location.href = "/account#billing";

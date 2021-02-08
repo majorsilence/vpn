@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Globalization;
 
-namespace VpnSite.Models
+namespace Majorsilence.Vpn.Site.Models
 {
     public class Vpn
     {

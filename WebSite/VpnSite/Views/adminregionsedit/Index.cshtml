@@ -9,17 +9,17 @@
 <form method="post" action="/adminregionsedit/editregions" role="form">    
     <p>
         ID: <input id="id" name="id" readonly="readonly" type="text" 
-        value="@(VpnSite.Helpers.GlobalHelper.RequestParam("id").Trim().ToLower())" class="form-control" />
+        value="@ViewData["id"]?.ToString()?.Trim()?.ToLower()" class="form-control" />
 
     </p>
     <p>
         Description: <input id="desc" name="desc" type="text" 
-        value="@(VpnSite.Helpers.GlobalHelper.RequestEncodedParam("desc"))" class="form-control" />
+        value="@ViewData["desc"]?.ToString()" class="form-control" />
     </p>
     <p>
 
 
-     Active: <input @(VpnSite.Helpers.GlobalHelper.RequestEncodedParam("active")) id = "active" 
+     Active: <input @ViewData["active"] id = "active" 
      name="active" name="CheckBoxActive" type="checkbox" class="form-control" />
     
 </p>

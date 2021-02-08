@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace VpnSite.Models
+namespace Majorsilence.Vpn.Site.Models
 {
     public class Users
     {

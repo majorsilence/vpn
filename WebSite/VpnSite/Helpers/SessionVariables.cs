@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace VpnSite.Helpers
+namespace Majorsilence.Vpn.Site.Helpers
 {
     public class SessionVariables : ISessionVariables
     {
@@ -28,7 +28,7 @@ namespace VpnSite.Helpers
         }
 
 
-        public  string Username
+        public string Username
         {
             get
             {
@@ -50,7 +50,7 @@ namespace VpnSite.Helpers
             }
         }
 
-        public  int UserId
+        public int UserId
         {
             get
             {
@@ -71,7 +71,7 @@ namespace VpnSite.Helpers
         /// <summary>
         /// Check if the logged in user is an admin
         /// </summary>
-        public  bool IsAdmin
+        public bool IsAdmin
         {
             get
             {

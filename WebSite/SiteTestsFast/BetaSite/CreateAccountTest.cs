@@ -63,7 +63,6 @@ namespace SiteTestsFast.BetaSite
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.EmailAddressAlreadyUsedException))]
         public void DuplicateEmailTest()
         {
 
@@ -97,13 +96,13 @@ namespace SiteTestsFast.BetaSite
                 BetaKey = betaKey2
             }
                 , false, LibLogic.Setup.Email);
-            peterAccount2.Execute();
 
+            Assert.Throws<LibLogic.Exceptions.EmailAddressAlreadyUsedException>(() => peterAccount2.Execute());
+   
             Assert.That(AccountExists(emailAddress), Is.True);
         }
             
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.PasswordMismatchException))]
         public void PasswordMismatch()
         {
             Assert.That(AccountExists(emailAddress), Is.False);
@@ -121,13 +120,12 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
-
+            Assert.Throws<LibLogic.Exceptions.PasswordMismatchException>(() => peterAccount.Execute());
+           
 
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.PasswordLengthException))]
         public void PasswordLengthTest()
         {
             Assert.That(AccountExists(emailAddress), Is.False);
@@ -145,13 +143,14 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
+
+            Assert.Throws<LibLogic.Exceptions.PasswordLengthException>(() => peterAccount.Execute());
+          
 
 
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.EmailMismatchException))]
         public void EmailMismatch()
         {
             Assert.That(AccountExists(emailAddress), Is.False);
@@ -169,7 +168,8 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
+            Assert.Throws<LibLogic.Exceptions.EmailMismatchException>(() => peterAccount.Execute());
+            
 
 
         }
@@ -272,7 +272,6 @@ namespace SiteTestsFast.BetaSite
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.InvalidDataException))]
         public void FirstNameMissing()
         {
             Assert.That(AccountExists(emailAddress), Is.False);
@@ -290,13 +289,13 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
+            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
+           
 
 
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.InvalidDataException))]
         public void LastNameMissing()
         {
             Assert.That(AccountExists(emailAddress), Is.False);
@@ -314,13 +313,13 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
+            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
+           
 
 
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.InvalidDataException))]
         public void EmailAddressMissing()
         {
             Assert.That(AccountExists(emailAddress), Is.False);
@@ -338,13 +337,13 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
+            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
+            
 
 
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.BetaKeyAlreadyUsedException))]
         public void BetaKeyAlreadyInUse()
         {
 
@@ -378,14 +377,14 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount2.Execute();
+            Assert.Throws<LibLogic.Exceptions.BetaKeyAlreadyUsedException>(() => peterAccount2.Execute());
+            
 
             Assert.That(AccountExists(emailAddress), Is.True);
         }
 
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.InvalidBetaKeyException))]
         public void InvalidBetaKey()
         {
 
@@ -404,14 +403,15 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
+
+            Assert.Throws<LibLogic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
+            
 
 
             Assert.That(AccountExists(emailAddress), Is.False);
         }
 
         [Test()]
-        [ExpectedException (typeof(LibLogic.Exceptions.InvalidBetaKeyException))]
         public void EmptyBetaKey()
         {
 
@@ -430,7 +430,8 @@ namespace SiteTestsFast.BetaSite
             }
                 , true, LibLogic.Setup.Email);
 
-            peterAccount.Execute();
+            Assert.Throws<LibLogic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
+            
 
 
             Assert.That(AccountExists(emailAddress), Is.False);

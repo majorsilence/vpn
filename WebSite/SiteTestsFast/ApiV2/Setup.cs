@@ -89,8 +89,8 @@ namespace SiteTestsFast.ApiV2
 
 
                 var content = Newtonsoft.Json.JsonConvert.DeserializeObject<LibLogic.DTO.ApiAuthResponse>(blah.Content);
-                Assert.IsNotNullOrEmpty(content.Token1);
-                Assert.IsNotNullOrEmpty(content.Token2);
+                Assert.That(string.IsNullOrEmpty(content.Token1), Is.EqualTo(false));
+                Assert.That(string.IsNullOrEmpty(content.Token2), Is.EqualTo(false));
 
                 Assert.That(content.Token1ExpireUtc, Is.GreaterThan(DateTime.UtcNow));
                 Assert.That(content.Token1ExpireUtc, Is.LessThan(DateTime.UtcNow.AddDays(1)));
