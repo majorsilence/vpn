@@ -34,6 +34,7 @@ namespace Majorsilence.Vpn.Site.Helpers
         /// </example>
         public static string CreateMessage(string message, string title, MessageType mType)
         {
+            // omg
             string msg = "<script type=\"text/javascript\">$(document).ready(function () {";
             msg += string.Format("Helpers.Init();Helpers.ShowMessage(\"{0}\", \"{1}\", Helpers.MessageType.{2});", message, title, mType);
             msg += " });</script>";

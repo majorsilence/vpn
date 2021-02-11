@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Vpn.cshtml";
     
-	if (VpnSite.Helpers.SessionVariables.Instance.IsAdmin == false)
+	if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.IsAdmin == false)
 	{
 		Response.Redirect("/noaccess/", false);
 		return;

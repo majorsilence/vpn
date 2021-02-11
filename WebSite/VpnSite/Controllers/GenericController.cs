@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LibLogic.Email;
+using Majorsilence.Vpn.Site.Helpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,15 @@ namespace Majorsilence.Vpn.Site.Controllers
 {
     public class GenericController : Controller
     {
+
+        readonly IEmail email;
+        readonly ISessionVariables sessionInstance;
+        public GenericController(IEmail email, ISessionVariables sessionInstance)
+        {
+            this.email = email;
+            this.sessionInstance = sessionInstance;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -18,13 +29,13 @@ namespace Majorsilence.Vpn.Site.Controllers
         [HttpGet]
         public FileResult DownloadOpenVpnCert()
         {
-            if (Helpers.SessionVariables.Instance.LoggedIn == false)
+            if (sessionInstance.LoggedIn == false)
             {
                 return null;
             }
 
             var dl = new LibLogic.OpenVpn.CertsOpenVpnDownload();
-            var fileBytes = dl.UploadToClient(Helpers.SessionVariables.Instance.UserId);
+            var fileBytes = dl.UploadToClient(sessionInstance.UserId);
 
             return File(fileBytes, "application/zip", "Certs.zip");
         }
@@ -33,7 +44,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         public JsonResult SaveUserVpnServer(int vpnId)
         {
 
-            if (Helpers.SessionVariables.Instance.LoggedIn == false)
+            if (sessionInstance.LoggedIn == false)
             {
                 return null;
             }
@@ -66,7 +77,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 using (var ssh = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
                                      LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
                 {
-                    var revokeOVPN = new LibLogic.OpenVpn.CertsOpenVpnRevokeCommand(Helpers.SessionVariables.Instance.UserId, ssh);
+                    var revokeOVPN = new LibLogic.OpenVpn.CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh);
                     revokeOVPN.Execute();
                 }
 
@@ -92,7 +103,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             using (var sftp = new LibLogic.Ssh.LiveSftp(LibLogic.Helpers.SiteInfo.SshPort,
                                   LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
             {
-                var cert = new LibLogic.OpenVpn.CertsOpenVpnGenerateCommand(Helpers.SessionVariables.Instance.UserId,
+                var cert = new LibLogic.OpenVpn.CertsOpenVpnGenerateCommand(sessionInstance.UserId,
                                vpnServerId, sshNewServer, sshRevokeServer, sftp);
                 cert.Execute();
             }
@@ -106,7 +117,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
                                              LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
             {
-                var pptp = new LibLogic.Ppp.ManagePPTP(Helpers.SessionVariables.Instance.UserId, vpnServerId,
+                var pptp = new LibLogic.Ppp.ManagePPTP(sessionInstance.UserId, vpnServerId,
                                sshNewServer, sshRevokeServer);
                 pptp.AddUser();
             }
@@ -119,7 +130,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
                                              LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
             {
-                var ipsec = new LibLogic.Ppp.IpSec(Helpers.SessionVariables.Instance.UserId, vpnServerId, sshNewServer,
+                var ipsec = new LibLogic.Ppp.IpSec(sessionInstance.UserId, vpnServerId, sshNewServer,
                                 sshRevokeServer);
                 ipsec.AddUser();
             }
@@ -140,16 +151,16 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return;
             }
 
-            Helpers.SessionVariables.Instance.LoggedIn = login.LoggedIn;
-            Helpers.SessionVariables.Instance.Username = username;
-            Helpers.SessionVariables.Instance.UserId = login.UserId;
-            Helpers.SessionVariables.Instance.IsAdmin = login.IsAdmin;
+            sessionInstance.LoggedIn = login.LoggedIn;
+            sessionInstance.Username = username;
+            sessionInstance.UserId = login.UserId;
+            sessionInstance.IsAdmin = login.IsAdmin;
 
-            if (Helpers.SessionVariables.Instance.LoggedIn)
+            if (sessionInstance.LoggedIn)
             {
                 // if payments have expired or were never setup prompt the user
                 // to setup payments
-                var paymets = new LibLogic.Payments.Payment(Helpers.SessionVariables.Instance.UserId);
+                var paymets = new LibLogic.Payments.Payment(sessionInstance.UserId);
                 if (paymets.IsExpired())
                 {
                     this.HttpContext.Response.StatusCode = 250;
@@ -172,7 +183,6 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             try
             {
-                var email = new LibLogic.Email.LiveEmail();
                 var resetPSW = new LibLogic.Accounts.ResetPassword(email);
                 resetPSW.sendPasswordLink(username);
             }
@@ -199,7 +209,6 @@ namespace Majorsilence.Vpn.Site.Controllers
                     this.HttpContext.Response.StatusCode = 400;
                     return;
                 }
-                var email = new LibLogic.Email.LiveEmail();
                 var resetPSW = new LibLogic.Accounts.ResetPassword(email);
                 resetPSW.validateCode(code, newpsw);
                 this.HttpContext.Response.StatusCode = 250;
@@ -217,7 +226,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             try
             {
-                if (Helpers.SessionVariables.Instance.LoggedIn == false)
+                if (sessionInstance.LoggedIn == false)
                 {
                     return;
                 }

@@ -10,10 +10,10 @@ namespace Majorsilence.Vpn.Site.Models
         {
         }
 
-        public void InitCultureByPram()
+        public void InitCultureByPram(string lang)
         {
 
-            string culture = Helpers.GlobalHelper.RequestEncodedParam("lang");
+            string culture = lang;
 
             if (string.IsNullOrEmpty(culture))
             {
@@ -37,10 +37,11 @@ namespace Majorsilence.Vpn.Site.Models
         {
             string cultureCookie = "";
 
-            if (System.Web.HttpContext.Current.Request.Cookies["lang"] != null)
-            {
-                cultureCookie = System.Web.HttpContext.Current.Request.Cookies["lang"].Value;
-            }
+            // FIXME: how does this work in asp core?
+            //if (System.Web.HttpContext.Current.Request.Cookies["lang"] != null)
+            //{
+            //    cultureCookie = System.Web.HttpContext.Current.Request.Cookies["lang"].Value;
+            //}
 
 
             if (string.IsNullOrEmpty(cultureCookie))

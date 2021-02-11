@@ -4,17 +4,17 @@
 }
 
 @{
-	string status = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("status");
+	string status = ViewData["status"]?.ToString();
 	if (status != null)
 	{
 		string msg;
 		if(status == "ok")
 		{
-			msg = VpnSite.Helpers.Message.CreateMessage("Changes Saved", "Changes Saved", VpnSite.Helpers.Message.MessageType.Information);
+			msg = Majorsilence.Vpn.Site.Helpers.Message.CreateMessage("Changes Saved", "Changes Saved", Majorsilence.Vpn.Site.Helpers.Message.MessageType.Information);
 			
 		}
 		else{
-			msg = VpnSite.Helpers.Message.CreateMessage("Error saving: " + status, "Changes Saved", VpnSite.Helpers.Message.MessageType.Error);
+			msg = Majorsilence.Vpn.Site.Helpers.Message.CreateMessage("Error saving: " + status, "Changes Saved", Majorsilence.Vpn.Site.Helpers.Message.MessageType.Error);
 		}
 		
 	

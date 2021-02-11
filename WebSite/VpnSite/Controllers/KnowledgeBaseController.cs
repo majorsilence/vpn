@@ -8,9 +8,9 @@ namespace Majorsilence.Vpn.Site.Controllers
 {
     public class KnowledgeBaseController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(string code)
         {
-            var model = new Models.KnowledgeBase();
+            var model = new Models.KnowledgeBase(code);
             return View(model);
         }
     }

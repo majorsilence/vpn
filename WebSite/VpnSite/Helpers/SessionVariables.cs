@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,23 +8,29 @@ namespace Majorsilence.Vpn.Site.Helpers
 {
     public class SessionVariables : ISessionVariables
     {
-        public static SessionVariables Instance = new SessionVariables();
+        HttpContext context;
+        public SessionVariables(HttpContext context)
+        {
+            this.context = context;
+        }
+
+        //  public static SessionVariables Instance = new SessionVariables();
 
         public bool LoggedIn
         {
             get
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
-                if (context.Session["LoggedIn"] == null)
+
+
+                if (context.Session.GetString("LoggedIn") == null)
                 {
                     return false;
                 }
-                return Convert.ToBoolean(context.Session["LoggedIn"]);
+                return Convert.ToBoolean(context.Session.GetString("LoggedIn"));
             }
             set
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
-                context.Session["LoggedIn"] = value;
+                context.Session.SetString("LoggedIn", value.ToString());
             }
         }
 
@@ -32,21 +39,19 @@ namespace Majorsilence.Vpn.Site.Helpers
         {
             get
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
                 if (context.Session == null)
                 {
                     return "";
                 }
-                if (context.Session["Username"] == null)
+                if (context.Session.GetString("Username") == null)
                 {
                     return "";
                 }
-                return context.Session["Username"].ToString();
+                return context.Session.GetString("Username");
             }
             set
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
-                context.Session["Username"] = value;
+                context.Session.SetString("Username", value);
             }
         }
 
@@ -54,17 +59,15 @@ namespace Majorsilence.Vpn.Site.Helpers
         {
             get
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
-                if (context.Session["UserId"] == null)
+                if (context.Session.GetString("UserId") == null)
                 {
                     return -1;
                 }
-                return Convert.ToInt32(context.Session["UserId"].ToString());
+                return Convert.ToInt32(context.Session.GetString("UserId"));
             }
             set
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
-                context.Session["UserId"] = value;
+                context.Session.SetString("UserId", value.ToString());
             }
         }
 
@@ -75,17 +78,15 @@ namespace Majorsilence.Vpn.Site.Helpers
         {
             get
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
-                if (context.Session["IsAdmin"] == null)
+                if (context.Session.GetString("IsAdmin") == null)
                 {
                     return false;
                 }
-                return Convert.ToBoolean(context.Session["IsAdmin"].ToString());
+                return Convert.ToBoolean(context.Session.GetString("IsAdmin"));
             }
             set
             {
-                System.Web.HttpContext context = System.Web.HttpContext.Current;
-                context.Session["IsAdmin"] = value;
+                context.Session.SetString("IsAdmin", value.ToString());
             }
         }
 

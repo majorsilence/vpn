@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using LibLogic.Email;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers
 {
     public class SupportController : Controller
     {
+        readonly IEmail email;
+        public SupportController(IEmail email)
+        {
+            this.email = email;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -19,7 +26,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         }
 
         [HttpPost]
-        public void Submit()
+        public void Submit(string subject, string supportrequest)
         {
 
             if (Helpers.SessionVariables.Instance.LoggedIn == false)
@@ -30,15 +37,12 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             try
             {
-                string subject = Helpers.GlobalHelper.RequestEncodedParam("subject");
-                string message = Helpers.GlobalHelper.RequestEncodedParam("supportrequest");
-
-                message = "User Id: " + Helpers.SessionVariables.Instance.UserId + System.Environment.NewLine +
+                supportrequest = "User Id: " + Helpers.SessionVariables.Instance.UserId + System.Environment.NewLine +
                 "Email: " + Helpers.SessionVariables.Instance.Username + System.Environment.NewLine + System.Environment.NewLine +
-                message;
+                supportrequest;
 
-                var email = new LibLogic.Email.LiveEmail();
-                email.SendMail_BackgroundThread(message, subject, "peter@majorsilence.com", false, null, LibLogic.Email.EmailTemplates.None);
+                // TODO: inject the support address from appsettings.json
+                email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false, null, LibLogic.Email.EmailTemplates.None);
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
                 this.HttpContext.Response.Redirect("/support/thankyou", false);
@@ -47,7 +51,6 @@ namespace Majorsilence.Vpn.Site.Controllers
             {
                 LibLogic.Helpers.Logging.Log(ide);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-                this.HttpContext.Response.Write(ide.Message);
             }
             catch (Exception ex)
             {

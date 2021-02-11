@@ -1,4 +1,4 @@
-﻿@model VpnSite.Models.Account
+﻿@model Majorsilence.Vpn.Site.Models.Account
 @{
     ViewBag.Title = "Account Payments";
     Layout = "~/Views/LoggedInView.cshtml";
@@ -7,7 +7,7 @@
 
     <ul class="list-group">
 	@{
-		if (VpnSite.Helpers.SessionVariables.Instance.IsAdmin)
+		if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.IsAdmin)
 		{
 			<li class="list-group-item"><a href="/admin">Admin</a></li>
 		}

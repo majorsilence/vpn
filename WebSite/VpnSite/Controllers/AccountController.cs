@@ -6,12 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using LibLogic.Helpers;
 using LibLogic.OpenVpn;
-using Microsoft.AspNetCore.Mvc;
+using LibLogic.Email;
+using Majorsilence.Vpn.Site.Helpers;
 
 namespace Majorsilence.Vpn.Site.Controllers
 {
     public class AccountController : Controller
     {
+        readonly IEmail email;
+        readonly ISessionVariables sessionInstance;
+        public AccountController(IEmail email, ISessionVariables sessionInstance)
+        {
+            this.email = email;
+            this.sessionInstance = sessionInstance;
+        }
+       
         public ActionResult Index()
         {
             var acct = new Models.Account();
@@ -27,7 +36,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         public void CancelSubscription()
         {
 
-            if (Helpers.SessionVariables.Instance.LoggedIn == false)
+            if (sessionInstance.LoggedIn == false)
             {
                 return;
             }
@@ -36,21 +45,17 @@ namespace Majorsilence.Vpn.Site.Controllers
             try
             {
                
-                var pay = new LibLogic.Payments.StripePayment(Helpers.SessionVariables.Instance.UserId, new LibLogic.Email.LiveEmail());
+                var pay = new LibLogic.Payments.StripePayment(sessionInstance.UserId, email);
                 pay.CancelSubscription();
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
-                LibLogic.ActionLog.Log_BackgroundThread("Subscription Cancelled", Helpers.SessionVariables.Instance.UserId);
+                LibLogic.ActionLog.Log_BackgroundThread("Subscription Cancelled", sessionInstance.UserId);
             }
             catch (Exception ex)
             {
                 LibLogic.Helpers.Logging.Log(ex);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
             }
-
-
-           
-
 
         }
 
@@ -59,7 +64,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         public void Charge(string stripeToken, string discount)
         {
 
-            if (Helpers.SessionVariables.Instance.LoggedIn == false)
+            if (sessionInstance.LoggedIn == false)
             {
                 return;
             }
@@ -71,11 +76,11 @@ namespace Majorsilence.Vpn.Site.Controllers
             {
 
 
-                var pay = new LibLogic.Payments.StripePayment(Helpers.SessionVariables.Instance.UserId, 
-                              new LibLogic.Email.LiveEmail());
+                var pay = new LibLogic.Payments.StripePayment(sessionInstance.UserId, 
+                              email);
                 pay.MakePayment(stripeToken, discount);
 
-                LibLogic.ActionLog.Log_BackgroundThread("Payment made", Helpers.SessionVariables.Instance.UserId);
+                LibLogic.ActionLog.Log_BackgroundThread("Payment made", sessionInstance.UserId);
               
 
                 Task.Run(() => SetDefaultVpnServer());
@@ -94,8 +99,8 @@ namespace Majorsilence.Vpn.Site.Controllers
 
         private void SetDefaultVpnServer()
         {
-            LibLogic.ActionLog.Log_BackgroundThread("Attempt to set default vpn server after payment made", 
-                Helpers.SessionVariables.Instance.UserId);
+            LibLogic.ActionLog.Log_BackgroundThread("Attempt to set default vpn server after payment made",
+                sessionInstance.UserId);
             try
             {
                 var details = new LibLogic.Accounts.ServerDetails();
@@ -104,7 +109,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
                 using (var sftp = new LibLogic.Ssh.LiveSftp(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
                 {
-                    var cert = new CertsOpenVpnGenerateCommand(Helpers.SessionVariables.Instance.UserId,
+                    var cert = new CertsOpenVpnGenerateCommand(sessionInstance.UserId,
                                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer, sftp);
                     cert.Execute();
                     
@@ -113,7 +118,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 using (var sshNewServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
                 using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
                 {
-                    var pptp = new LibLogic.Ppp.ManagePPTP(Helpers.SessionVariables.Instance.UserId,
+                    var pptp = new LibLogic.Ppp.ManagePPTP(sessionInstance.UserId,
                                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer);
                     pptp.AddUser();
                 }
@@ -121,7 +126,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             catch (Exception ex)
             {
                 LibLogic.Helpers.Logging.Log(ex);
-                LibLogic.ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made", Helpers.SessionVariables.Instance.UserId);
+                LibLogic.ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made", sessionInstance.UserId);
             }
         }
 
@@ -130,20 +135,20 @@ namespace Majorsilence.Vpn.Site.Controllers
         public void UpdateProfile(string email, string firstname, string lastname)
         {
             this.HttpContext.Response.ContentType = "text/html";
-            if (Helpers.SessionVariables.Instance.LoggedIn == false)
+            if (sessionInstance.LoggedIn == false)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
                 return;
             }
                 
-            var update = new LibLogic.Accounts.UserInfo(Helpers.SessionVariables.Instance.UserId);
+            var update = new LibLogic.Accounts.UserInfo(sessionInstance.UserId);
             try
             {
                 update.UpdateProfile(email, firstname, lastname);
 
                 LibLogic.ActionLog.Log_BackgroundThread(string.Format("Profile Update - Email -> {0} - First Name -> {1} - Last Name -> {2}", 
-                    email, firstname, lastname), 
-                    Helpers.SessionVariables.Instance.UserId);
+                    email, firstname, lastname),
+                    sessionInstance.UserId);
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
             }
@@ -161,25 +166,21 @@ namespace Majorsilence.Vpn.Site.Controllers
         }
 
         [HttpPost]
-        public void UpdatePassword()
+        public void UpdatePassword(string oldpassword, string newpassword, string confirmnewpassword)
         {
             this.HttpContext.Response.ContentType = "text/html";
-            if (Helpers.SessionVariables.Instance.LoggedIn == false)
+            if (sessionInstance.LoggedIn == false)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
                 return;
             }
 
-            string oldpassword = Helpers.GlobalHelper.RequestEncodedParam("oldpassword");
-            string newpassword = Helpers.GlobalHelper.RequestEncodedParam("newpassword");
-            string confirmnewpassword = Helpers.GlobalHelper.RequestEncodedParam("confirmnewpassword");
-
-            var update = new LibLogic.Accounts.UserInfo(Helpers.SessionVariables.Instance.UserId);
+            var update = new LibLogic.Accounts.UserInfo(sessionInstance.UserId);
             try
             {
                 update.UpdatePassword(oldpassword, newpassword, confirmnewpassword);
-                LibLogic.ActionLog.Log_BackgroundThread("Password Changed", 
-                    Helpers.SessionVariables.Instance.UserId);
+                LibLogic.ActionLog.Log_BackgroundThread("Password Changed",
+                    sessionInstance.UserId);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
             }
             catch (LibLogic.Exceptions.InvalidDataException ide)

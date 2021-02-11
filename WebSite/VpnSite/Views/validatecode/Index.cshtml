@@ -4,7 +4,7 @@
 }
 
 @{
-	string resetcode = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("resetcode");
+	string resetcode = ViewData["resetcode"]?.ToString();
 	if (resetcode == null)
 	{
 		resetcode="";

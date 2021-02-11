@@ -4,8 +4,8 @@
 }
 
 @{
-	string betaemail = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("betaemail");
-	string betacode = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("betacode");
+	string betaemail = @ViewData["betaemail"]?.ToString();
+	string betacode = @ViewData["betacode"]?.ToString();
 	if (betaemail == null)
 	{
 		betaemail="";

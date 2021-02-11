@@ -8,8 +8,10 @@ namespace Majorsilence.Vpn.Site.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Index(string betaemail, string betacode)
         {
+            ViewData["betaemail"] = betaemail;
+            ViewData["betacode"] = betacode;
             return View ();
         }
     }

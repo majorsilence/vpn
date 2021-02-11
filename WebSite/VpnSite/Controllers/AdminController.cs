@@ -2,25 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using LibLogic.Email;
+using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers
 {
     public class AdminController : Controller
     {
+        readonly IEmail email;
+        readonly ISessionVariables sessionInstance;
+        public AdminController(IEmail email, ISessionVariables sessionInstance)
+        {
+            this.email = email;
+            this.sessionInstance = sessionInstance;
+        }
+
+
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult SiteInfo()
+        public ActionResult SiteInfo(string status)
         {
+            ViewData["status"] = status;
             return View();
         }
 
-        public ActionResult Users()
+        public ActionResult Users(string status)
         {
-            if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
+            ViewData["status"] = status;
+
+            if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false)
             {
                 return null;
             }
@@ -37,7 +51,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         public void RemoveStripeAccount(int id, string removeaccount)
         {
 
-            if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
+            if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false)
             {
                 return;
             }
@@ -48,7 +62,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 if (removeaccount != null && removeaccount == "yes")
                 {
 
-                    var payments = new LibLogic.Payments.StripePayment(id, new LibLogic.Email.LiveEmail());
+                    var payments = new LibLogic.Payments.StripePayment(id, email);
                     payments.CancelSubscription();
                     payments.CancelAccount();
 
@@ -68,7 +82,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         [HttpPost]
         public void RemoveSubscription(int id, string removeaccount)
         {
-            if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
+            if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false)
             {
                 return;
             }
@@ -78,7 +92,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
                 if (removeaccount != null && removeaccount == "yes")
                 {
-                    var payments = new LibLogic.Payments.StripePayment(id, new LibLogic.Email.LiveEmail());
+                    var payments = new LibLogic.Payments.StripePayment(id, email);
                     payments.CancelSubscription();
 
 
@@ -97,7 +111,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         public void RemoveUser(int id, string removeaccount)
         {
 
-            if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
+            if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false)
             {
                 return;
             }
@@ -126,7 +140,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         [HttpPost]
         public void ToggleAdmin(int id)
         {
-            if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
+            if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false)
             {
                 return;
             }
@@ -153,7 +167,7 @@ namespace Majorsilence.Vpn.Site.Controllers
              decimal monthlypaymentrate, decimal yearlypaymentrate)
         {
 
-            if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
+            if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false)
             {
                 return;
             }

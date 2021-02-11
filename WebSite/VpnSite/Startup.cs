@@ -1,3 +1,5 @@
+using LibLogic.Email;
+using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VpnSite.Models;
 
 namespace Majorsilence.Vpn.Site
 {
@@ -20,7 +23,9 @@ namespace Majorsilence.Vpn.Site
 
             var mySqlInstance = System.Configuration.ConfigurationManager.AppSettings["MySqlInstance"].ToString();
             var mySqlDatabase = System.Configuration.ConfigurationManager.AppSettings["MySqlDatabase"].ToString();
-            var email = new LibLogic.Email.LiveEmail();
+
+            var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
+            var email = new LibLogic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
             var setup = new LibLogic.Setup(mySqlInstance, mySqlDatabase, email, false);
 
             try
@@ -40,9 +45,27 @@ namespace Majorsilence.Vpn.Site
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".majorsilence.vpn.site.session";
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+
             services.AddControllersWithViews();
 
             services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:LocalMySqlServer"]));
+
+            services.AddScoped<IEmail>(i =>
+            {
+                var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
+                return new LibLogic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
+            });
+            services.AddScoped<ISessionVariables, SessionVariables>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +85,7 @@ namespace Majorsilence.Vpn.Site
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthorization();
 

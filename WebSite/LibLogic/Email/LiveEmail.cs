@@ -13,6 +13,19 @@ namespace LibLogic.Email
 {
     public class LiveEmail : IEmail
     {
+        readonly string fromAddress;
+        readonly string username;
+        readonly string password;
+        readonly string host;
+        readonly int port;
+        public LiveEmail(string fromAddress, string username, string password, string host, int port)
+        {
+            this.fromAddress = fromAddress;
+            this.username = username;
+            this.password = password;
+            this.host = host;
+            this.port = port;
+        }
 
         public void SendMail(string message, string subject, string to, 
                              bool isHtml, byte[] attachment=null, EmailTemplates template = EmailTemplates.None)
@@ -29,7 +42,7 @@ namespace LibLogic.Email
                 sendMessage = ProcessMessage(template, message, subject);
             }
 
-            mm.From = new MailAddress("no-reply@majorsilence.com");
+            mm.From = new MailAddress(fromAddress);
             mm.IsBodyHtml = isHtml;
             mm.Body = sendMessage;
             mm.Subject = subject;
@@ -39,9 +52,9 @@ namespace LibLogic.Email
                 mm.Attachments.Add(attachData);
             }
 
-            smcl.Host = "smtp.gmail.com";
-            smcl.Port = 587;
-            smcl.Credentials = new NetworkCredential("no-reply@majorsilence.com", "AG687@5345@#4aegsdfghgdgASD346y6789$%T@adfaDSF");
+            smcl.Host = host;
+            smcl.Port = port;
+            smcl.Credentials = new NetworkCredential(username, password);
             smcl.EnableSsl = true;
 
             // This line is very bad.  It will always say the smtp server ssl is valid even if it is not. 
@@ -109,7 +122,7 @@ namespace LibLogic.Email
                                               byte[] attachment = null, EmailTemplates template = EmailTemplates.None)
         {
         
-
+            // TODO: stick it in a background queue task
             var caller = new Action<string, string, string, bool, byte[], EmailTemplates>(SendMail);
             caller.BeginInvoke(message, subject, to, isHtml, attachment, template, null, null);
 

@@ -2,7 +2,7 @@
 
 @{
 
-    var x = new VpnSite.Models.Vpn();
+    var x = new Majorsilence.Vpn.Site.Models.Vpn();
 
     x.InitCultureByCookie();
     x.InitCultureByPram ();
@@ -103,7 +103,7 @@
         {
             menu.Append("<li><a href=\"/setup\"><span>" + Resources.Main.MenuSetup + "</span></a></li>");
         }
- 		if (VpnSite.Helpers.SessionVariables.Instance.LoggedIn)
+ 		if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.LoggedIn)
         {
 	        if (pagename == "/support")
 	        {
@@ -116,7 +116,7 @@
         }
         
         var signinItem = new System.Text.StringBuilder();
-        if (!VpnSite.Helpers.SessionVariables.Instance.LoggedIn)
+        if (!Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.LoggedIn)
 		{
 			// see http://www.bootply.com/93545 and http://www.bootply.com/render/93545
 			// Section is visible in non collapsed navbar
@@ -150,7 +150,7 @@
         </ul>
 
 
-       if (VpnSite.Helpers.SessionVariables.Instance.LoggedIn)
+       if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.LoggedIn)
         {
 
         	
@@ -160,7 +160,7 @@
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></a>
 					<ul class="dropdown-menu">
 						@{
-							if (VpnSite.Helpers.SessionVariables.Instance.IsAdmin)
+							if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.IsAdmin)
 	        				{
 	        					<li><a href="/admin">Admin</a></li>
 	        				}

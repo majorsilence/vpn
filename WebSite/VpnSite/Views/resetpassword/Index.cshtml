@@ -4,7 +4,7 @@
 }
 
 @{
-	string attemptedemail = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("email");
+	string attemptedemail = ViewData["email"]?.ToString();
 	if (attemptedemail == null)
 	{
 		attemptedemail="";

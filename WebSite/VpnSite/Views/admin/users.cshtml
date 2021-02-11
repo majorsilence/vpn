@@ -1,15 +1,15 @@
-﻿@model VpnSite.Models.Users
+﻿@model Majorsilence.Vpn.Site.Models.Users
 @{
     ViewBag.Title = "Admin Users";
     Layout = "~/Views/AdminView.cshtml";
 }
 
 @{
-	string status = VpnSite.Helpers.GlobalHelper.RequestEncodedParam("status");
+	string status = ViewData["status"]?.ToString();
 	if (status != null)
 	{
 		string msg;
-		msg = VpnSite.Helpers.Message.CreateMessage(status, "Changes Saved", VpnSite.Helpers.Message.MessageType.Information);
+		msg = Majorsilence.Vpn.Site.Helpers.Message.CreateMessage(status, "Changes Saved", Majorsilence.Vpn.Site.Helpers.Message.MessageType.Information);
 	
 		@Html.Raw(msg);
 	
@@ -59,19 +59,19 @@
 		html.AppendLine("</td>");
 
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(user.Email));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.Email));
 		html.AppendLine("</td>");
 		
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(user.FirstName));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.FirstName));
 		html.AppendLine("</td>");
 		
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(user.LastName));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.LastName));
 		html.AppendLine("</td>");		
 		
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(user.StripeCustomerAccount));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.StripeCustomerAccount));
 		if(user.StripeCustomerAccount.Trim() !="")
 		{
 			html.AppendLine(string.Format(" <button type=\"button\" onclick=\"removestripeaccount({0});\">Clear</button>", user.Id.ToString()));
@@ -79,7 +79,7 @@
 		html.AppendLine("</td>");	
 
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(user.StripeSubscriptionId));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.StripeSubscriptionId));
 		if(user.StripeSubscriptionId.Trim() !="")
 		{
 			html.AppendLine(string.Format(" <button type=\"button\" onclick=\"removesubscription({0});\">Clear</button>", user.Id.ToString()));

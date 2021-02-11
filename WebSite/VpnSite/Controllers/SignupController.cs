@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using LibLogic.Email;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers
 {
     public class SignupController : Controller
     {
+        readonly IEmail email;
+        public SignupController(IEmail email)
+        {
+            this.email = email;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -21,8 +28,6 @@ namespace Majorsilence.Vpn.Site.Controllers
             try
             {
 
-                var emailFake = new LibLogic.Email.LiveEmail();
-
                 var account = new LibLogic.Accounts.CreateAccount(
                     new LibLogic.Accounts.CreateAccountInfo()
                     {
@@ -34,7 +39,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                         PasswordConfirm = passwordconfirm,
                         BetaKey = betakey
                     },
-                    emailFake
+                    this.email
                 );
                 account.Execute();
 
