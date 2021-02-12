@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Models
 {
-    public class AdminInviteBetaUsers
+    public class AdminInviteBetaUsers : AdminViewLayout
     {
         public AdminInviteBetaUsers()
         {

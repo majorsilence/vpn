@@ -1,4 +1,4 @@
-﻿@model VpnSite.Models.Account
+﻿@model Majorsilence.Vpn.Site.Models.Account
 @{
     ViewBag.Title = "Account Payments";
     Layout = "~/Views/LoggedInView.cshtml";
@@ -104,7 +104,7 @@
          @{
 	     <text>   
 	    $(document).ready(function () {
-		     Account.Init(@(VpnSite.Helpers.SessionVariables.Instance.LoggedIn.ToString().ToLower() + ", " + Model.AccountExpired.ToString().ToLower()));  
+		     Account.Init(@(ViewData["IsLoggedIn"] + ", " + Model.AccountExpired.ToString().ToLower()));  
 	    
          });
 		     

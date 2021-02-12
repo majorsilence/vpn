@@ -7,7 +7,7 @@
 
     <ul class="list-group">
 	@{
-		if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.IsAdmin)
+		if (((bool)ViewData["IsAdmin"]))
 		{
 			<li class="list-group-item"><a href="/admin">Admin</a></li>
 		}

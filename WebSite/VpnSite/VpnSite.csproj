@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>b02d2f7d-8e5a-401f-836e-ad5aefcca2f3</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RootNamespace>Majorsilence.Vpn.Site</RootNamespace>
+    <AssemblyName>Majorsilence.Vpn.Site</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -5,16 +5,16 @@ namespace Majorsilence.Vpn.Site.Models
 {
     public class Setup
     {
-        public Setup()
+        public Setup(int userid, string username)
         {
             var details = new LibLogic.Accounts.ServerDetails();
             this.ServerInfo = details.Info;
 
-            var pay = new LibLogic.Payments.Payment(Helpers.SessionVariables.Instance.UserId);
+            var pay = new LibLogic.Payments.Payment(userid);
             ActiveAccount = !pay.IsExpired();
 
 
-            var userServerDetails = new LibLogic.Accounts.UserServerDetails(Helpers.SessionVariables.Instance.UserId);
+            var userServerDetails = new LibLogic.Accounts.UserServerDetails(userid);
             if (userServerDetails.Info == null)
             {
                 CurrentServer = "none";
@@ -28,7 +28,7 @@ namespace Majorsilence.Vpn.Site.Models
                 PptpPassword = userServerDetails.Info.PptpPassword;
             }
 
-            Username = Helpers.SessionVariables.Instance.Username;
+            Username = username;
         }
 
         public string PptpIP { get; set; }

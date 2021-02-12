@@ -84,7 +84,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return null;
             }
 
-            var model = new Models.Setup();
+            var model = new Models.Setup(sessionInstance.UserId, sessionInstance.Username);
 
             this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 

@@ -1,9 +1,10 @@
-﻿@{
+﻿@model Majorsilence.Vpn.Site.Models.AdminViewLayout
+@{
     Layout = "~/Views/Vpn.cshtml";
     
-	if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.IsAdmin == false)
+	if (Model.IsAdmin == false)
 	{
-		Response.Redirect("/noaccess/", false);
+		this.ViewContext.HttpContext.Response.Redirect("/noaccess/", false);
 		return;
 	}
 }

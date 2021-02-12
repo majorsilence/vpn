@@ -5,17 +5,17 @@ namespace Majorsilence.Vpn.Site.Models
 {
     public class Account
     {
-        public Account()
+        public Account(int userId)
         {
 
-            var profileInfo = new LibLogic.Accounts.UserInfo(Helpers.SessionVariables.Instance.UserId).GetProfile();
+            var profileInfo = new LibLogic.Accounts.UserInfo(userId).GetProfile();
             FirstName = profileInfo.FirstName;
             LastName = profileInfo.LastName;
             UsersEmail = profileInfo.Email;
 
             ChargeAmount = LibLogic.Helpers.SiteInfo.CurrentMonthlyRate.ToString("G29");
             ChargeAmountStripCents = LibLogic.Helpers.SiteInfo.CurrentMonthlyRateInCents;
-            var payInfo = new LibLogic.Payments.Payment(Helpers.SessionVariables.Instance.UserId);
+            var payInfo = new LibLogic.Payments.Payment(userId);
             AccountExpired = payInfo.IsExpired();
             PaymentHistory = payInfo.History();
         }

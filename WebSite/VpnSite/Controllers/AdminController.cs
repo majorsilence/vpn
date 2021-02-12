@@ -21,13 +21,13 @@ namespace Majorsilence.Vpn.Site.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View(new Models.AdminViewLayout() { IsAdmin = sessionInstance.IsAdmin });
         }
 
         public ActionResult SiteInfo(string status)
         {
             ViewData["status"] = status;
-            return View();
+            return View(new Models.AdminViewLayout() { IsAdmin = sessionInstance.IsAdmin });
         }
 
         public ActionResult Users(string status)
@@ -39,13 +39,16 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return null;
             }
 
-            var model = new Models.Users();
+            var model = new Models.Users()
+            {
+                IsAdmin = sessionInstance.IsAdmin
+            };
             return View(model);
         }
 
         public ActionResult ErrorReport()
         {
-            return View();
+            return View(new Models.AdminViewLayout() { IsAdmin = sessionInstance.IsAdmin });
         }
 
         public void RemoveStripeAccount(int id, string removeaccount)

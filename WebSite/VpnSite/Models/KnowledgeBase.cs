@@ -6,9 +6,8 @@ namespace Majorsilence.Vpn.Site.Models
 {
     public class KnowledgeBase
     {
-        public KnowledgeBase(string code)
+        public KnowledgeBase(string code, string appDataPath)
         {
-            string appDataPath = System.Web.HttpContext.Current.Server.MapPath("~/assets");
             string readFilePath = "";
             string input = "Something went wrong";
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,16 +12,11 @@ namespace Majorsilence.Vpn.Site.Controllers
     public class ApiV2Controller : Controller
     {
     
-        Helpers.ISessionVariables sessionVars;
+        ISessionVariables sessionVars;
 
-        public ApiV2Controller()
+        public ApiV2Controller(ISessionVariables sessionInstance)
         {
-            this.sessionVars = new Helpers.SessionVariables();
-        }
-
-        public ApiV2Controller(Helpers.ISessionVariables sessionVars)
-        {
-            this.sessionVars = sessionVars;
+            this.sessionVars = sessionInstance;
         }
 
         public ActionResult Index()

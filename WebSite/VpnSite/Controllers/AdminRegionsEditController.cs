@@ -2,24 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers
 {
     public class AdminRegionsEditController : Controller
     {
+        readonly ISessionVariables sessionInstance;
+        public AdminRegionsEditController(ISessionVariables sessionInstance)
+        {
+            this.sessionInstance = sessionInstance;
+        }
+
 
         public ActionResult Index(int ?id, string desc, string active)
         {
             ViewData["id"] = id;
             ViewData["desc"] = desc;
             ViewData["active"] = active;
-            return View();
+            return View(new Models.AdminViewLayout() { IsAdmin = sessionInstance.IsAdmin});
         }
 
         public ActionResult EditRegions(int ?id, string desc, string active)
         {
-            if (Helpers.SessionVariables.Instance.LoggedIn == false || Helpers.SessionVariables.Instance.IsAdmin == false)
+            if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false)
             {
                 return null;
             }
@@ -45,7 +52,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
 
 
-            return View();
+            return View(new Models.AdminViewLayout() { IsAdmin = sessionInstance.IsAdmin });
         }
     }
 }

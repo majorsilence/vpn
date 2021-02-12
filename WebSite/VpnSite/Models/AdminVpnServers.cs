@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Majorsilence.Vpn.Site.Models
 {
-    public class AdminVpnServers
+    public class AdminVpnServers : AdminViewLayout
     {
         public AdminVpnServers()
         {

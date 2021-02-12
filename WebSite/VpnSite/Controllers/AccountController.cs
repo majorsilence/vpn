@@ -23,12 +23,14 @@ namespace Majorsilence.Vpn.Site.Controllers
        
         public ActionResult Index()
         {
-            var acct = new Models.Account();
+            var acct = new Models.Account(sessionInstance.UserId);
+            ViewData["IsLoggedIn"] = sessionInstance.LoggedIn.ToString().ToLower();
             return View(acct);
         }
 
         public ActionResult Settings()
         {
+            ViewData["IsAdmin"] = sessionInstance.IsAdmin;
             return View();
         }
 

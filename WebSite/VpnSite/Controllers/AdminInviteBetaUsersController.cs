@@ -24,7 +24,10 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return null;
             }
 
-            var model = new Models.AdminInviteBetaUsers();
+            var model = new Models.AdminInviteBetaUsers()
+            {
+                IsAdmin = sessionInstance.IsAdmin
+            };
             return View(model);
         }
 
@@ -35,7 +38,10 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return null;
             }
 
-            var model = new Models.AdminInviteBetaUsers();
+            var model = new Models.AdminInviteBetaUsers()
+            {
+                IsAdmin = sessionInstance.IsAdmin
+            };
 
             model.SendMail(emailAddress);
             return View(model);

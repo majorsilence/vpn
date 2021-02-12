@@ -22,7 +22,10 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return null;
             }
 
-            var model = new Models.AdminVpnServers();
+            var model = new Models.AdminVpnServers()
+            {
+                IsAdmin = sessionInstance.IsAdmin
+            };
             return View(model);
         }
     }
