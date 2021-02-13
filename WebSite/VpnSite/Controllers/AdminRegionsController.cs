@@ -25,7 +25,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             var model = new Models.AdminRegions()
             {
-                IsAdmin = sessionInstance.IsAdmin
+                SessionVariables = sessionInstance
             };
             return View(model);
         }

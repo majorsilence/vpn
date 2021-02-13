@@ -28,11 +28,11 @@ namespace SiteTestsFast.ApiV2
                 header.Add("VpnAuthToken", Setup.token1);
                 header.Add("VpnUserId", Setup.userid.ToString());
 
-                var mock = new Mock<VpnSite.Helpers.ISessionVariables>();
+                var mock = new Mock<Majorsilence.Vpn.Site.Helpers.ISessionVariables>();
                 mock.SetupAllProperties();
 
-                VpnSite.Helpers.ISessionVariables sessionVars = mock.Object;
-                var controller = new VpnSite.Controllers.ApiV2Controller(sessionVars);
+                Majorsilence.Vpn.Site.Helpers.ISessionVariables sessionVars = mock.Object;
+                var controller = new Majorsilence.Vpn.Site.Controllers.ApiV2Controller(sessionVars);
 
                 controller.ControllerContext = new MvcFakes.FakeControllerContext(controller, null, null, null,
                     null, null, null, header);

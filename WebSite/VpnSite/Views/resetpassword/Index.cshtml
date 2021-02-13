@@ -1,41 +1,43 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
     ViewBag.Title = "Reset Password";
     Layout = "~/Views/GeneralLayout.cshtml";
 }
 
 @{
-	string attemptedemail = ViewData["email"]?.ToString();
-	if (attemptedemail == null)
-	{
-		attemptedemail="";
-	}
+    string attemptedemail = ViewData["email"]?.ToString();
+    if (attemptedemail == null)
+    {
+        attemptedemail = "";
+    }
 }
 
-<h1>@Majorsilence.Vpn.Site.Resources.Main.ResetPassword</h1>
+<h1>@Localizer["ResetPassword"]</h1>
 <form name="input" method="post" class="form">
-    <b>@Majorsilence.Vpn.Site.Resources.Main.Email:</b>
-    	@{	 
-			
-	 		if(attemptedemail != "")
-  			{
-		    	<input type="email" name="email" id="email" class="form-control" value="@(attemptedemail)" /><br />
-		    }
-		    else
-		    {
-		    	<input type="email" name="email" id="email" placeholder="Email Address" class="form-control" /><br />
-		    }
-		}
+    <b>@Localizer["Email"]:</b>
+    @{
+
+        if (attemptedemail != "")
+        {
+            <input type="email" name="email" id="email" class="form-control" value="@(attemptedemail)" /><br />
+        }
+        else
+        {
+            <input type="email" name="email" id="email" placeholder="Email Address" class="form-control" /><br />
+        }
+    }
     <input type="submit" value="Submit" id="resetmypassword" class="btn btn-success" />
 </form>
 
- <script src="/assets/javascript/passwordreset.js" type="text/javascript"></script>
- <script>
+<script src="/assets/javascript/passwordreset.js" type="text/javascript"></script>
+<script>
 	@{
-		<text>   
+		<text>
 			$(document).ready(function () {
 				PasswordReset.Init();
 			});
-			 
+
 		</text>
 	}
 

@@ -26,7 +26,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             var model = new Models.AdminInviteBetaUsers()
             {
-                IsAdmin = sessionInstance.IsAdmin
+                SessionVariables = sessionInstance
             };
             return View(model);
         }
@@ -40,7 +40,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             var model = new Models.AdminInviteBetaUsers()
             {
-                IsAdmin = sessionInstance.IsAdmin
+                SessionVariables = sessionInstance
             };
 
             model.SendMail(emailAddress);

@@ -1,15 +1,14 @@
-﻿@{
-    Layout = "~/Views/Vpn.cshtml";
+﻿@model Majorsilence.Vpn.Site.Models.CustomViewLayout
+@{ Layout = "~/Views/Vpn.cshtml";
 
-    if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.LoggedIn == false)
+    if (Model.SessionVariables.LoggedIn == false)
     {
         this.ViewContext.HttpContext.Response.Redirect("/noaccess/", false);
         return;
-    }
-}
-	<br />
+    } }
+<br />
 
 <div class="container">
-	@RenderBody()
+    @RenderBody()
 </div>
 

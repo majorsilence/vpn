@@ -1,11 +1,14 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
     ViewBag.Title = "Logout";
     Layout = "~/Views/GeneralLayout.cshtml";
-    
-    HttpContext.Current.Session.Contents.RemoveAll();
+
+    this.ViewContext.HttpContext.Session.Clear();
 }
 
-<h1>@Majorsilence.Vpn.Site.Resources.Main.MenuLogout</h1>
+<h1>@Localizer["MenuLogout"]</h1>
 
 You are now logged out.
 

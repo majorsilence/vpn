@@ -35,4 +35,7 @@
     <Compile Remove="Setup.cs" />
     <Compile Remove="Test.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MvcFakes\" />
+  </ItemGroup>
 </Project>

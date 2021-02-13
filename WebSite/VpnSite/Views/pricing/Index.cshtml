@@ -1,31 +1,34 @@
 ﻿@model Majorsilence.Vpn.Site.Models.Pricing
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
     ViewBag.Title = "Pricing";
     Layout = "~/Views/GeneralLayout.cshtml";
 }
 
-<h1>@Majorsilence.Vpn.Site.Resources.Main.FooterPrice</h1>
-  
-    <table class="table">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Price</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>Monthly</td>
-      <td>@Model.MonthlyPrice</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Yearly</td>
-      <td>@Model.YearlyPrice</td>
-    </tr>
+<h1>@Localizer["FooterPrice"]</h1>
 
-  </tbody>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Monthly</td>
+            <td>@Model.MonthlyPrice</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Yearly</td>
+            <td>@Model.YearlyPrice</td>
+        </tr>
+
+    </tbody>
 </table>
 

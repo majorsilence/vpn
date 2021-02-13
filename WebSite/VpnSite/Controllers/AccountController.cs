@@ -21,12 +21,15 @@ namespace Majorsilence.Vpn.Site.Controllers
         {
             this.email = email;
             this.sessionInstance = sessionInstance;
-            this.localizer= localizer;
+            this.localizer = localizer;
         }
-       
+
         public ActionResult Index()
         {
-            var acct = new Models.Account(sessionInstance.UserId);
+            var acct = new Models.Account(sessionInstance.UserId)
+            {
+                SessionVariables = sessionInstance
+            };
             ViewData["IsLoggedIn"] = sessionInstance.LoggedIn.ToString().ToLower();
             return View(acct);
         }
@@ -34,7 +37,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         public ActionResult Settings()
         {
             ViewData["IsAdmin"] = sessionInstance.IsAdmin;
-            return View();
+            return View(new Models.CustomViewLayout(sessionInstance));
         }
 
         [HttpPost]
@@ -49,7 +52,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             this.HttpContext.Response.ContentType = "text/html";
             try
             {
-               
+
                 var pay = new LibLogic.Payments.StripePayment(sessionInstance.UserId, email);
                 pay.CancelSubscription();
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
@@ -81,12 +84,12 @@ namespace Majorsilence.Vpn.Site.Controllers
             {
 
 
-                var pay = new LibLogic.Payments.StripePayment(sessionInstance.UserId, 
+                var pay = new LibLogic.Payments.StripePayment(sessionInstance.UserId,
                               email);
                 pay.MakePayment(stripeToken, discount);
 
                 LibLogic.ActionLog.Log_BackgroundThread("Payment made", sessionInstance.UserId);
-              
+
 
                 Task.Run(() => SetDefaultVpnServer());
 
@@ -117,7 +120,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                     var cert = new CertsOpenVpnGenerateCommand(sessionInstance.UserId,
                                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer, sftp);
                     cert.Execute();
-                    
+
                 }
 
                 using (var sshNewServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
@@ -145,13 +148,13 @@ namespace Majorsilence.Vpn.Site.Controllers
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
                 return;
             }
-                
+
             var update = new LibLogic.Accounts.UserInfo(sessionInstance.UserId);
             try
             {
                 update.UpdateProfile(email, firstname, lastname);
 
-                LibLogic.ActionLog.Log_BackgroundThread(string.Format("Profile Update - Email -> {0} - First Name -> {1} - Last Name -> {2}", 
+                LibLogic.ActionLog.Log_BackgroundThread(string.Format("Profile Update - Email -> {0} - First Name -> {1} - Last Name -> {2}",
                     email, firstname, lastname),
                     sessionInstance.UserId);
 

@@ -17,7 +17,10 @@ namespace Majorsilence.Vpn.Site.Controllers
 
         public ActionResult Index()
         {
-            var model = new Models.Setup(sessionInstance.UserId, sessionInstance.Username);
+            var model = new Models.Setup(sessionInstance.UserId, sessionInstance.Username)
+            {
+                SessionVariables = sessionInstance
+            };
             return View(model);
         }
     }

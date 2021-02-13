@@ -91,7 +91,7 @@
      @{
      <text>   
     $(document).ready(function () {
-         Setup.Init(@(Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.LoggedIn.ToString().ToLower() + ", " + Model.ActiveAccount.ToString().ToLower()));
+         Setup.Init(@(Model.SessionVariables.LoggedIn.ToString().ToLower() + ", " + Model.ActiveAccount.ToString().ToLower()));
      });
 	     
      </text>

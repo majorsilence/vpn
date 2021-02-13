@@ -24,7 +24,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             ViewData["desc"] = desc;
             ViewData["region"] = region;
             ViewData["active"] = active;
-            return View(new Models.AdminViewLayout() { IsAdmin = sessionInstance.IsAdmin });
+            return View(new Models.CustomViewLayout(sessionInstance));
         }
 
         public ActionResult EditServers(int ? id, string address, int port,
@@ -71,7 +71,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 LibLogic.Helpers.Logging.Log(ex);
             }
 
-            return View(new Models.AdminViewLayout() { IsAdmin = sessionInstance.IsAdmin });
+            return View(new Models.CustomViewLayout(sessionInstance));
         }
     }
 }

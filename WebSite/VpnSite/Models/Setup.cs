@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Majorsilence.Vpn.Site.Models
 {
-    public class Setup
+    public class Setup : CustomViewLayout
     {
         public Setup(int userid, string username)
         {
