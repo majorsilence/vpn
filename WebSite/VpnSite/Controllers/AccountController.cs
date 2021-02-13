@@ -8,6 +8,7 @@ using LibLogic.Helpers;
 using LibLogic.OpenVpn;
 using LibLogic.Email;
 using Majorsilence.Vpn.Site.Helpers;
+using Microsoft.Extensions.Localization;
 
 namespace Majorsilence.Vpn.Site.Controllers
 {
@@ -15,10 +16,12 @@ namespace Majorsilence.Vpn.Site.Controllers
     {
         readonly IEmail email;
         readonly ISessionVariables sessionInstance;
-        public AccountController(IEmail email, ISessionVariables sessionInstance)
+        private readonly IStringLocalizer<AccountController> localizer;
+        public AccountController(IEmail email, ISessionVariables sessionInstance, IStringLocalizer<AccountController> localizer)
         {
             this.email = email;
             this.sessionInstance = sessionInstance;
+            this.localizer= localizer;
         }
        
         public ActionResult Index()

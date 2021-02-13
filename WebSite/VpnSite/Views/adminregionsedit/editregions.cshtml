@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Admin Regions";
     Layout = "~/Views/AdminView.cshtml";
-    Response.Redirect("/adminregions");
+    this.ViewContext.HttpContext.Response.Redirect("/adminregions");
 }
 
 

@@ -25,19 +25,19 @@
 		html.AppendLine("</td>");
 
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(err.Message));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.Message));
 		html.AppendLine("</td>");
 
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(err.RecursiveStackTrace));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.RecursiveStackTrace));
 		html.AppendLine("</td>");
 
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(err.StackTrace));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.StackTrace));
 		html.AppendLine("</td>");
 		
 		html.AppendLine("<td>");
-		html.AppendLine(HttpUtility.HtmlEncode(err.TimeCreated));
+		html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.TimeCreated.ToString()));
 		html.AppendLine("</td>");
 		
 

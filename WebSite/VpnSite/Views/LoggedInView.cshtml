@@ -1,11 +1,11 @@
 ﻿@{
     Layout = "~/Views/Vpn.cshtml";
-    
-	if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.LoggedIn == false)
-	{
-		Response.Redirect("/noaccess/", false);
-		return;
-	}
+
+    if (Majorsilence.Vpn.Site.Helpers.SessionVariables.Instance.LoggedIn == false)
+    {
+        this.ViewContext.HttpContext.Response.Redirect("/noaccess/", false);
+        return;
+    }
 }
 	<br />
 
