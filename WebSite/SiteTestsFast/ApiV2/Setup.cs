@@ -7,6 +7,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using Moq;
 using System.Collections.Specialized;
+using SiteTestsFast.MvcFakes;
 
 namespace SiteTestsFast.ApiV2
 {
@@ -34,15 +35,15 @@ namespace SiteTestsFast.ApiV2
 
             var peterAccount = new LibLogic.Accounts.CreateAccount(
                                    new LibLogic.Accounts.CreateAccountInfo()
-                {
-                    Email = emailAddress,
-                    EmailConfirm = emailAddress,
-                    Firstname = "Peter",
-                    Lastname = "Gill",
-                    Password = password,
-                    PasswordConfirm = password,
-                    BetaKey = betaKey
-                }
+                                   {
+                                       Email = emailAddress,
+                                       EmailConfirm = emailAddress,
+                                       Firstname = "Peter",
+                                       Lastname = "Gill",
+                                       Password = password,
+                                       PasswordConfirm = password,
+                                       BetaKey = betaKey
+                                   }
                 , true, LibLogic.Setup.Email);
 
             userid = peterAccount.Execute();
@@ -59,11 +60,11 @@ namespace SiteTestsFast.ApiV2
                                      "Basic", Convert.ToBase64String(byteArray));
                 client.DefaultRequestHeaders.Authorization = headerAuth;
 
-                var mock = new Mock<VpnSite.Helpers.ISessionVariables>();
+                var mock = new Mock<Majorsilence.Vpn.Site.Helpers.ISessionVariables>();
                 mock.SetupAllProperties();
 
-                VpnSite.Helpers.ISessionVariables sessionVars = mock.Object;
-                var controller = new VpnSite.Controllers.ApiV2Controller(sessionVars);
+                Majorsilence.Vpn.Site.Helpers.ISessionVariables sessionVars = mock.Object;
+                var controller = new Majorsilence.Vpn.Site.Controllers.ApiV2Controller(sessionVars);
 
                 var header = new NameValueCollection();
                 header.Add("Authorization", headerAuth.ToString());
@@ -71,8 +72,7 @@ namespace SiteTestsFast.ApiV2
 
                 // See http://stephenwalther.com/archive/2008/07/01/asp-net-mvc-tip-12-faking-the-controller-context
 
-                controller.ControllerContext = new MvcFakes.FakeControllerContext(controller, null, null, null,
-                    null, null, null, header);
+                FakeControllerContext.SetContext(controller, header);
 
 
                 var blah = controller.Auth();
@@ -152,9 +152,9 @@ namespace SiteTestsFast.ApiV2
             using (var cn = LibLogic.Setup.DbFactory)
             {
                 cn.Open();
-                cn.Execute("DELETE FROM UsersApiTokens WHERE UserId = @Id", new {Id = userid});
-                cn.Execute("DELETE FROM Users WHERE Email = @email", new {email = emailAddress});
-                cn.Execute("UPDATE BetaKeys SET IsUsed = 0 WHERE Code = @Code", new {Code = betaKey});
+                cn.Execute("DELETE FROM UsersApiTokens WHERE UserId = @Id", new { Id = userid });
+                cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });
+                cn.Execute("UPDATE BetaKeys SET IsUsed = 0 WHERE Code = @Code", new { Code = betaKey });
             }
         }
 

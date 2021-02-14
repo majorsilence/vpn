@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VpnSite", "VpnSite\VpnSite.csproj", "{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site", "VpnSite\Majorsilence.Vpn.Site.csproj", "{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteTests", "SiteTests\SiteTests.csproj", "{038CDF2A-0D94-4A74-B387-19CDA0AD333A}"
 EndProject

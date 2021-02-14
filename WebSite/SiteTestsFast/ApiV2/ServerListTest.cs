@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Moq;
 using System.Collections.Specialized;
+using SiteTestsFast.MvcFakes;
 
 namespace SiteTestsFast.ApiV2
 {
@@ -34,8 +35,7 @@ namespace SiteTestsFast.ApiV2
                 Majorsilence.Vpn.Site.Helpers.ISessionVariables sessionVars = mock.Object;
                 var controller = new Majorsilence.Vpn.Site.Controllers.ApiV2Controller(sessionVars);
 
-                controller.ControllerContext = new MvcFakes.FakeControllerContext(controller, null, null, null,
-                    null, null, null, header);
+                FakeControllerContext.SetContext(controller, header);
 
                 var data = controller.Servers();
                 Assert.That(controller.Response.StatusCode, Is.EqualTo((int)System.Net.HttpStatusCode.OK));
@@ -44,20 +44,20 @@ namespace SiteTestsFast.ApiV2
                 var deserializedContent = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<LibLogic.Accounts.UserServerDetailsInfo>>(data.Content);
 
                 Assert.That(deserializedContent.Count() > 1);
-               
+
 
                 var defaultVagrantServer = (from a in deserializedContent
-                                                        where a.Address == "127.0.0.1" &&
-                                                            a.VpnServerName == "default vagrant testing vpn authority"
-                                                        select a);
+                                            where a.Address == "127.0.0.1" &&
+                                                a.VpnServerName == "default vagrant testing vpn authority"
+                                            select a);
 
-               
+
                 Assert.That(defaultVagrantServer.Count() == 1);
 
             }
 
-         
-          
+
+
 
         }
     }
