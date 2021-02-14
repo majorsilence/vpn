@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site", "VpnSite\Majorsilence.Vpn.Site.csproj", "{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site", "Majorsilence.Vpn.Site\Majorsilence.Vpn.Site.csproj", "{65230764-5A1B-4EA4-AEC8-62B3EF9ACC3B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteTests", "SiteTests\SiteTests.csproj", "{038CDF2A-0D94-4A74-B387-19CDA0AD333A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site.Tests", "Majorsilence.Vpn.Site.Tests\Majorsilence.Vpn.Site.Tests.csproj", "{038CDF2A-0D94-4A74-B387-19CDA0AD333A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibLogic", "LibLogic\LibLogic.csproj", "{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Logic", "Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj", "{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibPoco", "LibPoco\LibPoco.csproj", "{45F7ECD1-4362-42A8-86A8-1FABF559F935}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Poco", "Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj", "{45F7ECD1-4362-42A8-86A8-1FABF559F935}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteTestsFast", "SiteTestsFast\SiteTestsFast.csproj", "{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site.TestsFast", "Majorsilence.Vpn.Site.TestsFast\Majorsilence.Vpn.Site.TestsFast.csproj", "{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteTestsFastDebugger", "SiteTestsFastDebugger\SiteTestsFastDebugger.csproj", "{AD628056-C701-4729-97D5-49A4FE21EF6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site.TestsFastDebugger", "Majorsilence.Vpn.Site.TestsFastDebugger\Majorsilence.Vpn.Site.TestsFastDebugger.csproj", "{AD628056-C701-4729-97D5-49A4FE21EF6D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MajorsilenceTypes", "MajorsilenceTypes\MajorsilenceTypes.csproj", "{7DCB49F1-5840-456B-803C-F987A9CA8192}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.MajorsilenceTypes", "Majorsilence.Vpn.MajorsilenceTypes\Majorsilence.Vpn.MajorsilenceTypes.csproj", "{7DCB49F1-5840-456B-803C-F987A9CA8192}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
