@@ -422,3 +422,4 @@ sftp-config.json
 /Servers/Test/vpnscripts
 
 *Thumbs.db
+/build

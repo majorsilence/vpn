@@ -10,8 +10,8 @@ See sub folders for specific project details.
     * [OpenVPN](https://help.ubuntu.com/12.04/serverguide/openvpn.html)  -  VPN server software and can be used as client.
     * [PPTP](https://help.ubuntu.com/community/PPTPServer) - Point to point tunneling protocol
 * [BIND 9 DNS](https://www.isc.org/downloads/bind/) - DNS and DSNsec server software.
-* [C#/mono](http://www.mono-project.com/Main_Page) - cross platform .net 4.5.
-* [ASP.net MVC5](http://www.asp.net/mvc) - easy to develop, well supported with mono on linux (ubuntu 14.04 and up)
+* [C#/.net5](http://www.mono-project.com/Main_Page) - cross platform .net 5.
+* [AspNetCore](https://docs.microsoft.com/en-us/aspnet/core/?view=aspnetcore-5.0) - 
     * [nginx](http://nginx.org/) - web server
 * [Dapper ORM](https://github.com/StackExchange/dapper-dot-net) - Awesome micro orm
 * [MySql](http://www.mysql.com)/[Mariadb](https://mariadb.org/) - Use with website to track user data, accounts, certs, etc.
@@ -30,8 +30,7 @@ git clone https://github.com/majorsilence/vpn.git
 ```
 
 # Ubuntu Dev
-If you want to develop on ubuntu (or other linux) xamarin studio (monodevelop) is ususually very out of date.  You can install the latest version from:
-* http://www.mono-project.com/download/#download-lin - for latest version of mono and monodevelop
+* Install [rider](https://www.jetbrains.com/rider/).
  
 
 # Build Server
@@ -44,7 +43,7 @@ Run the following command to start all vms.
 vagrant up
 ```
 
-To load only one vm specifiy the name of the vm from the vagran file after the word up.  For example:
+To load only one vm specifiy the name of the vm from the vagrant file after the word up.  For example:
 ```bash
 vagrant up website
 vagrant up vpnauthority
