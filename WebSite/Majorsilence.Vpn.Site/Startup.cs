@@ -21,8 +21,9 @@ namespace Majorsilence.Vpn.Site
         {
             Configuration = configuration;
 
-            var mySqlInstance = System.Configuration.ConfigurationManager.AppSettings["MySqlInstance"].ToString();
-            var mySqlDatabase = System.Configuration.ConfigurationManager.AppSettings["MySqlDatabase"].ToString();
+            
+            string mySqlInstance = Configuration.GetValue<string>("MySqlInstance");
+            string mySqlDatabase = Configuration.GetValue<string>("MySqlDatabase");
 
             var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
             var email = new Majorsilence.Vpn.Logic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
