@@ -6,6 +6,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <RootNamespace>Majorsilence.Vpn.Site</RootNamespace>
     <AssemblyName>Majorsilence.Vpn.Site</AssemblyName>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>

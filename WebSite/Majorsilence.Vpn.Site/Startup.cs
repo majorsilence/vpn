@@ -21,13 +21,12 @@ namespace Majorsilence.Vpn.Site
         {
             Configuration = configuration;
 
-            
-            string mySqlInstance = Configuration.GetValue<string>("MySqlInstance");
-            string mySqlDatabase = Configuration.GetValue<string>("MySqlDatabase");
+            string vpnConnectionString = Configuration.GetConnectionString("MySqlVpn");
+            string sessionConnectionString = Configuration.GetConnectionString("MySqlSessions");
 
             var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
             var email = new Majorsilence.Vpn.Logic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
-            var setup = new Majorsilence.Vpn.Logic.Setup(mySqlInstance, mySqlDatabase, email, false);
+            var setup = new Majorsilence.Vpn.Logic.Setup(vpnConnectionString, sessionConnectionString, email, false);
 
             try
             {

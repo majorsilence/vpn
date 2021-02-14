@@ -19,10 +19,10 @@ namespace Majorsilence.Vpn.Logic
         {
         }
 
-        public Setup(string sqlserver, string databaseName, Email.IEmail email, bool isLiveSite)
+        public Setup(string strVpnConnection,  string sessionsConnection, Email.IEmail email, bool isLiveSite)
         {
-            Setup.server = sqlserver;
-            Setup.databaseName = databaseName;
+            Setup.strConnectionVpn = strVpnConnection;
+            Setup.strConnectionSessions = sessionsConnection;
 
             Setup._email = email;
             this.isLiveSite = isLiveSite;
@@ -48,31 +48,17 @@ namespace Majorsilence.Vpn.Logic
             }
         }
 
-        private static string server = "localhost";
-        private static string databaseName = "vpndb";
+        private static string strConnectionVpn = null;
+        private static string strConnectionSessions = null;
 
-        public static string DatabaseName
-        {
-            get
-            {
-                return databaseName;
-            }
-        }
+      
 
-        private static string username = "root";
-        private static string password = "Password123";
-        private static int port = 3306;
 
         public static IDbConnection DbFactory
         {
             get
             {
-
-                // TODO: server, database, and port should be read from a configuration file to set static variables
-                var db = new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Database={1};Uid={2};Pwd={3};Port={4};CharSet=utf8;",
-                             server, DatabaseName, username, password, port));
-                return db;
-
+                return new MySql.Data.MySqlClient.MySqlConnection(strConnectionVpn);
             }
         }
 
@@ -80,9 +66,10 @@ namespace Majorsilence.Vpn.Logic
         {
             get
             {
-                return new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Uid={1};Pwd={2};Port={3};CharSet=utf8;",
-                    server, username, password, port));
+                // return new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Uid={1};Pwd={2};Port={3};CharSet=utf8mb4;",
+                //   server, username, password, port));
 
+                return new MySql.Data.MySqlClient.MySqlConnection(strConnectionVpn);
             }
         }
 
@@ -233,29 +220,36 @@ namespace Majorsilence.Vpn.Logic
         private void CreateIfNotExists()
         {
         
-            string connStr = Majorsilence.Vpn.Logic.Setup.DbFactoryWithoutDatabase.ConnectionString;
-            var cn = new MySql.Data.MySqlClient.MySqlConnection(connStr);
-            var cmd = cn.CreateCommand();
-            cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;", Setup.DatabaseName);
-            cmd.CommandType = System.Data.CommandType.Text;
+            using (var cn = new MySql.Data.MySqlClient.MySqlConnection(strConnectionVpn))
+            {
+                string databaseName = cn.Database;
+                cn.ChangeDatabase("");
+                var cmd = cn.CreateCommand();
+                cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;",
+                  databaseName);
 
-            cn.Open();
-            cmd.ExecuteNonQuery();
-            cn.Close();
+                cmd.CommandType = System.Data.CommandType.Text;
 
+                cn.Open();
+                cmd.ExecuteNonQuery();
+                cn.Close();
+            }
 
             // Sessions database
             // Alls sessions are store in mysql instead of in process.
             // Provides better support for clustering, load balancing and restarting sites after updates
             // without users being logged out or loosing data
-            var cn2 = new MySql.Data.MySqlClient.MySqlConnection(connStr);
-            var cmd2 = cn2.CreateCommand();
-            cmd2.CommandText = "CREATE DATABASE IF NOT EXISTS `VpnSessions` CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
-            cmd2.CommandType = System.Data.CommandType.Text;
+            using (var cn2 = new MySql.Data.MySqlClient.MySqlConnection(strConnectionSessions))
+            {
+                cn2.ChangeDatabase("");
+                var cmd2 = cn2.CreateCommand();
+                cmd2.CommandText = "CREATE DATABASE IF NOT EXISTS `VpnSessions` CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
+                cmd2.CommandType = System.Data.CommandType.Text;
 
-            cn2.Open();
-            cmd2.ExecuteNonQuery();
-            cn2.Close();
+                cn2.Open();
+                cmd2.ExecuteNonQuery();
+                cn2.Close();
+            }
 
         }
 

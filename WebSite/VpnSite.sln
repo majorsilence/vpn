@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.MajorsilenceTypes", "Majorsilence.Vpn.MajorsilenceTypes\Majorsilence.Vpn.MajorsilenceTypes.csproj", "{7DCB49F1-5840-456B-803C-F987A9CA8192}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,14 @@ Global
 		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Release|x86.ActiveCfg = Release|Any CPU
 		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Release|x86.Build.0 = Release|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Debug|x86.Build.0 = Debug|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
