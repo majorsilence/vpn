@@ -6,7 +6,7 @@ using Dapper;
 using System.Collections.Specialized;
 using Moq;
 
-namespace SiteTestsFast.ApiV2
+namespace Majorsilence.Vpn.Site.TestsFast.ApiV2
 {
     // See http://stephenwalther.com/archive/2008/07/01/asp-net-mvc-tip-12-faking-the-controller-context
 

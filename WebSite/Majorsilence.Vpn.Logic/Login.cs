@@ -6,7 +6,7 @@ using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic
+namespace Majorsilence.Vpn.Logic
 {
     public class Login
     {
@@ -37,7 +37,7 @@ namespace LibLogic
             string salt = "";
             using (IDbConnection db = Setup.DbFactory)
             {
-                var x = db.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email=@Email",
+                var x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email",
                             new {Email = Username});
                 if (x.Count() != 1)
                 {
@@ -65,7 +65,7 @@ namespace LibLogic
             }
             catch (Exceptions.InvalidDataException ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 return;
             }
 
@@ -76,7 +76,7 @@ namespace LibLogic
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                var x = db.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email=@Email AND Password = @Password", 
+                var x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email AND Password = @Password", 
                             new {Email = Username, Password = saltedpassword});
                 if (x.Count() == 0)
                 {

@@ -7,14 +7,14 @@ namespace Majorsilence.Vpn.Site.Models
     {
         public Setup(int userid, string username)
         {
-            var details = new LibLogic.Accounts.ServerDetails();
+            var details = new Majorsilence.Vpn.Logic.Accounts.ServerDetails();
             this.ServerInfo = details.Info;
 
-            var pay = new LibLogic.Payments.Payment(userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(userid);
             ActiveAccount = !pay.IsExpired();
 
 
-            var userServerDetails = new LibLogic.Accounts.UserServerDetails(userid);
+            var userServerDetails = new Majorsilence.Vpn.Logic.Accounts.UserServerDetails(userid);
             if (userServerDetails.Info == null)
             {
                 CurrentServer = "none";
@@ -39,7 +39,7 @@ namespace Majorsilence.Vpn.Site.Models
 
         public string Username { get; set; }
 
-        public IEnumerable<LibLogic.Accounts.UserServerDetailsInfo> ServerInfo { get; set; }
+        public IEnumerable<Majorsilence.Vpn.Logic.Accounts.UserServerDetailsInfo> ServerInfo { get; set; }
 
         public bool ActiveAccount { get; set; }
     }

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
-namespace LibLogic.Ppp
+namespace Majorsilence.Vpn.Logic.Ppp
 {
     public class ManagePPTP : PppBase
     {
@@ -15,14 +15,14 @@ namespace LibLogic.Ppp
         {
         }
 
-        protected override void AddUserImplementation(LibLogic.Ssh.ISsh sshClient)
+        protected override void AddUserImplementation(Majorsilence.Vpn.Logic.Ssh.ISsh sshClient)
         {
             // TODO: will need an unhashed user password
             sshClient.WriteLine(string.Format("echo \"{0} {1} {2} *\" >> /etc/ppp/chap-secrets", 
                 userData.Email, "pptpd", this.userRequestedPassword));
         }
 
-        protected override void RevokeUserImplementation(LibLogic.Ssh.ISsh sshClient)
+        protected override void RevokeUserImplementation(Majorsilence.Vpn.Logic.Ssh.ISsh sshClient)
         {
             sshClient.WriteLine(string.Format("sed -i '/^{0} pptpd/d' /etc/ppp/chap-secrets", userData.Email));
         }

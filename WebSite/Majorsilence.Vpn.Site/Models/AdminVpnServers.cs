@@ -7,11 +7,11 @@ namespace Majorsilence.Vpn.Site.Models
     {
         public AdminVpnServers()
         {
-            _vpnServersList = new LibLogic.Admin.VpnServers().Select();
+            _vpnServersList = new Majorsilence.Vpn.Logic.Admin.VpnServers().Select();
         }
 
-        private readonly IEnumerable<LibPoco.VpnServers> _vpnServersList;
-        public  IEnumerable<LibPoco.VpnServers> VpnServersList
+        private readonly IEnumerable<Majorsilence.Vpn.Poco.VpnServers> _vpnServersList;
+        public  IEnumerable<Majorsilence.Vpn.Poco.VpnServers> VpnServersList
         {
             get
             {

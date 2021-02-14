@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     public class CreatePasswords
     {

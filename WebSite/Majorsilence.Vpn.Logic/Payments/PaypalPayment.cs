@@ -8,7 +8,7 @@ using System.Data;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace LibLogic.Payments
+namespace Majorsilence.Vpn.Logic.Payments
 {
     public class PaypalPayment
     {

@@ -1,4 +1,4 @@
-using LibLogic.Email;
+using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,8 +25,8 @@ namespace Majorsilence.Vpn.Site
             var mySqlDatabase = System.Configuration.ConfigurationManager.AppSettings["MySqlDatabase"].ToString();
 
             var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
-            var email = new LibLogic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
-            var setup = new LibLogic.Setup(mySqlInstance, mySqlDatabase, email, false);
+            var email = new Majorsilence.Vpn.Logic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
+            var setup = new Majorsilence.Vpn.Logic.Setup(mySqlInstance, mySqlDatabase, email, false);
 
             try
             {
@@ -34,9 +34,9 @@ namespace Majorsilence.Vpn.Site
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 email.SendMail_BackgroundThread("It appears the server setup failed: " + ex.Message,
-                    "MajorsilnceVPN setup failure on application_start", LibLogic.Helpers.SiteInfo.AdminEmail, false, null);
+                    "MajorsilnceVPN setup failure on application_start", Majorsilence.Vpn.Logic.Helpers.SiteInfo.AdminEmail, false, null);
             }
         }
 
@@ -63,7 +63,7 @@ namespace Majorsilence.Vpn.Site
             services.AddScoped<IEmail>(i =>
             {
                 var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
-                return new LibLogic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
+                return new Majorsilence.Vpn.Logic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
             });
             services.AddScoped<ISessionVariables, SessionVariables>();
         }

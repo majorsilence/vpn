@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Reflection;
 
-namespace LibLogic.Email
+namespace Majorsilence.Vpn.Logic.Email
 {
     public class LiveEmail : IEmail
     {
@@ -78,7 +78,7 @@ namespace LibLogic.Email
             string output = LoadTemplate(template);
 
             output = output.Replace("{footer}", string.Format("For more information please visit <a href=\"{0}\">{1}</a>",
-                                                              LibLogic.Helpers.SiteInfo.SiteUrl, LibLogic.Helpers.SiteInfo.SiteName));
+                                                              Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteUrl, Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteName));
 
             if (template == EmailTemplates.BetaKey || template == EmailTemplates.Generic)
             {
@@ -100,11 +100,11 @@ namespace LibLogic.Email
 
             if (template == EmailTemplates.BetaKey)
             {
-                resourceName = "LibLogic.Email.EmailTemplate.txt";
+                resourceName = "Majorsilence.Vpn.Logic.Email.EmailTemplate.txt";
             }
             else
             {
-                resourceName = "LibLogic.Email.EmailTemplate.txt";
+                resourceName = "Majorsilence.Vpn.Logic.Email.EmailTemplate.txt";
             }
 
 

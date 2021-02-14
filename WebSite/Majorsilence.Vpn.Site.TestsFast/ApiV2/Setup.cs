@@ -7,9 +7,9 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using Moq;
 using System.Collections.Specialized;
-using SiteTestsFast.MvcFakes;
+using Majorsilence.Vpn.Site.TestsFast.MvcFakes;
 
-namespace SiteTestsFast.ApiV2
+namespace Majorsilence.Vpn.Site.TestsFast.ApiV2
 {
     /// <summary>
     /// This class is called once for each namespace that has unit tests in it.
@@ -33,8 +33,8 @@ namespace SiteTestsFast.ApiV2
         private void RetrieveLoginTokenAndAssert()
         {
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                                   new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                                   new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
                                    {
                                        Email = emailAddress,
                                        EmailConfirm = emailAddress,
@@ -44,7 +44,7 @@ namespace SiteTestsFast.ApiV2
                                        PasswordConfirm = password,
                                        BetaKey = betaKey
                                    }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             userid = peterAccount.Execute();
 
@@ -88,7 +88,7 @@ namespace SiteTestsFast.ApiV2
                 Assert.That(controller.Response.StatusCode, Is.EqualTo((int)System.Net.HttpStatusCode.OK));
 
 
-                var content = Newtonsoft.Json.JsonConvert.DeserializeObject<LibLogic.DTO.ApiAuthResponse>(blah.Content);
+                var content = Newtonsoft.Json.JsonConvert.DeserializeObject<Majorsilence.Vpn.Logic.DTO.ApiAuthResponse>(blah.Content);
                 Assert.That(string.IsNullOrEmpty(content.Token1), Is.EqualTo(false));
                 Assert.That(string.IsNullOrEmpty(content.Token2), Is.EqualTo(false));
 
@@ -117,30 +117,30 @@ namespace SiteTestsFast.ApiV2
         {
 
             // setup database and shit
-            var email = new LibLogic.Email.FakeEmail();
-            var setup = new LibLogic.Setup("localhost", testingdb, email, false);
+            var email = new Majorsilence.Vpn.Logic.Email.FakeEmail();
+            var setup = new Majorsilence.Vpn.Logic.Setup("localhost", testingdb, email, false);
             setup.Execute();
 
 
             // set test server ssh port
-            using (var db = LibLogic.Setup.DbFactory)
+            using (var db = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 db.Open();
-                var siteInfo = db.Query<LibPoco.SiteInfo>("SELECT * FROM SiteInfo");
+                var siteInfo = db.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo");
 
                 // See Vagrantfile vpnauthoritytest for ssh port number
                 siteInfo.First().SshPort = 8023;
                 siteInfo.First().StripeAPIPublicKey = "pk_test_DBLlRp19zx2pnEYPgbPszWFr";
                 siteInfo.First().StripeAPISecretKey = "sk_test_d2130qPEHAk9VNSXSX7fQFB9";
 
-                db.Update<LibPoco.SiteInfo>(siteInfo.First());
+                db.Update<Majorsilence.Vpn.Poco.SiteInfo>(siteInfo.First());
 
 
-                db.Insert(new LibPoco.BetaKeys("abc1", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc2", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc3", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc4", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc5", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc1", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc2", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc3", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc4", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc5", false, false));
 
             }
 
@@ -149,7 +149,7 @@ namespace SiteTestsFast.ApiV2
 
         private void CleanLogin()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM UsersApiTokens WHERE UserId = @Id", new { Id = userid });
@@ -165,7 +165,7 @@ namespace SiteTestsFast.ApiV2
         public void TearDown()
         {
 
-            string connStrDrop = LibLogic.Setup.DbFactoryWithoutDatabase.ConnectionString;
+            string connStrDrop = Majorsilence.Vpn.Logic.Setup.DbFactoryWithoutDatabase.ConnectionString;
             var cnDrop = new MySql.Data.MySqlClient.MySqlConnection(connStrDrop);
             var cmdDrop = cnDrop.CreateCommand();
             cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);

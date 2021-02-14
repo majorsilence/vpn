@@ -6,7 +6,7 @@ using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     public class UserServerDetails
     {
@@ -41,7 +41,7 @@ namespace LibLogic.Accounts
                 }
 
 
-                var pptp = db.Query<LibPoco.UserPptpInfo>("SELECT * FROM UserPptpInfo WHERE UserId=@UserId", new {UserId = userId});
+                var pptp = db.Query<Majorsilence.Vpn.Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo WHERE UserId=@UserId", new {UserId = userId});
                 if (pptp.Count() == 1)
                 {
                     details.PptpPassword = pptp.FirstOrDefault().Password;

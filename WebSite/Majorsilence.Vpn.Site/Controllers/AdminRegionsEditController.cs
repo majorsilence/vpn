@@ -33,7 +33,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             int n;
 
-            var edit = new LibLogic.Admin.Regions();
+            var edit = new Majorsilence.Vpn.Logic.Admin.Regions();
 
 
             bool activeYes = false;

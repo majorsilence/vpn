@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SiteTestsFast.MvcFakes
+namespace Majorsilence.Vpn.Site.TestsFast.MvcFakes
 {
     static class FakeControllerContext 
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using Dapper;
 
-namespace LibLogic.Site
+namespace Majorsilence.Vpn.Logic.Site
 {
     public class TermsOfService
     {
@@ -10,13 +10,13 @@ namespace LibLogic.Site
         {
         }
 
-        public LibPoco.TermsOfService CurrentTermsOfService()
+        public Majorsilence.Vpn.Poco.TermsOfService CurrentTermsOfService()
         {
             using (var cn = Setup.DbFactory)
             {
                 cn.Open();
 
-                var data = cn.Query<LibPoco.TermsOfService>("SELECT * FROM TermsOfService ORDER BY CreateTime DESC Limit 1");
+                var data = cn.Query<Majorsilence.Vpn.Poco.TermsOfService>("SELECT * FROM TermsOfService ORDER BY CreateTime DESC Limit 1");
 
                 return data.First();
             }

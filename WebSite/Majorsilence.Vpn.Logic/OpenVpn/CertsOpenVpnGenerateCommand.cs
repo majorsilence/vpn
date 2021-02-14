@@ -7,12 +7,12 @@ using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.OpenVpn
+namespace Majorsilence.Vpn.Logic.OpenVpn
 {
     public class CertsOpenVpnGenerateCommand : ICommand
     {
-        private readonly LibPoco.Users userData;
-        private readonly LibPoco.VpnServers vpnData;
+        private readonly Majorsilence.Vpn.Poco.Users userData;
+        private readonly Majorsilence.Vpn.Poco.VpnServers vpnData;
         private Ssh.ISsh sshClientNewServer;
         private Ssh.ISsh sshClientRevokeServer;
         private Ssh.ISftp sftpClient;
@@ -28,8 +28,8 @@ namespace LibLogic.OpenVpn
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                this.userData = db.Get<LibPoco.Users>(userId);
-                this.vpnData = db.Get<LibPoco.VpnServers>(vpnServerId);
+                this.userData = db.Get<Majorsilence.Vpn.Poco.Users>(userId);
+                this.vpnData = db.Get<Majorsilence.Vpn.Poco.VpnServers>(vpnServerId);
             }
 
             this.sshClientNewServer = sshClientNewServer;
@@ -39,7 +39,7 @@ namespace LibLogic.OpenVpn
 
         private bool IsActiveAccount()
         {
-            var pay = new LibLogic.Payments.Payment(userData.Id);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(userData.Id);
             return !pay.IsExpired();
         }
 
@@ -119,7 +119,7 @@ namespace LibLogic.OpenVpn
             {
                 if (count > 20)
                 {
-                    throw new LibLogic.Exceptions.SshException("Error creating client cert on vpn server");
+                    throw new Majorsilence.Vpn.Logic.Exceptions.SshException("Error creating client cert on vpn server");
                 }
                
                 output += sshClientNewServer.Read();
@@ -130,7 +130,7 @@ namespace LibLogic.OpenVpn
             if (output.ToLower().Contains("txt_db error number 2"))
             {
                 // see http://blog.kenyap.com.au/2012/07/txtdb-error-number-2-when-generating.html
-                throw new LibLogic.Exceptions.SshException("TXT_DB error number 2");
+                throw new Majorsilence.Vpn.Logic.Exceptions.SshException("TXT_DB error number 2");
             }
             sshClientNewServer.WriteLine(string.Format("cp {0} /etc/openvpn/downloadclientcerts/", crt_str_orig));
             sshClientNewServer.WriteLine(string.Format("cp {0} /etc/openvpn/downloadclientcerts/", key_str_orig));
@@ -181,12 +181,12 @@ namespace LibLogic.OpenVpn
             {
                 db.Open();
                 // TODO: how does this work, id is user id not UserOpenVpnCerts id
-                var certData = db.Query<LibPoco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId", 
+                var certData = db.Query<Majorsilence.Vpn.Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId", 
                                    new {UserId = userData.Id});
 
                 if (!certData.Any())
                 {
-                    var certDataNew = new LibPoco.UserOpenVpnCerts(userData.Id, certName, certCa, certCrt, certKey, expired, DateTime.UtcNow, vpnData.Id);
+                    var certDataNew = new Majorsilence.Vpn.Poco.UserOpenVpnCerts(userData.Id, certName, certCa, certCrt, certKey, expired, DateTime.UtcNow, vpnData.Id);
                     db.Insert(certDataNew);
                 }
                 else

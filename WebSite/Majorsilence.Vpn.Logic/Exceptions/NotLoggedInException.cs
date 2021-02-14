@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace LibLogic.Exceptions
+namespace Majorsilence.Vpn.Logic.Exceptions
 {
     public class NotLoggedInException: Exception
     {

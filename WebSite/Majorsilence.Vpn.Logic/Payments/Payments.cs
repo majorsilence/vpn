@@ -8,7 +8,7 @@ using System.Data;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace LibLogic.Payments
+namespace Majorsilence.Vpn.Logic.Payments
 {
     public class Payment
     {
@@ -17,7 +17,7 @@ namespace LibLogic.Payments
         }
 
         private int userId;
-        private LibPoco.Users userInfo;
+        private Majorsilence.Vpn.Poco.Users userInfo;
 
         public Payment(int userId)
         {
@@ -26,16 +26,16 @@ namespace LibLogic.Payments
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                userInfo = db.Get<LibPoco.Users>(userId);
+                userInfo = db.Get<Majorsilence.Vpn.Poco.Users>(userId);
             }
         }
 
-        public IEnumerable<LibPoco.UserPayments> History()
+        public IEnumerable<Majorsilence.Vpn.Poco.UserPayments> History()
         {
 
             using (var db = Setup.DbFactory)
             {
-                var x = db.Query<LibPoco.UserPayments>("SELECT * FROM UserPayments WHERE UserId=@UserId", 
+                var x = db.Query<Majorsilence.Vpn.Poco.UserPayments>("SELECT * FROM UserPayments WHERE UserId=@UserId", 
                             new {UserId = userId});
                 return x;
             }
@@ -71,10 +71,10 @@ namespace LibLogic.Payments
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                var x = db.Query<LibPoco.UserPayments>("SELECT * FROM UserPayments WHERE UserId=@uid ORDER BY CreateTime DESC LIMIT 1", 
+                var x = db.Query<Majorsilence.Vpn.Poco.UserPayments>("SELECT * FROM UserPayments WHERE UserId=@uid ORDER BY CreateTime DESC LIMIT 1", 
                             new { uid = userId });
 
-                // var x = db.Select<LibPoco.UserPayments>("UserId={0}", userId);
+                // var x = db.Select<Majorsilence.Vpn.Poco.UserPayments>("UserId={0}", userId);
                 if (x.Count() == 0)
                 {
                     return DateTime.UtcNow;
@@ -111,14 +111,14 @@ namespace LibLogic.Payments
         
             if (userInfo == null)
             {
-                throw new LibLogic.Exceptions.InvalidUserIdException(string.Format("The user attempting to make payments does not exist.", this.userId));
+                throw new Majorsilence.Vpn.Logic.Exceptions.InvalidUserIdException(string.Format("The user attempting to make payments does not exist.", this.userId));
             }
 
             using (var db = Setup.DbFactory)
             {
                 db.Open();
 
-                db.Insert(new LibPoco.UserPayments(
+                db.Insert(new Majorsilence.Vpn.Poco.UserPayments(
                     userId, amount, createTime, paymentCodeId)
                 );
 

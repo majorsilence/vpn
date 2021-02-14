@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibLogic.Exceptions
+namespace Majorsilence.Vpn.Logic.Exceptions
 {
     public class PasswordMismatchException : InvalidDataException
     {

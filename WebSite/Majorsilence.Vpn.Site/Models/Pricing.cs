@@ -13,7 +13,7 @@ namespace Majorsilence.Vpn.Site.Models
         {
             get
             {
-                return string.Format(new CultureInfo("en-US"), "{0:C} {1}", LibLogic.Helpers.SiteInfo.CurrentMonthlyRate, LibLogic.Helpers.SiteInfo.Currency);
+                return string.Format(new CultureInfo("en-US"), "{0:C} {1}", Majorsilence.Vpn.Logic.Helpers.SiteInfo.CurrentMonthlyRate, Majorsilence.Vpn.Logic.Helpers.SiteInfo.Currency);
             }
         }
 
@@ -21,7 +21,7 @@ namespace Majorsilence.Vpn.Site.Models
         {
             get
             {
-                return string.Format(new CultureInfo("en-US"), "{0:C} {1}", LibLogic.Helpers.SiteInfo.CurrentYearlyRate, LibLogic.Helpers.SiteInfo.Currency);
+                return string.Format(new CultureInfo("en-US"), "{0:C} {1}", Majorsilence.Vpn.Logic.Helpers.SiteInfo.CurrentYearlyRate, Majorsilence.Vpn.Logic.Helpers.SiteInfo.Currency);
             }
         }
 

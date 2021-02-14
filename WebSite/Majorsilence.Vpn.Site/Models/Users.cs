@@ -8,11 +8,11 @@ namespace Majorsilence.Vpn.Site.Models
         public Users()
         {
            
-            UserList = LibLogic.Accounts.UserInfo.RetrieveUserList();
+            UserList = Majorsilence.Vpn.Logic.Accounts.UserInfo.RetrieveUserList();
 
         }
 
-        public IEnumerable<LibPoco.Users> UserList { get; private set; }
+        public IEnumerable<Majorsilence.Vpn.Poco.Users> UserList { get; private set; }
     }
 }
 

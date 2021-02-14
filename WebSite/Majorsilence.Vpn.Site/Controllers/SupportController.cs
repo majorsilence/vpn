@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using LibLogic.Email;
+using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,19 +45,19 @@ namespace Majorsilence.Vpn.Site.Controllers
                 supportrequest;
 
                 // TODO: inject the support address from appsettings.json
-                email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false, null, LibLogic.Email.EmailTemplates.None);
+                email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false, null, Majorsilence.Vpn.Logic.Email.EmailTemplates.None);
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
                 this.HttpContext.Response.Redirect("/support/thankyou", false);
             }
-            catch (LibLogic.Exceptions.InvalidDataException ide)
+            catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ide)
             {
-                LibLogic.Helpers.Logging.Log(ide);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ide);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
             }
 

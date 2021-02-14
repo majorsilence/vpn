@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibLogic.Email
+namespace Majorsilence.Vpn.Logic.Email
 {
     public interface IEmail
     {

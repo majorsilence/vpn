@@ -6,12 +6,12 @@ namespace Majorsilence.Vpn.Site.Models
     {
         public Privacy()
         {
-            var t = new LibLogic.Site.Privacy();
+            var t = new Majorsilence.Vpn.Logic.Site.Privacy();
             _priv = t.CurrentPrivacy();
         }
 
-        private readonly LibPoco.Privacy _priv;
-        public LibPoco.Privacy CurrentPrivacy
+        private readonly Majorsilence.Vpn.Poco.Privacy _priv;
+        public Majorsilence.Vpn.Poco.Privacy CurrentPrivacy
         {
             get
             {

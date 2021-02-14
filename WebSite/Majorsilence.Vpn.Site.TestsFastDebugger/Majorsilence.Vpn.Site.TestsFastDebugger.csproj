@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net5.0</TargetFrameworks>
-    <AssemblyTitle>SiteTestsFastDebugger</AssemblyTitle>
+    <AssemblyTitle>Majorsilence.Vpn.Site.TestsFastDebugger</AssemblyTitle>
     <Company>Majorsilence Solutions Inc.</Company>
     <Copyright>Peter Gill</Copyright>
     <Deterministic>false</Deterministic>
@@ -18,7 +18,7 @@
     <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SiteTestsFast\SiteTestsFast.csproj" />
+    <ProjectReference Include="..\Majorsilence.Vpn.Site.TestsFast\Majorsilence.Vpn.Site.TestsFast.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.23" />

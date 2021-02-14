@@ -1,6 +1,6 @@
 using System;
 
-namespace LibPoco
+namespace Majorsilence.Vpn.Poco
 {
     [Dapper.Contrib.Extensions.Table("BetaKeys")]
     public class BetaKeys

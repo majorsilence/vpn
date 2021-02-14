@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace SiteTestsFast.LiveSite
+namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
 {
     [TestFixture()]
     public class SiteInfo
@@ -13,20 +13,20 @@ namespace SiteTestsFast.LiveSite
         {
         }
 
-        private LibPoco.SiteInfo sinfo;
-        private LibPoco.PaymentRates prates;
+        private Majorsilence.Vpn.Poco.SiteInfo sinfo;
+        private Majorsilence.Vpn.Poco.PaymentRates prates;
 
         [SetUp()]
         public void Setup()
         {
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
                
-                sinfo = cn.Query<LibPoco.SiteInfo>("SELECT * FROM SiteInfo").First();
-                prates = cn.Query<LibPoco.PaymentRates>("SELECT * FROM PaymentRates").First();
+                sinfo = cn.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo").First();
+                prates = cn.Query<Majorsilence.Vpn.Poco.PaymentRates>("SELECT * FROM PaymentRates").First();
                
             }
 
@@ -36,17 +36,17 @@ namespace SiteTestsFast.LiveSite
         public void Teardown()
         {
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
-                cn.Update<LibPoco.SiteInfo>(sinfo);
-                cn.Update<LibPoco.PaymentRates>(prates);
+                cn.Update<Majorsilence.Vpn.Poco.SiteInfo>(sinfo);
+                cn.Update<Majorsilence.Vpn.Poco.PaymentRates>(prates);
 
             }
 
-            LibLogic.Helpers.SiteInfo.InitializeSimple(sinfo, prates.CurrentMonthlyRate, prates.CurrentYearlyRate);
-            LibLogic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
+            Majorsilence.Vpn.Logic.Helpers.SiteInfo.InitializeSimple(sinfo, prates.CurrentMonthlyRate, prates.CurrentYearlyRate);
+            Majorsilence.Vpn.Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
 
         }
 
@@ -70,17 +70,17 @@ namespace SiteTestsFast.LiveSite
             decimal monthlyRate = 6.34m;
             decimal yearlyRate = 62.47m;
 
-            LibLogic.Helpers.SiteInfo.InitializeSimple(info, monthlyRate, yearlyRate);
-            LibLogic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
+            Majorsilence.Vpn.Logic.Helpers.SiteInfo.InitializeSimple(info, monthlyRate, yearlyRate);
+            Majorsilence.Vpn.Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
 
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
 
-                var changedInfo = cn.Query<LibPoco.SiteInfo>("SELECT * FROM SiteInfo").First();
-                var changedRates = cn.Query<LibPoco.PaymentRates>("SELECT * FROM PaymentRates").First();
+                var changedInfo = cn.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo").First();
+                var changedRates = cn.Query<Majorsilence.Vpn.Poco.PaymentRates>("SELECT * FROM PaymentRates").First();
 
             }
 

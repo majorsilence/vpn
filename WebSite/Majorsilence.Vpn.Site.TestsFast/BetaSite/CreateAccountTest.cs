@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Dapper;
 
-namespace SiteTestsFast.BetaSite
+namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 {
     public class CreateAccountTest
     {
@@ -17,7 +17,7 @@ namespace SiteTestsFast.BetaSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM Users WHERE Email = @email", new {email = emailAddress});
@@ -29,10 +29,10 @@ namespace SiteTestsFast.BetaSite
 
         private bool AccountExists(string email)
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
-                var users = cn.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email = @Email", new {Email = email});
+                var users = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @Email", new {Email = email});
                 return (users.Count() == 1);   
             }
        
@@ -44,8 +44,8 @@ namespace SiteTestsFast.BetaSite
 
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -55,7 +55,7 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             peterAccount.Execute();
 
@@ -68,8 +68,8 @@ namespace SiteTestsFast.BetaSite
 
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -79,13 +79,13 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , false, LibLogic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.Setup.Email);
 
             peterAccount.Execute();
 
 
-            var peterAccount2 = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount2 = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -95,9 +95,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey2
             }
-                , false, LibLogic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.EmailAddressAlreadyUsedException>(() => peterAccount2.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.EmailAddressAlreadyUsedException>(() => peterAccount2.Execute());
    
             Assert.That(AccountExists(emailAddress), Is.True);
         }
@@ -107,8 +107,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -118,9 +118,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "A different password",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.PasswordMismatchException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.PasswordMismatchException>(() => peterAccount.Execute());
            
 
         }
@@ -130,8 +130,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -141,10 +141,10 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
 
-            Assert.Throws<LibLogic.Exceptions.PasswordLengthException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.PasswordLengthException>(() => peterAccount.Execute());
           
 
 
@@ -155,8 +155,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = "AveryDefadfasdemail@majorsilence.com",
@@ -166,9 +166,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.EmailMismatchException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.EmailMismatchException>(() => peterAccount.Execute());
             
 
 
@@ -180,8 +180,8 @@ namespace SiteTestsFast.BetaSite
 
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = unicodeEmailAddress,
                 EmailConfirm = unicodeEmailAddress,
@@ -191,14 +191,14 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "β",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             peterAccount.Execute();
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
-                var data = cn.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = unicodeEmailAddress});
+                var data = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = unicodeEmailAddress});
 
                 Assert.That(data.First().IsBetaUser, Is.True);
                 Assert.That(data.First().Admin, Is.True);
@@ -214,8 +214,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -225,14 +225,14 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             peterAccount.Execute();
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
-                var data = cn.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
+                var data = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
 
                 Assert.That(data.First().Admin, Is.True);
 
@@ -245,8 +245,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -256,14 +256,14 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , false, LibLogic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.Setup.Email);
 
             peterAccount.Execute();
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
-                var data = cn.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
+                var data = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
 
                 Assert.That(data.First().Admin, Is.False);
 
@@ -276,8 +276,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -287,9 +287,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
            
 
 
@@ -300,8 +300,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -311,9 +311,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
            
 
 
@@ -324,8 +324,8 @@ namespace SiteTestsFast.BetaSite
         {
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = "",
                 EmailConfirm = "",
@@ -335,9 +335,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
             
 
 
@@ -349,8 +349,8 @@ namespace SiteTestsFast.BetaSite
 
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -360,12 +360,12 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             peterAccount.Execute();
 
-            var peterAccount2 = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount2 = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -375,9 +375,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.BetaKeyAlreadyUsedException>(() => peterAccount2.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.BetaKeyAlreadyUsedException>(() => peterAccount2.Execute());
             
 
             Assert.That(AccountExists(emailAddress), Is.True);
@@ -390,8 +390,8 @@ namespace SiteTestsFast.BetaSite
 
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -401,10 +401,10 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = "A Fake Beta Key"
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
 
-            Assert.Throws<LibLogic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
             
 
 
@@ -417,8 +417,8 @@ namespace SiteTestsFast.BetaSite
 
             Assert.That(AccountExists(emailAddress), Is.False);
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -428,9 +428,9 @@ namespace SiteTestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
-            Assert.Throws<LibLogic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
             
 
 

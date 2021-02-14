@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibLogic.DTO
+namespace Majorsilence.Vpn.Logic.DTO
 {
     public class ApiAuthResponse
     {

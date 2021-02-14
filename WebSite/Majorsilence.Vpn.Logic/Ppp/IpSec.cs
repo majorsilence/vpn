@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace LibLogic.Ppp
+namespace Majorsilence.Vpn.Logic.Ppp
 {
     public class IpSec : PppBase
     {
@@ -10,7 +10,7 @@ namespace LibLogic.Ppp
         {
         }
 
-        protected override void AddUserImplementation(LibLogic.Ssh.ISsh sshClient)
+        protected override void AddUserImplementation(Majorsilence.Vpn.Logic.Ssh.ISsh sshClient)
         {
 
 
@@ -21,7 +21,7 @@ namespace LibLogic.Ppp
 
         }
 
-        protected override void RevokeUserImplementation(LibLogic.Ssh.ISsh sshClient)
+        protected override void RevokeUserImplementation(Majorsilence.Vpn.Logic.Ssh.ISsh sshClient)
         {
             sshClient.WriteLine(string.Format("sed -i '/^{0} l2tpd/d' /etc/ppp/chap-secrets", userData.Email));
         }

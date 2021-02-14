@@ -8,7 +8,7 @@ using System.Reflection;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic
+namespace Majorsilence.Vpn.Logic
 {
     public class Setup : ICommand
     {
@@ -103,7 +103,7 @@ namespace LibLogic
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex, true);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex, true);
             }
 
         }
@@ -124,7 +124,7 @@ namespace LibLogic
                 db.Open();
 
 
-                var data = db.Query<LibPoco.SiteInfo>("SELECT * FROM SiteInfo").ToList();
+                var data = db.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo").ToList();
                 if (data.Count == 0)
                 {
                     throw new Exceptions.InvalidDataException("Invalid data in SiteInfo.  No data found.");
@@ -140,7 +140,7 @@ namespace LibLogic
                 var paymenttypes = LoadLookupPaymentTypes();  
                 var rates = LoadCurrentRates();
                
-                LibLogic.Helpers.SiteInfo.Initialize(data.First(), paymenttypes.Item1, rates.Item1, rates.Item2,
+                Majorsilence.Vpn.Logic.Helpers.SiteInfo.Initialize(data.First(), paymenttypes.Item1, rates.Item1, rates.Item2,
                     paymenttypes.Item2);
 
             }
@@ -154,10 +154,10 @@ namespace LibLogic
             {
                 db.Open();
 
-                var data = db.Query<LibPoco.LookupPaymentType>("SELECT * FROM LookupPaymentType");
+                var data = db.Query<Majorsilence.Vpn.Poco.LookupPaymentType>("SELECT * FROM LookupPaymentType");
                 if (data.Count() == 0)
                 {
-                    throw new LibLogic.Exceptions.InvalidDataException("Invalid data in LoadLookupPaymentTypes.  No data found.");
+                    throw new Majorsilence.Vpn.Logic.Exceptions.InvalidDataException("Invalid data in LoadLookupPaymentTypes.  No data found.");
                 }
 
                 int monthly = 1;
@@ -188,10 +188,10 @@ namespace LibLogic
             {
                 db.Open();
 
-                var data = db.Query<LibPoco.PaymentRates>("SELECT * FROM PaymentRates");
+                var data = db.Query<Majorsilence.Vpn.Poco.PaymentRates>("SELECT * FROM PaymentRates");
                 if (data.Count() == 0 || data.Count() > 1)
                 {
-                    throw new LibLogic.Exceptions.InvalidDataException("Invalid data in PaymentRates.  To many or to few rows");
+                    throw new Majorsilence.Vpn.Logic.Exceptions.InvalidDataException("Invalid data in PaymentRates.  To many or to few rows");
                 }
 
                 return Tuple.Create<decimal, decimal>(data.First().CurrentMonthlyRate, data.First().CurrentYearlyRate);
@@ -209,7 +209,7 @@ namespace LibLogic
 
             var migrationContext = new FluentMigrator.Runner.Initialization.RunnerContext(announcer)
             {
-                Namespace = "LibLogic.Migrations",
+                Namespace = "Majorsilence.Vpn.Logic.Migrations",
                 TransactionPerSession = true
             };
 
@@ -233,7 +233,7 @@ namespace LibLogic
         private void CreateIfNotExists()
         {
         
-            string connStr = LibLogic.Setup.DbFactoryWithoutDatabase.ConnectionString;
+            string connStr = Majorsilence.Vpn.Logic.Setup.DbFactoryWithoutDatabase.ConnectionString;
             var cn = new MySql.Data.MySqlClient.MySqlConnection(connStr);
             var cmd = cn.CreateCommand();
             cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;", Setup.DatabaseName);
@@ -264,7 +264,7 @@ namespace LibLogic
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                var peter = db.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email = @Email", 
+                var peter = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @Email", 
                                 new {Email = "atestuser@majorsilence.com"});
                 if (peter.Count() == 0)
                 {

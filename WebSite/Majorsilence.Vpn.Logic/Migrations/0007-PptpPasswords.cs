@@ -2,7 +2,7 @@ using System;
 using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
-namespace LibLogic.Migrations
+namespace Majorsilence.Vpn.Logic.Migrations
 {
     [Migration(7, TransactionBehavior.Default)]
     public class PptpPasswords : Migration

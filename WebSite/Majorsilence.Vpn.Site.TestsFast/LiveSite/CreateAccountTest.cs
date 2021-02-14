@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Dapper;
 
-namespace SiteTestsFast.LiveSite
+namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
 {
     public class CreateAccountTest
     {
@@ -15,7 +15,7 @@ namespace SiteTestsFast.LiveSite
         [TearDown]
         public void Cleanup()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM users WHERE email = @email", new {email = emailAddress});

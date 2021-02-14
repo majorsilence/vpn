@@ -4,9 +4,9 @@ using System.Linq;
 using System.Collections.Generic;
 using Moq;
 using System.Collections.Specialized;
-using SiteTestsFast.MvcFakes;
+using Majorsilence.Vpn.Site.TestsFast.MvcFakes;
 
-namespace SiteTestsFast.ApiV2
+namespace Majorsilence.Vpn.Site.TestsFast.ApiV2
 {
 
 
@@ -41,7 +41,7 @@ namespace SiteTestsFast.ApiV2
                 Assert.That(controller.Response.StatusCode, Is.EqualTo((int)System.Net.HttpStatusCode.OK));
 
 
-                var deserializedContent = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<LibLogic.Accounts.UserServerDetailsInfo>>(data.Content);
+                var deserializedContent = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<Majorsilence.Vpn.Logic.Accounts.UserServerDetailsInfo>>(data.Content);
 
                 Assert.That(deserializedContent.Count() > 1);
 

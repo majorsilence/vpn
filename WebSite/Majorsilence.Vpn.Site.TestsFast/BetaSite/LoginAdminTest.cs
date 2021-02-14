@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Dapper;
 using System.Linq;
 
-namespace SiteTestsFast.BetaSite
+namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 {
     public class LoginAdminTest
     {
@@ -17,8 +17,8 @@ namespace SiteTestsFast.BetaSite
         public void Setup()
         {
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                                   new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                                   new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
                 {
                     Email = this.emailAddress,
                     EmailConfirm = this.emailAddress,
@@ -28,7 +28,7 @@ namespace SiteTestsFast.BetaSite
                     PasswordConfirm = this.password,
                     BetaKey = betaKey
                 }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             this.userid = peterAccount.Execute();
 
@@ -37,7 +37,7 @@ namespace SiteTestsFast.BetaSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM Users WHERE Email = @email", new {email = emailAddress});
@@ -49,7 +49,7 @@ namespace SiteTestsFast.BetaSite
         [Test()]
         public void CanLogin()
         {
-            var login = new LibLogic.Login(emailAddress, this.password);
+            var login = new Majorsilence.Vpn.Logic.Login(emailAddress, this.password);
             login.Execute();
 
             System.Console.WriteLine(login.LoggedIn);
@@ -70,7 +70,7 @@ namespace SiteTestsFast.BetaSite
         [Test()]
         public void InvalidUsernameLogin()
         {
-            var login = new LibLogic.Login("hithere", this.password);
+            var login = new Majorsilence.Vpn.Logic.Login("hithere", this.password);
             login.Execute();
 
             Assert.That(login.LoggedIn, Is.False);
@@ -85,7 +85,7 @@ namespace SiteTestsFast.BetaSite
         public void InvalidPasswordLogin()
         {
 
-            var login = new LibLogic.Login(this.emailAddress, "wrong password");
+            var login = new Majorsilence.Vpn.Logic.Login(this.emailAddress, "wrong password");
             login.Execute();
 
             Assert.That(login.LoggedIn, Is.False);
@@ -100,7 +100,7 @@ namespace SiteTestsFast.BetaSite
         public void InvalidUsernameAndPasswordLogin()
         {
 
-            var login = new LibLogic.Login("hi there", "wrong password");
+            var login = new Majorsilence.Vpn.Logic.Login("hi there", "wrong password");
             login.Execute();
 
             Assert.That(login.LoggedIn, Is.False);

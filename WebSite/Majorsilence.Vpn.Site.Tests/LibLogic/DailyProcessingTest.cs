@@ -13,7 +13,7 @@ namespace SiteTests.Tests
 		{
 
 
-			//var ssh = new LibLogic.CreateAccount (null);
+			//var ssh = new Majorsilence.Vpn.Logic.CreateAccount (null);
 			//ssh.Execute();
 			throw new NotImplementedException ();
 		}

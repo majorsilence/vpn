@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using LibLogic.Helpers;
-using LibLogic.OpenVpn;
-using LibLogic.Email;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.OpenVpn;
+using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.Extensions.Localization;
 
@@ -53,15 +53,15 @@ namespace Majorsilence.Vpn.Site.Controllers
             try
             {
 
-                var pay = new LibLogic.Payments.StripePayment(sessionInstance.UserId, email);
+                var pay = new Majorsilence.Vpn.Logic.Payments.StripePayment(sessionInstance.UserId, email);
                 pay.CancelSubscription();
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
 
-                LibLogic.ActionLog.Log_BackgroundThread("Subscription Cancelled", sessionInstance.UserId);
+                Majorsilence.Vpn.Logic.ActionLog.Log_BackgroundThread("Subscription Cancelled", sessionInstance.UserId);
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
             }
 
@@ -84,11 +84,11 @@ namespace Majorsilence.Vpn.Site.Controllers
             {
 
 
-                var pay = new LibLogic.Payments.StripePayment(sessionInstance.UserId,
+                var pay = new Majorsilence.Vpn.Logic.Payments.StripePayment(sessionInstance.UserId,
                               email);
                 pay.MakePayment(stripeToken, discount);
 
-                LibLogic.ActionLog.Log_BackgroundThread("Payment made", sessionInstance.UserId);
+                Majorsilence.Vpn.Logic.ActionLog.Log_BackgroundThread("Payment made", sessionInstance.UserId);
 
 
                 Task.Run(() => SetDefaultVpnServer());
@@ -96,7 +96,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 message = "fail";
             }
 
@@ -107,15 +107,15 @@ namespace Majorsilence.Vpn.Site.Controllers
 
         private void SetDefaultVpnServer()
         {
-            LibLogic.ActionLog.Log_BackgroundThread("Attempt to set default vpn server after payment made",
+            Majorsilence.Vpn.Logic.ActionLog.Log_BackgroundThread("Attempt to set default vpn server after payment made",
                 sessionInstance.UserId);
             try
             {
-                var details = new LibLogic.Accounts.ServerDetails();
+                var details = new Majorsilence.Vpn.Logic.Accounts.ServerDetails();
 
-                using (var sshNewServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
-                using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
-                using (var sftp = new LibLogic.Ssh.LiveSftp(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                using (var sftp = new Majorsilence.Vpn.Logic.Ssh.LiveSftp(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
                 {
                     var cert = new CertsOpenVpnGenerateCommand(sessionInstance.UserId,
                                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer, sftp);
@@ -123,18 +123,18 @@ namespace Majorsilence.Vpn.Site.Controllers
 
                 }
 
-                using (var sshNewServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
-                using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
                 {
-                    var pptp = new LibLogic.Ppp.ManagePPTP(sessionInstance.UserId,
+                    var pptp = new Majorsilence.Vpn.Logic.Ppp.ManagePPTP(sessionInstance.UserId,
                                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer);
                     pptp.AddUser();
                 }
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
-                LibLogic.ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made", sessionInstance.UserId);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made", sessionInstance.UserId);
             }
         }
 
@@ -149,25 +149,25 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return;
             }
 
-            var update = new LibLogic.Accounts.UserInfo(sessionInstance.UserId);
+            var update = new Majorsilence.Vpn.Logic.Accounts.UserInfo(sessionInstance.UserId);
             try
             {
                 update.UpdateProfile(email, firstname, lastname);
 
-                LibLogic.ActionLog.Log_BackgroundThread(string.Format("Profile Update - Email -> {0} - First Name -> {1} - Last Name -> {2}",
+                Majorsilence.Vpn.Logic.ActionLog.Log_BackgroundThread(string.Format("Profile Update - Email -> {0} - First Name -> {1} - Last Name -> {2}",
                     email, firstname, lastname),
                     sessionInstance.UserId);
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
             }
-            catch (LibLogic.Exceptions.InvalidDataException ide)
+            catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ide)
             {
-                LibLogic.Helpers.Logging.Log(ide);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ide);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
             }
-            catch (LibLogic.Exceptions.EmailAddressAlreadyUsedException eaaue)
+            catch (Majorsilence.Vpn.Logic.Exceptions.EmailAddressAlreadyUsedException eaaue)
             {
-                LibLogic.Helpers.Logging.Log(eaaue);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(eaaue);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
             }
 
@@ -183,15 +183,15 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return;
             }
 
-            var update = new LibLogic.Accounts.UserInfo(sessionInstance.UserId);
+            var update = new Majorsilence.Vpn.Logic.Accounts.UserInfo(sessionInstance.UserId);
             try
             {
                 update.UpdatePassword(oldpassword, newpassword, confirmnewpassword);
-                LibLogic.ActionLog.Log_BackgroundThread("Password Changed",
+                Majorsilence.Vpn.Logic.ActionLog.Log_BackgroundThread("Password Changed",
                     sessionInstance.UserId);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
             }
-            catch (LibLogic.Exceptions.InvalidDataException ide)
+            catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ide)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
             }

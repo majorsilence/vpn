@@ -5,14 +5,14 @@ using System.Text;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.Helpers
+namespace Majorsilence.Vpn.Logic.Helpers
 {
     public static class SiteInfo
     {
-        private static LibPoco.SiteInfo info;
+        private static Majorsilence.Vpn.Poco.SiteInfo info;
 
 
-        public static void InitializeSimple(LibPoco.SiteInfo info, decimal currentMonthlyRate, decimal currentYearlyRate)
+        public static void InitializeSimple(Majorsilence.Vpn.Poco.SiteInfo info, decimal currentMonthlyRate, decimal currentYearlyRate)
         {
             SiteInfo.info = info;
             SiteInfo.CurrentMonthlyRate = currentMonthlyRate;
@@ -20,7 +20,7 @@ namespace LibLogic.Helpers
             SiteInfo.CurrentYearlyRate = currentYearlyRate;
         }
 
-        public static void Initialize(LibPoco.SiteInfo info,
+        public static void Initialize(Majorsilence.Vpn.Poco.SiteInfo info,
                                       int monthlyPaymentId,
                                       decimal currentMonthlyRate, decimal currentYearlyRate,
                                       int yearlyPaymentId)
@@ -45,19 +45,19 @@ namespace LibLogic.Helpers
                 using (var txn = cn.BeginTransaction())
                 {
                
-                    cn.Update<LibPoco.SiteInfo>(info, txn);
+                    cn.Update<Majorsilence.Vpn.Poco.SiteInfo>(info, txn);
 
 
-                    var dataPaymentRates = cn.Query<LibPoco.PaymentRates>("SELECT * FROM PaymentRates").ToList();
+                    var dataPaymentRates = cn.Query<Majorsilence.Vpn.Poco.PaymentRates>("SELECT * FROM PaymentRates").ToList();
                     if (dataPaymentRates.Count() == 0 || dataPaymentRates.Count() > 1)
                     {
-                        throw new LibLogic.Exceptions.InvalidDataException("Invalid data in PaymentRates.  To many or to few rows");
+                        throw new Majorsilence.Vpn.Logic.Exceptions.InvalidDataException("Invalid data in PaymentRates.  To many or to few rows");
                     }
 
                     dataPaymentRates.First().CurrentMonthlyRate = SiteInfo.CurrentMonthlyRate;
                     dataPaymentRates.First().CurrentYearlyRate = SiteInfo.CurrentYearlyRate;
 
-                    cn.Update<LibPoco.PaymentRates>(dataPaymentRates.First(), txn);
+                    cn.Update<Majorsilence.Vpn.Poco.PaymentRates>(dataPaymentRates.First(), txn);
 
                     txn.Commit();
                 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LibLogic.Ssh
+namespace Majorsilence.Vpn.Logic.Ssh
 {
     public class LiveSftp : ISftp
     {

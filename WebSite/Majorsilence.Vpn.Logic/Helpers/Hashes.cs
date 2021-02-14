@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
 
-namespace LibLogic.Helpers
+namespace Majorsilence.Vpn.Logic.Helpers
 {
     public class Hashes
     {

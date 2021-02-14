@@ -6,7 +6,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
-namespace LibLogic.OpenVpn
+namespace Majorsilence.Vpn.Logic.OpenVpn
 {
     /// <summary>
     /// Create a ovpn profile for openvpn that inlines the ca, cert, and key
@@ -14,8 +14,8 @@ namespace LibLogic.OpenVpn
     public class InlineOvpnProfile
     {
 
-        LibPoco.UserOpenVpnCerts userCertData = null;
-        LibPoco.VpnServers serverData = null;
+        Majorsilence.Vpn.Poco.UserOpenVpnCerts userCertData = null;
+        Majorsilence.Vpn.Poco.VpnServers serverData = null;
 
         public InlineOvpnProfile(int userId)
         {
@@ -23,13 +23,13 @@ namespace LibLogic.OpenVpn
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                var data = db.Query<LibPoco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
+                var data = db.Query<Majorsilence.Vpn.Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
                                new {UserId = userId});
                 
                 if (data.Count() == 1)
                 {
                     userCertData = data.First();
-                    serverData = db.Get<LibPoco.VpnServers>(userCertData.VpnServersId);
+                    serverData = db.Get<Majorsilence.Vpn.Poco.VpnServers>(userCertData.VpnServersId);
                 }
                 else if (data.Count() > 1)
                 {

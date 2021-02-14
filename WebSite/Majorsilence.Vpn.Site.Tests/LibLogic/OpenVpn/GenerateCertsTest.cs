@@ -26,11 +26,11 @@ namespace SiteTests.Tests
         [Test()]
         public void CreateCert()
         {
-            using (var sshNewServer = new LibLogic.Ssh.FakeSsh())
-            using (var sshRevokeServer = new LibLogic.Ssh.FakeSsh())
-            using (var sftp = new LibLogic.Ssh.FakeSftp())
+            using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.FakeSsh())
+            using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.FakeSsh())
+            using (var sftp = new Majorsilence.Vpn.Logic.Ssh.FakeSftp())
             {
-                var certs = new LibLogic.OpenVpn.CertsOpenVpnGenerateCommand(2, 1, sshNewServer, sshRevokeServer, sftp);
+                var certs = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnGenerateCommand(2, 1, sshNewServer, sshRevokeServer, sftp);
                 certs.Execute();
 
             }

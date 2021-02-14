@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace LibPoco
+namespace Majorsilence.Vpn.Poco
 {
     [Dapper.Contrib.Extensions.Table("VpnServers")]
     public class VpnServers

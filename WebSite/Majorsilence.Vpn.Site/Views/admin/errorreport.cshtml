@@ -15,7 +15,7 @@
 	html.Append("<th>Time Created</th>");
 	html.AppendLine("</tr>");
 
-	var errors = new LibLogic.Admin.ErrorReports();
+	var errors = new Majorsilence.Vpn.Logic.Admin.ErrorReports();
 	foreach (var err in errors.RetrieveAll())
 	{
 		html.AppendLine("<tr>");

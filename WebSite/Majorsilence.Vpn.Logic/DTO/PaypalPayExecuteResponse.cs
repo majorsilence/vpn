@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
 
-namespace LibLogic.DTO
+namespace Majorsilence.Vpn.Logic.DTO
 {
     /// <summary>
     /// Can add payers details and refund details if necessary 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LibPoco
+namespace Majorsilence.Vpn.Poco
 {
     [Dapper.Contrib.Extensions.Table("UserPptpInfo")]
     public class UserPptpInfo

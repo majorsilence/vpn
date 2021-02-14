@@ -1,7 +1,7 @@
 ﻿using System;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     public class ModifyAccount
     {
@@ -15,7 +15,7 @@ namespace LibLogic.Accounts
             {
                 db.Open();
 
-                var data = db.Get<LibPoco.Users>(userid);
+                var data = db.Get<Majorsilence.Vpn.Poco.Users>(userid);
 
                 data.Admin = !data.Admin;
 

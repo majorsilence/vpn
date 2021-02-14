@@ -12,12 +12,12 @@ namespace Majorsilence.Vpn.Site.Models
         public Terms()
         {
 
-            var t = new LibLogic.Site.TermsOfService();
+            var t = new Majorsilence.Vpn.Logic.Site.TermsOfService();
             _terms = t.CurrentTermsOfService();
         }
 
-        private LibPoco.TermsOfService _terms;
-        public LibPoco.TermsOfService TOS
+        private Majorsilence.Vpn.Poco.TermsOfService _terms;
+        public Majorsilence.Vpn.Poco.TermsOfService TOS
         {
             get
             {

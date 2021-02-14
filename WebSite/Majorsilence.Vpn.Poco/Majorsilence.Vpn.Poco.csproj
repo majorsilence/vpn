@@ -2,8 +2,8 @@
   <PropertyGroup>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
-    <AssemblyTitle>LibPoco</AssemblyTitle>
-    <Product>LibPoco</Product>
+    <AssemblyTitle>Majorsilence.Vpn.Poco</AssemblyTitle>
+    <Product>Majorsilence.Vpn.Poco</Product>
     <Copyright>Copyright ©  2014</Copyright>
     <Deterministic>false</Deterministic>
     <AssemblyVersion>1.0.*</AssemblyVersion>

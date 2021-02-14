@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic
+namespace Majorsilence.Vpn.Logic
 {
     public class ActionLog
     {
@@ -13,11 +13,11 @@ namespace LibLogic
 
         public void Log(string action, int userid)
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
-                var data = new LibPoco.ActionLog()
+                var data = new Majorsilence.Vpn.Poco.ActionLog()
                 {
                     Action = action,
                     ActionDate = DateTime.UtcNow,

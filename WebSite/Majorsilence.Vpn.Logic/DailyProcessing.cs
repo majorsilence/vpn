@@ -10,7 +10,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 
-namespace LibLogic
+namespace Majorsilence.Vpn.Logic
 {
     public class DailyProcessing : ICommand
     {
@@ -36,17 +36,17 @@ namespace LibLogic
             using (var db = Setup.DbFactory)
             {
 
-                var data = db.Query<LibPoco.DatabaseInfo>("SELECT * FROM DatabaseInfo");
+                var data = db.Query<Majorsilence.Vpn.Poco.DatabaseInfo>("SELECT * FROM DatabaseInfo");
 
                 if (data.Count() != 1)
                 {
-                    throw new LibLogic.Exceptions.InvalidDataException("Incorrect data in DatabaseInfo table.  To many or too few rows.");
+                    throw new Majorsilence.Vpn.Logic.Exceptions.InvalidDataException("Incorrect data in DatabaseInfo table.  To many or too few rows.");
                 }
 
 
                 Helpers.SslSecurity.Callback();
 
-                var eventService = new StripeChargeService(LibLogic.Helpers.SiteInfo.StripeAPISecretKey);
+                var eventService = new StripeChargeService(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
                 var options = new StripeChargeListOptions()
                 {
                     Limit = 1000,
@@ -71,8 +71,8 @@ namespace LibLogic
                     string stripeCustomerId = evt.CustomerId;
 
                       
-                    //var users = db.Select<LibPoco.Users>(q => q.PaymentExpired == false);
-                    var user = db.Query<LibPoco.Users>("SELECT * FROM Users WHERE StripeCustomerAccount=@StripeCustomerAccount",
+                    //var users = db.Select<Majorsilence.Vpn.Poco.Users>(q => q.PaymentExpired == false);
+                    var user = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE StripeCustomerAccount=@StripeCustomerAccount",
                                    new {StripeCustomerAccount = stripeCustomerId});
 
                     if (user == null || user.Count() != 1)
@@ -80,12 +80,12 @@ namespace LibLogic
                          
                          
 
-                        var ex = new LibLogic.Exceptions.InvalidDataException("Cannot find stripe customer data in users table.  Stripe Customer Account: " +
+                        var ex = new Majorsilence.Vpn.Logic.Exceptions.InvalidDataException("Cannot find stripe customer data in users table.  Stripe Customer Account: " +
                                  stripeCustomerId);
 
-                        LibLogic.Helpers.Logging.Log(ex);
+                        Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                         Setup.Email.SendMail_BackgroundThread("Error running DailyProcessing: " + ex.Message,
-                            "Error running DailyProcessing", LibLogic.Helpers.SiteInfo.AdminEmail, true, null, 
+                            "Error running DailyProcessing", Majorsilence.Vpn.Logic.Helpers.SiteInfo.AdminEmail, true, null, 
                             Email.EmailTemplates.Generic);
 
                         continue;
@@ -98,7 +98,7 @@ namespace LibLogic
                     // amount in cents
                     pay.SaveUserPayment((decimal)(evt.Amount / 100.0m), evt.Created, Helpers.SiteInfo.MonthlyPaymentId);
 
-                    LibLogic.ActionLog.Log_BackgroundThread("Payment made", userid);
+                    Majorsilence.Vpn.Logic.ActionLog.Log_BackgroundThread("Payment made", userid);
                 }
 
 

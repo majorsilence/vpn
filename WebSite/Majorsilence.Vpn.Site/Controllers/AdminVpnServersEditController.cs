@@ -45,7 +45,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                     activeYes = true;
                 }
 
-                var vpns = new LibLogic.Admin.VpnServers();
+                var vpns = new Majorsilence.Vpn.Logic.Admin.VpnServers();
                 if (id.HasValue)
                 {
                     vpns.Update(id.Value, address, 
@@ -68,7 +68,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
             }
 
             return View(new Models.CustomViewLayout(sessionInstance));

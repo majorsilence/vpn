@@ -7,12 +7,12 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
-namespace LibLogic.OpenVpn
+namespace Majorsilence.Vpn.Logic.OpenVpn
 {
     public class CertsOpenVpnRevokeCommand : ICommand
     {
 
-        private LibPoco.Users userData;
+        private Majorsilence.Vpn.Poco.Users userData;
         private Ssh.ISsh sshClient;
 
         private CertsOpenVpnRevokeCommand()
@@ -24,7 +24,7 @@ namespace LibLogic.OpenVpn
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                this.userData = db.Get<LibPoco.Users>(userId); 
+                this.userData = db.Get<Majorsilence.Vpn.Poco.Users>(userId); 
             }
 
             this.sshClient = sshClient;
@@ -34,16 +34,16 @@ namespace LibLogic.OpenVpn
         {
 
             string certName = "";
-            LibPoco.VpnServers vpnData = null;
+            Majorsilence.Vpn.Poco.VpnServers vpnData = null;
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                var certData = db.Query<LibPoco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId", 
+                var certData = db.Query<Majorsilence.Vpn.Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId", 
                                    new {UserId = userData.Id});
                 if (certData.Count() == 1)
                 {
                     certName = certData.First().CertName;
-                    vpnData = db.Get<LibPoco.VpnServers>(certData.First().VpnServersId);
+                    vpnData = db.Get<Majorsilence.Vpn.Poco.VpnServers>(certData.First().VpnServersId);
                 }
                 else if (certData.Count() >= 1)
                 {

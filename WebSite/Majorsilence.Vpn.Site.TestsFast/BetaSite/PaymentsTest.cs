@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Dapper;
 
-namespace SiteTestsFast.BetaSite
+namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 {
     public class PaymentsTest
     {
@@ -22,8 +22,8 @@ namespace SiteTestsFast.BetaSite
         public void Setup()
         {
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                                   new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                                   new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
                 {
                     Email = emailAddress,
                     EmailConfirm = emailAddress,
@@ -33,12 +33,12 @@ namespace SiteTestsFast.BetaSite
                     PasswordConfirm = "Password1",
                     BetaKey = betaKey
                 }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             this.userid = peterAccount.Execute();
 
-            var account2 = new LibLogic.Accounts.CreateAccount(
-                               new LibLogic.Accounts.CreateAccountInfo()
+            var account2 = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                               new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
                 {
                     Email = nonAdminEmail,
                     EmailConfirm = nonAdminEmail,
@@ -48,7 +48,7 @@ namespace SiteTestsFast.BetaSite
                     PasswordConfirm = "Password1",
                     BetaKey = betaKey2
                 }
-                , false, LibLogic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.Setup.Email);
 
             this.nonAdminUserId = account2.Execute();
 
@@ -57,7 +57,7 @@ namespace SiteTestsFast.BetaSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM UserPayments");
@@ -75,15 +75,15 @@ namespace SiteTestsFast.BetaSite
         {
             var createDate = DateTime.UtcNow;
             const decimal payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(this.userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
             pay.SaveUserPayment(payment, createDate, paycode);
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
-                var data = cn.Query<LibPoco.UserPayments>("SELECT * FROM UserPayments WHERE UserId = @UserId AND AmountPaid=@amount AND " +
+                var data = cn.Query<Majorsilence.Vpn.Poco.UserPayments>("SELECT * FROM UserPayments WHERE UserId = @UserId AND AmountPaid=@amount AND " +
                            "CreateTime=@CreateTime AND LookupPaymentTypeId=@payid", 
                                new {UserId = userid, amount = payment, CreateTime = createDate, payid = paycode});
 
@@ -99,11 +99,11 @@ namespace SiteTestsFast.BetaSite
         {
             var createDate = DateTime.UtcNow;
             const decimal payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(-1);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(-1);
 
-            Assert.Throws<LibLogic.Exceptions.InvalidUserIdException>(() => pay.SaveUserPayment(payment, createDate, paycode));
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidUserIdException>(() => pay.SaveUserPayment(payment, createDate, paycode));
             
 
    
@@ -115,7 +115,7 @@ namespace SiteTestsFast.BetaSite
         public void IsExpiredTest()
         {
             // Beta account should never be expired
-            var pay = new LibLogic.Payments.Payment(this.nonAdminUserId);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.nonAdminUserId);
             Assert.That(pay.IsExpired(), Is.True);
 
         }
@@ -124,7 +124,7 @@ namespace SiteTestsFast.BetaSite
         public void IsAdminExpiredTest()
         {
             // Beta account should never be expired
-            var pay = new LibLogic.Payments.Payment(this.userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
             Assert.That(pay.IsExpired(), Is.False);
 
         }
@@ -137,9 +137,9 @@ namespace SiteTestsFast.BetaSite
 
             var createDate = DateTime.UtcNow.AddMonths(-3);
             const decimal payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(this.nonAdminUserId);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.nonAdminUserId);
             pay.SaveUserPayment(payment, createDate, paycode);
 
 
@@ -153,9 +153,9 @@ namespace SiteTestsFast.BetaSite
 
             var createDate = DateTime.UtcNow.AddMonths(-3);
             var payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(this.userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
             pay.SaveUserPayment(payment, createDate, paycode);
 
 
@@ -170,9 +170,9 @@ namespace SiteTestsFast.BetaSite
             // Beta account should never be expired
             var createDate = DateTime.UtcNow;
             var payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(this.userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
             pay.SaveUserPayment(payment, createDate, paycode);
 
 
@@ -184,7 +184,7 @@ namespace SiteTestsFast.BetaSite
         public void IsExpiredInvalidUserIdTest()
         {
             // Beta account should never be expired except for invalid user accounts
-            var pay = new LibLogic.Payments.Payment(-1);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(-1);
 
             Assert.That(pay.IsExpired(), Is.True);
 
@@ -196,9 +196,9 @@ namespace SiteTestsFast.BetaSite
         {
             var createDate = DateTime.UtcNow;
             var payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(this.userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
 
 
             for (int i = 0; i < 1000; i++)
@@ -214,9 +214,9 @@ namespace SiteTestsFast.BetaSite
         {
             var createDate = DateTime.UtcNow;
             var payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.MonthlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(this.userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
 
             pay.SaveUserPayment(payment, createDate, paycode);
             DateTime expireDate = createDate.AddMonths(1).AddDays(1);
@@ -235,9 +235,9 @@ namespace SiteTestsFast.BetaSite
         {
             var createDate = DateTime.UtcNow;
             var payment = 56.76m;
-            var paycode = LibLogic.Helpers.SiteInfo.YearlyPaymentId;
+            var paycode = Majorsilence.Vpn.Logic.Helpers.SiteInfo.YearlyPaymentId;
 
-            var pay = new LibLogic.Payments.Payment(this.userid);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
 
             pay.SaveUserPayment(payment, createDate, paycode);
             DateTime expireDate = createDate.AddYears(1).AddDays(1);

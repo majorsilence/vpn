@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using Dapper;
 
-namespace SiteTestsFast.LiveSite
+namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
 {
     public class GenerateCertsTest
     {
@@ -20,8 +20,8 @@ namespace SiteTestsFast.LiveSite
         public void Setup()
         {
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                                   new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                                   new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
                 {
                     Email = emailAddress,
                     EmailConfirm = emailAddress,
@@ -31,14 +31,14 @@ namespace SiteTestsFast.LiveSite
                     PasswordConfirm = "Password54",
                     BetaKey = ""
                 }
-                , false, LibLogic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.Setup.Email);
 
             this.userid = peterAccount.Execute();
 
-            var region = new LibLogic.Admin.Regions();
+            var region = new Majorsilence.Vpn.Logic.Admin.Regions();
             regionid = region.Insert("Test region", true);
 
-            var vpnserver = new LibLogic.Admin.VpnServers();
+            var vpnserver = new Majorsilence.Vpn.Logic.Admin.VpnServers();
             vpnseverid = vpnserver.Insert("localhost", 5678, "a fake vpnserver for testing", regionid, true);
 
         }
@@ -46,7 +46,7 @@ namespace SiteTestsFast.LiveSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM ActionLog WHERE UserId=@UserId", new {UserId = this.userid});
@@ -63,16 +63,16 @@ namespace SiteTestsFast.LiveSite
         public void GenerateCertHappyPath()
         {
 
-            var pay = new LibLogic.Payments.Payment(this.userid);
-            pay.SaveUserPayment(5, DateTime.UtcNow, LibLogic.Helpers.SiteInfo.MonthlyPaymentId);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
+            pay.SaveUserPayment(5, DateTime.UtcNow, Majorsilence.Vpn.Logic.Helpers.SiteInfo.MonthlyPaymentId);
 
-            using (var sshClient = new LibLogic.Ssh.FakeSsh(LibLogic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-            using (var sshRevokeClient = new LibLogic.Ssh.FakeSsh(LibLogic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-            using (var sftpClient = new LibLogic.Ssh.FakeSftp())
+            using (var sshClient = new Majorsilence.Vpn.Logic.Ssh.FakeSsh(Majorsilence.Vpn.Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
+            using (var sshRevokeClient = new Majorsilence.Vpn.Logic.Ssh.FakeSsh(Majorsilence.Vpn.Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
+            using (var sftpClient = new Majorsilence.Vpn.Logic.Ssh.FakeSftp())
             {
 
 
-                var vpn = new LibLogic.OpenVpn.CertsOpenVpnGenerateCommand(this.userid, this.vpnseverid, 
+                var vpn = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnGenerateCommand(this.userid, this.vpnseverid, 
                               sshClient, sshRevokeClient, sftpClient);
 
                 vpn.Execute();
@@ -86,14 +86,14 @@ namespace SiteTestsFast.LiveSite
         public void InactiveAccount()
         {
   
-            using (var sshClient = new LibLogic.Ssh.FakeSsh(LibLogic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-            using (var sshRevokeClient = new LibLogic.Ssh.FakeSsh(LibLogic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-            using (var sftpClient = new LibLogic.Ssh.FakeSftp())
+            using (var sshClient = new Majorsilence.Vpn.Logic.Ssh.FakeSsh(Majorsilence.Vpn.Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
+            using (var sshRevokeClient = new Majorsilence.Vpn.Logic.Ssh.FakeSsh(Majorsilence.Vpn.Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
+            using (var sftpClient = new Majorsilence.Vpn.Logic.Ssh.FakeSftp())
             {
-                var vpn = new LibLogic.OpenVpn.CertsOpenVpnGenerateCommand(this.userid, this.vpnseverid, 
+                var vpn = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnGenerateCommand(this.userid, this.vpnseverid, 
                                              sshClient, sshRevokeClient, sftpClient);
 
-                Assert.Throws<LibLogic.Exceptions.AccountNotActiveException>(() => vpn.Execute());
+                Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.AccountNotActiveException>(() => vpn.Execute());
                 
             }
 

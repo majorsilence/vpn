@@ -2,7 +2,7 @@
 using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
-namespace LibLogic.Migrations
+namespace Majorsilence.Vpn.Logic.Migrations
 {
     [Migration(4, TransactionBehavior.Default)]
     public class TermsOfService : Migration

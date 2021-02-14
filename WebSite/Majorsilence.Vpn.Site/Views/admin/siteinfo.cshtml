@@ -24,15 +24,15 @@
 }
 
 <form method="post" action="/admin/savesiteinfo" role="form">    
-	    	 Id: <input id="siteid" name="siteid" type="text" value="@(LibLogic.Helpers.SiteInfo.Id)" class="form-control" readonly>
+	    	 Id: <input id="siteid" name="siteid" type="text" value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.Id)" class="form-control" readonly>
       <br />
-        Admin Email: <input id="adminemail" name="adminemail" type="email" value="@(LibLogic.Helpers.SiteInfo.AdminEmail)" 
+        Admin Email: <input id="adminemail" name="adminemail" type="email" value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.AdminEmail)" 
         autocorrect="off" autocapitalize="off" class="form-control" />
 		<br />
 
 @{
 
-	if (LibLogic.Helpers.SiteInfo.LiveSite)
+	if (Majorsilence.Vpn.Logic.Helpers.SiteInfo.LiveSite)
 	{
 		@Html.Raw("Live Site (if true no beta key required): <input checked id = \"livesite\" name=\"livesite\"  type=\"checkbox\" class=\"form-control\" />");
 	}
@@ -47,50 +47,50 @@
     <br />
 
         Site Name: <input id="sitename" name="sitename" type="text" 
-        value="@(LibLogic.Helpers.SiteInfo.SiteName)" class="form-control" />
+        value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteName)" class="form-control" />
       <br />
 
 
    Site Url: <input id="siteurl" name="siteurl" type="text" 
-   value="@(LibLogic.Helpers.SiteInfo.SiteUrl)" class="form-control" />   
+   value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteUrl)" class="form-control" />   
       <br />
     
     Vpn Ssh Port: <input id="sshport" name="sshport" type="text" 
-    value="@(LibLogic.Helpers.SiteInfo.SshPort)" class="form-control" />   
+    value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort)" class="form-control" />   
       <br />
           
      Vpn Ssh User: <input id="vpnsshuser" name="vpnsshuser" type="text" 
-     value="@(LibLogic.Helpers.SiteInfo.VpnSshUser)" class="form-control" />   
+     value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser)" class="form-control" />   
       <br />   
       
      Vpn Ssh Password: <input id="vpnsshpassword" name="vpnsshpassword" type="password" 
-     value="@(LibLogic.Helpers.SiteInfo.VpnSshPassword)" class="form-control" />   
+     value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword)" class="form-control" />   
       <br />
           
       Stripe API Public Key: <input id="stripeapipublickey" name="stripeapipublickey" type="text" 
-      value="@(LibLogic.Helpers.SiteInfo.StripeAPIPublicKey)" class="form-control" />   
+      value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPIPublicKey)" class="form-control" />   
       <br />
      
      Stripe API Secret Key: <input id="stripeapisecretkey" name="stripeapisecretkey" type="password" 
-     value="@(LibLogic.Helpers.SiteInfo.StripeAPISecretKey)" class="form-control" />   
+     value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey)" class="form-control" />   
       <br />
 
           <p>
         Currency: <input id="currency" name="currency" type="text" 
-        value="@(LibLogic.Helpers.SiteInfo.Currency)" class="form-control" />
+        value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.Currency)" class="form-control" />
 
     </p>
     <p>
         StripePlanId: <input id="stripeplanid" name="stripeplanid" type="text" 
-        value="@(LibLogic.Helpers.SiteInfo.StripePlanId)" class="form-control" />
+        value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripePlanId)" class="form-control" />
     </p>
     <p>
      Monthly Payment Rate: <input id="monthlypaymentrate" name="monthlypaymentrate" type="text" 
-     value="@(LibLogic.Helpers.SiteInfo.CurrentMonthlyRate)" class="form-control" />
+     value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.CurrentMonthlyRate)" class="form-control" />
 	</p>
 	<p>
      Yearly Payment Rate: <input id="yearlypaymentrate" name="yearlypaymentrate" type="text" 
-     value="@(LibLogic.Helpers.SiteInfo.CurrentYearlyRate)" class="form-control" />
+     value="@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.CurrentYearlyRate)" class="form-control" />
 	</p>
         
 <p>

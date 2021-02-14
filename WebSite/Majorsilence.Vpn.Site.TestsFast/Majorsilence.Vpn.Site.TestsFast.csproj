@@ -11,9 +11,9 @@
     <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LibLogic\LibLogic.csproj" />
-    <ProjectReference Include="..\LibPoco\LibPoco.csproj" />
-    <ProjectReference Include="..\VpnSite\Majorsilence.Vpn.Site.csproj" />
+    <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj" />
+    <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj" />
+    <ProjectReference Include="..\Majorsilence.Vpn.Site\Majorsilence.Vpn.Site.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapper.Contrib" Version="2.0.78" />

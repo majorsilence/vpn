@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using LibLogic.Email;
+using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,7 +65,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 if (removeaccount != null && removeaccount == "yes")
                 {
 
-                    var payments = new LibLogic.Payments.StripePayment(id, email);
+                    var payments = new Majorsilence.Vpn.Logic.Payments.StripePayment(id, email);
                     payments.CancelSubscription();
                     payments.CancelAccount();
 
@@ -76,7 +76,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
             }
 
@@ -95,7 +95,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
                 if (removeaccount != null && removeaccount == "yes")
                 {
-                    var payments = new LibLogic.Payments.StripePayment(id, email);
+                    var payments = new Majorsilence.Vpn.Logic.Payments.StripePayment(id, email);
                     payments.CancelSubscription();
 
 
@@ -105,7 +105,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
             }
         }
@@ -124,7 +124,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
                 if (removeaccount != null && removeaccount == "yes")
                 {
-                    var user = new LibLogic.Accounts.UserInfo(id);
+                    var user = new Majorsilence.Vpn.Logic.Accounts.UserInfo(id);
                     user.RemoveAccount();
 
 
@@ -134,7 +134,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
             }
 
@@ -150,14 +150,14 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             try
             {
-                var modify = new LibLogic.Accounts.ModifyAccount();
+                var modify = new Majorsilence.Vpn.Logic.Accounts.ModifyAccount();
                 modify.ToggleIsAdmin(id);
 
                 Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode("User with id admin mode was toggled: " + id), false);
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
             }
         }
@@ -184,7 +184,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                     islivesite = true;
                 }
 
-                var info = new LibPoco.SiteInfo()
+                var info = new Majorsilence.Vpn.Poco.SiteInfo()
                 {
                     Id = siteid,
                     AdminEmail = adminemail,
@@ -200,14 +200,14 @@ namespace Majorsilence.Vpn.Site.Controllers
                     Currency = currency
                 };
 
-                LibLogic.Helpers.SiteInfo.InitializeSimple(info, monthlypaymentrate, yearlypaymentrate);
-                LibLogic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
+                Majorsilence.Vpn.Logic.Helpers.SiteInfo.InitializeSimple(info, monthlypaymentrate, yearlypaymentrate);
+                Majorsilence.Vpn.Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
 
                 Response.Redirect("/admin/siteinfo?status=ok", false);
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 Response.Redirect("/admin/siteinfo?status=" + HttpUtility.HtmlEncode(ex.Message), false);
             }
 

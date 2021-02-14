@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using LibLogic.Email;
+using Majorsilence.Vpn.Logic.Email;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers
@@ -28,8 +28,8 @@ namespace Majorsilence.Vpn.Site.Controllers
             try
             {
 
-                var account = new LibLogic.Accounts.CreateAccount(
-                    new LibLogic.Accounts.CreateAccountInfo()
+                var account = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                    new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
                     {
                         Email = email,
                         EmailConfirm = emailconfirm,
@@ -45,14 +45,14 @@ namespace Majorsilence.Vpn.Site.Controllers
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
             }
-            catch (LibLogic.Exceptions.InvalidDataException ide)
+            catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ide)
             {
-                LibLogic.Helpers.Logging.Log(ide);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ide);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
             }
 

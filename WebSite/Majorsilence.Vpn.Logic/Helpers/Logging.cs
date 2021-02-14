@@ -6,7 +6,7 @@ using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.Helpers
+namespace Majorsilence.Vpn.Logic.Helpers
 {
     public class Logging
     {
@@ -18,7 +18,7 @@ namespace LibLogic.Helpers
             using (IDbConnection db = Setup.DbFactory)
             {
                 db.Open();
-                db.Insert<LibPoco.Errors>(new LibPoco.Errors(
+                db.Insert<Majorsilence.Vpn.Poco.Errors>(new Majorsilence.Vpn.Poco.Errors(
                     DateTime.UtcNow,
                     msg,
                     "",
@@ -44,7 +44,7 @@ namespace LibLogic.Helpers
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                db.Insert<LibPoco.Errors>(new LibPoco.Errors(
+                db.Insert<Majorsilence.Vpn.Poco.Errors>(new Majorsilence.Vpn.Poco.Errors(
                     DateTime.UtcNow,
                     ex.Message,
                     ex.StackTrace == null ? "" : ex.StackTrace.SafeSubstring(0, 4000),

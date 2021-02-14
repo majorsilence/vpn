@@ -27,20 +27,20 @@ namespace SiteTests
             UpVpnTestServer();
 
 			// setup database and shit
-            var email = new LibLogic.Email.FakeEmail();
-			var setup = new LibLogic.Setup("localhost", testingdb, email, false);
+            var email = new Majorsilence.Vpn.Logic.Email.FakeEmail();
+			var setup = new Majorsilence.Vpn.Logic.Setup("localhost", testingdb, email, false);
 			setup.Execute();
 
 			// set test server ssh port
-			using (IDbConnection db = LibLogic.Setup.DbFactory) 
+			using (IDbConnection db = Majorsilence.Vpn.Logic.Setup.DbFactory) 
 			{
                 db.Open();
-                var siteInfo = db.Query<LibPoco.SiteInfo> ("SELECT * FROM SiteInfo");
+                var siteInfo = db.Query<Majorsilence.Vpn.Poco.SiteInfo> ("SELECT * FROM SiteInfo");
 
 				// See Vagrantfile vpnauthoritytest for ssh port number
 				siteInfo.First ().SshPort = 8023;
 
-				db.Update<LibPoco.SiteInfo> (siteInfo.First ());
+				db.Update<Majorsilence.Vpn.Poco.SiteInfo> (siteInfo.First ());
 
 			}
 
@@ -62,7 +62,7 @@ namespace SiteTests
         [TearDown]
         public void TearDown()
         {
-            string connStrDrop = LibLogic.Setup.DbFactoryWithoutDatabase.ConnectionString;
+            string connStrDrop = Majorsilence.Vpn.Logic.Setup.DbFactoryWithoutDatabase.ConnectionString;
             var cnDrop = new MySql.Data.MySqlClient.MySqlConnection(connStrDrop);
             var cmdDrop = cnDrop.CreateCommand();
             cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);

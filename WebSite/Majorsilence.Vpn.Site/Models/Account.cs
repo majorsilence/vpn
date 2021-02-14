@@ -8,14 +8,14 @@ namespace Majorsilence.Vpn.Site.Models
         public Account(int userId)
         {
 
-            var profileInfo = new LibLogic.Accounts.UserInfo(userId).GetProfile();
+            var profileInfo = new Majorsilence.Vpn.Logic.Accounts.UserInfo(userId).GetProfile();
             FirstName = profileInfo.FirstName;
             LastName = profileInfo.LastName;
             UsersEmail = profileInfo.Email;
 
-            ChargeAmount = LibLogic.Helpers.SiteInfo.CurrentMonthlyRate.ToString("G29");
-            ChargeAmountStripCents = LibLogic.Helpers.SiteInfo.CurrentMonthlyRateInCents;
-            var payInfo = new LibLogic.Payments.Payment(userId);
+            ChargeAmount = Majorsilence.Vpn.Logic.Helpers.SiteInfo.CurrentMonthlyRate.ToString("G29");
+            ChargeAmountStripCents = Majorsilence.Vpn.Logic.Helpers.SiteInfo.CurrentMonthlyRateInCents;
+            var payInfo = new Majorsilence.Vpn.Logic.Payments.Payment(userId);
             AccountExpired = payInfo.IsExpired();
             PaymentHistory = payInfo.History();
         }
@@ -32,7 +32,7 @@ namespace Majorsilence.Vpn.Site.Models
 
         public string LastName { get; set; }
 
-        public IEnumerable<LibPoco.UserPayments> PaymentHistory { get; set; }
+        public IEnumerable<Majorsilence.Vpn.Poco.UserPayments> PaymentHistory { get; set; }
 
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace LibLogic.Payments
+namespace Majorsilence.Vpn.Logic.Payments
 {
     public class StripWebHook : ICommand
     {
@@ -42,7 +42,7 @@ namespace LibLogic.Payments
             }
 
 
-            // TODO: Actually handle the hook if LibLogic.DailyProcessing is not being used
+            // TODO: Actually handle the hook if Majorsilence.Vpn.Logic.DailyProcessing is not being used
 
         }
 

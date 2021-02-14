@@ -4,7 +4,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     public class BetaKeys
     {
@@ -36,7 +36,7 @@ namespace LibLogic.Accounts
                 db.Open();
                 using (var txn = db.BeginTransaction())
                 {
-                    var data = db.Query<LibPoco.BetaKeys>("SELECT * FROM BetaKeys WHERE IsUsed=0 AND IsSent=0 LIMIT 1", null, txn);
+                    var data = db.Query<Majorsilence.Vpn.Poco.BetaKeys>("SELECT * FROM BetaKeys WHERE IsUsed=0 AND IsSent=0 LIMIT 1", null, txn);
                     data.First().IsSent = true;
                     db.Update(data.First(), txn, null);
 
@@ -56,15 +56,15 @@ namespace LibLogic.Accounts
         {
 
             var betakey = RetrieveAndMarkSendKey();
-            var subject = LibLogic.Helpers.SiteInfo.SiteName + " Invite";
+            var subject = Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteName + " Invite";
 
             string signupLink = string.Format("{0}/?betaemail={1}&betacode={2}", 
-                                    LibLogic.Helpers.SiteInfo.SiteUrl, 
+                                    Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteUrl, 
                                     System.Web.HttpUtility.HtmlEncode(emailAddress), 
                                     System.Web.HttpUtility.HtmlEncode(betakey));
 
             var message = string.Format("You have been invited to signup at <a href=\"{0}\">{1}</a>.", 
-                              signupLink, LibLogic.Helpers.SiteInfo.SiteName);
+                              signupLink, Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteName);
             message += " Your beta key is below. <br><br>";
             message += string.Format("<strong>{0}</strong>", betakey);
 
@@ -80,7 +80,7 @@ namespace LibLogic.Accounts
             {
                 db.Open();
                
-                var data = new LibPoco.BetaKeys(betaKey, false, true);
+                var data = new Majorsilence.Vpn.Poco.BetaKeys(betaKey, false, true);
                 db.Insert(data);
             }
 
@@ -96,7 +96,7 @@ namespace LibLogic.Accounts
             {
                 db.Open();
       
-                var data = db.Get<LibPoco.Users>(sentFromUserId);
+                var data = db.Get<Majorsilence.Vpn.Poco.Users>(sentFromUserId);
 
                 sentFromFirstName = data.FirstName;
                 sentFromLastName = data.LastName;
@@ -106,15 +106,15 @@ namespace LibLogic.Accounts
 
 
             var betakey = GenerateKeyAndMarkSent();
-            var subject = LibLogic.Helpers.SiteInfo.SiteName + " Invite";
+            var subject = Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteName + " Invite";
 
             string signupLink = string.Format("{0}/?betaemail={1}&betacode={2}", 
-                                    LibLogic.Helpers.SiteInfo.SiteUrl, 
+                                    Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteUrl, 
                                     System.Web.HttpUtility.HtmlEncode(emailAddressSendTo), 
                                     System.Web.HttpUtility.HtmlEncode(betakey));
 
             var message = string.Format("You have been invited to signup at <a href=\"{0}\">{1}</a> by {2} {3} ({4}).<br><br>", 
-                              signupLink, LibLogic.Helpers.SiteInfo.SiteName, sentFromFirstName, sentFromLastName, 
+                              signupLink, Majorsilence.Vpn.Logic.Helpers.SiteInfo.SiteName, sentFromFirstName, sentFromLastName, 
                               System.Web.HttpUtility.HtmlEncode(sentFromEmailAddress));
 
             message += " Your beta key is below. <br><br>";

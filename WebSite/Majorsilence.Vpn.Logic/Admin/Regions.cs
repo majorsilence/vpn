@@ -6,17 +6,17 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
-namespace LibLogic.Admin
+namespace Majorsilence.Vpn.Logic.Admin
 {
     public class Regions
     {
 
-        public IEnumerable<LibPoco.Regions> Select()
+        public IEnumerable<Majorsilence.Vpn.Poco.Regions> Select()
         {
             using (IDbConnection db = Setup.DbFactory)
             {
                 db.Open();
-                var regions = db.Query<LibPoco.Regions>("SELECT * FROM Regions");
+                var regions = db.Query<Majorsilence.Vpn.Poco.Regions>("SELECT * FROM Regions");
                 return regions;
             }
 
@@ -29,7 +29,7 @@ namespace LibLogic.Admin
             using (IDbConnection db = Setup.DbFactory)
             {
                 db.Open();
-                var region = new LibPoco.Regions(description, active);
+                var region = new Majorsilence.Vpn.Poco.Regions(description, active);
                 return (int)db.Insert(region);
              
             }
@@ -42,7 +42,7 @@ namespace LibLogic.Admin
             {
                 db.Open();
                 // update existing
-                var region = db.Get<LibPoco.Regions>(id);
+                var region = db.Get<Majorsilence.Vpn.Poco.Regions>(id);
                 region.Description = description;
                 region.Active = active;
                 db.Update(region);

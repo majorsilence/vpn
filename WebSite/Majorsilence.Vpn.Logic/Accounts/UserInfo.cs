@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     public class UserInfo
     {
-        private LibPoco.Users details;
+        private Majorsilence.Vpn.Poco.Users details;
 
         private UserInfo()
         {
         }
 
-        public static IEnumerable<LibPoco.Users> RetrieveUserList()
+        public static IEnumerable<Majorsilence.Vpn.Poco.Users> RetrieveUserList()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
-                return cn.Query<LibPoco.Users>("SELECT * FROM Users;");
+                return cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users;");
 
             }
         }
@@ -28,11 +28,11 @@ namespace LibLogic.Accounts
         public UserInfo(int userid)
         {
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
-                details = cn.Get<LibPoco.Users>(userid);
+                details = cn.Get<Majorsilence.Vpn.Poco.Users>(userid);
 
             }
 
@@ -40,7 +40,7 @@ namespace LibLogic.Accounts
 
         public void RemoveAccount()
         {
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
@@ -66,7 +66,7 @@ namespace LibLogic.Accounts
                 throw new Exceptions.InvalidDataException("New password and confirm new password do not match.");
             }
 
-            var login = new LibLogic.Login(details.Email, oldPassword);
+            var login = new Majorsilence.Vpn.Logic.Login(details.Email, oldPassword);
 
             login.Execute();
 
@@ -77,7 +77,7 @@ namespace LibLogic.Accounts
 
 
             var pwd = new CreatePasswords(newPassword, details.FirstName + details.LastName);
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
@@ -105,13 +105,13 @@ namespace LibLogic.Accounts
                 throw new Exceptions.InvalidDataException("A last name must be entered.");
             }
                 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
 
                 if (email.Trim().ToLower() != details.Email.Trim().ToLower())
                 {
-                    var userExists = cn.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email=@Email", new {Email = email});
+                    var userExists = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email", new {Email = email});
 
                     if (userExists.Count() > 0)
                     {
@@ -128,7 +128,7 @@ namespace LibLogic.Accounts
             }
         }
 
-        public LibPoco.Users GetProfile()
+        public Majorsilence.Vpn.Poco.Users GetProfile()
         {
             return details;
         }

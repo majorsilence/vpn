@@ -3,7 +3,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 
-namespace LibLogic.Helpers
+namespace Majorsilence.Vpn.Logic.Helpers
 {
     public static class SslSecurity
     {

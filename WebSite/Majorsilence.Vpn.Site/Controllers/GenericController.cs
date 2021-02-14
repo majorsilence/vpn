@@ -1,4 +1,4 @@
-﻿using LibLogic.Email;
+﻿using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +34,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return null;
             }
 
-            var dl = new LibLogic.OpenVpn.CertsOpenVpnDownload();
+            var dl = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnDownload();
             var fileBytes = dl.UploadToClient(sessionInstance.UserId);
 
             return File(fileBytes, "application/zip", "Certs.zip");
@@ -56,7 +56,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
                 return null;
@@ -69,15 +69,15 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
 
 
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
 
-                using (var ssh = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
-                                     LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
+                using (var ssh = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                     Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
                 {
-                    var revokeOVPN = new LibLogic.OpenVpn.CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh);
+                    var revokeOVPN = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh);
                     revokeOVPN.Execute();
                 }
 
@@ -96,14 +96,14 @@ namespace Majorsilence.Vpn.Site.Controllers
         private void VpnServer(int vpnServerId)
         {
 
-            using (var sshNewServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
-                                          LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
-            using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
-                                             LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
-            using (var sftp = new LibLogic.Ssh.LiveSftp(LibLogic.Helpers.SiteInfo.SshPort,
-                                  LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
+            using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                          Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
+            using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                             Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
+            using (var sftp = new Majorsilence.Vpn.Logic.Ssh.LiveSftp(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                  Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
             {
-                var cert = new LibLogic.OpenVpn.CertsOpenVpnGenerateCommand(sessionInstance.UserId,
+                var cert = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnGenerateCommand(sessionInstance.UserId,
                                vpnServerId, sshNewServer, sshRevokeServer, sftp);
                 cert.Execute();
             }
@@ -112,12 +112,12 @@ namespace Majorsilence.Vpn.Site.Controllers
 
         private void PptpServer(int vpnServerId)
         {
-            using (var sshNewServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
-                                          LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
-            using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
-                                             LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
+            using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                          Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
+            using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                             Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
             {
-                var pptp = new LibLogic.Ppp.ManagePPTP(sessionInstance.UserId, vpnServerId,
+                var pptp = new Majorsilence.Vpn.Logic.Ppp.ManagePPTP(sessionInstance.UserId, vpnServerId,
                                sshNewServer, sshRevokeServer);
                 pptp.AddUser();
             }
@@ -125,12 +125,12 @@ namespace Majorsilence.Vpn.Site.Controllers
 
         private void IpsecServer(int vpnServerId)
         {
-            using (var sshNewServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
-                                          LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
-            using (var sshRevokeServer = new LibLogic.Ssh.LiveSsh(LibLogic.Helpers.SiteInfo.SshPort,
-                                             LibLogic.Helpers.SiteInfo.VpnSshUser, LibLogic.Helpers.SiteInfo.VpnSshPassword))
+            using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                          Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
+            using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.LiveSsh(Majorsilence.Vpn.Logic.Helpers.SiteInfo.SshPort,
+                                             Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshUser, Majorsilence.Vpn.Logic.Helpers.SiteInfo.VpnSshPassword))
             {
-                var ipsec = new LibLogic.Ppp.IpSec(sessionInstance.UserId, vpnServerId, sshNewServer,
+                var ipsec = new Majorsilence.Vpn.Logic.Ppp.IpSec(sessionInstance.UserId, vpnServerId, sshNewServer,
                                 sshRevokeServer);
                 ipsec.AddUser();
             }
@@ -139,13 +139,13 @@ namespace Majorsilence.Vpn.Site.Controllers
         [HttpPost]
         public void LoginValidation(string username, string password)
         {
-            var login = new LibLogic.Login(username, password);
+            var login = new Majorsilence.Vpn.Logic.Login(username, password);
 
             try
             {
                 login.Execute();
             }
-            catch (LibLogic.Exceptions.InvalidDataException)
+            catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
                 return;
@@ -160,7 +160,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             {
                 // if payments have expired or were never setup prompt the user
                 // to setup payments
-                var paymets = new LibLogic.Payments.Payment(sessionInstance.UserId);
+                var paymets = new Majorsilence.Vpn.Logic.Payments.Payment(sessionInstance.UserId);
                 if (paymets.IsExpired())
                 {
                     this.HttpContext.Response.StatusCode = 250;
@@ -183,10 +183,10 @@ namespace Majorsilence.Vpn.Site.Controllers
 
             try
             {
-                var resetPSW = new LibLogic.Accounts.ResetPassword(email);
+                var resetPSW = new Majorsilence.Vpn.Logic.Accounts.ResetPassword(email);
                 resetPSW.sendPasswordLink(username);
             }
-            catch (LibLogic.Exceptions.InvalidDataException ide)
+            catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ide)
             {
                 this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
             }
@@ -209,7 +209,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                     this.HttpContext.Response.StatusCode = 400;
                     return;
                 }
-                var resetPSW = new LibLogic.Accounts.ResetPassword(email);
+                var resetPSW = new Majorsilence.Vpn.Logic.Accounts.ResetPassword(email);
                 resetPSW.validateCode(code, newpsw);
                 this.HttpContext.Response.StatusCode = 250;
             }
@@ -233,7 +233,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
                 using (var stream = new StreamReader(this.HttpContext.Request.Body)) {
                     var json = stream.ReadToEnd();
-                    var hook = new LibLogic.Payments.StripWebHook(json);
+                    var hook = new Majorsilence.Vpn.Logic.Payments.StripWebHook(json);
                     hook.Execute();
 
                 }
@@ -242,7 +242,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             }
             catch (Exception ex)
             {
-                LibLogic.Helpers.Logging.Log(ex, true);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex, true);
                 this.HttpContext.Response.StatusCode = 500;
             }
         }

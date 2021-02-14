@@ -6,7 +6,7 @@ using System.Data;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic
+namespace Majorsilence.Vpn.Logic
 {
     public static class Counters
     {
@@ -20,7 +20,7 @@ namespace LibLogic
         public static ulong GetSetVpnNum(IDbTransaction txn, IDbConnection cn)
         {
 
-            var count = cn.Query<LibPoco.Counters>("SELECT * FROM Counters WHERE Code = @Code",
+            var count = cn.Query<Majorsilence.Vpn.Poco.Counters>("SELECT * FROM Counters WHERE Code = @Code",
                 new {Code = "VPNCERT"});
 
             if (count.Count() != 1)

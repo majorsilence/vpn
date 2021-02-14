@@ -6,7 +6,7 @@ using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     /// <summary>
     /// Retrieve active server details including region

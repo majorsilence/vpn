@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace LibLogic.Helpers
+namespace Majorsilence.Vpn.Logic.Helpers
 {
     public static class StringExtensions
     {

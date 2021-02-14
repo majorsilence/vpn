@@ -6,7 +6,7 @@ using System.Data;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace SiteTestsFast.BetaSite
+namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 {
     /// <summary>
     /// This class is called once for each namespace that has unit tests in it.
@@ -25,30 +25,30 @@ namespace SiteTestsFast.BetaSite
         {
         
             // setup database and shit
-            var email = new LibLogic.Email.FakeEmail();
-            var setup = new LibLogic.Setup("localhost", testingdb, email, false);
+            var email = new Majorsilence.Vpn.Logic.Email.FakeEmail();
+            var setup = new Majorsilence.Vpn.Logic.Setup("localhost", testingdb, email, false);
             setup.Execute();
 
 
             // set test server ssh port
-            using (var db = LibLogic.Setup.DbFactory)
+            using (var db = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 db.Open();
-                var siteInfo = db.Query<LibPoco.SiteInfo>("SELECT * FROM SiteInfo");
+                var siteInfo = db.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo");
 
                 // See Vagrantfile vpnauthoritytest for ssh port number
                 siteInfo.First().SshPort = 8023;
                 siteInfo.First().StripeAPIPublicKey = "pk_test_DBLlRp19zx2pnEYPgbPszWFr";
                 siteInfo.First().StripeAPISecretKey = "sk_test_d2130qPEHAk9VNSXSX7fQFB9";
 
-                db.Update<LibPoco.SiteInfo>(siteInfo.First());
+                db.Update<Majorsilence.Vpn.Poco.SiteInfo>(siteInfo.First());
 
 
-                db.Insert(new LibPoco.BetaKeys("abc1", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc2", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc3", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc4", false, false));
-                db.Insert(new LibPoco.BetaKeys("abc5", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc1", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc2", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc3", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc4", false, false));
+                db.Insert(new Majorsilence.Vpn.Poco.BetaKeys("abc5", false, false));
 
             }
 
@@ -61,7 +61,7 @@ namespace SiteTestsFast.BetaSite
         public void TearDown()
         {
 
-            string connStrDrop = LibLogic.Setup.DbFactoryWithoutDatabase.ConnectionString;
+            string connStrDrop = Majorsilence.Vpn.Logic.Setup.DbFactoryWithoutDatabase.ConnectionString;
             var cnDrop = new MySql.Data.MySqlClient.MySqlConnection(connStrDrop);
             var cmdDrop = cnDrop.CreateCommand();
             cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Dapper;
 
-namespace LibLogic.Admin
+namespace Majorsilence.Vpn.Logic.Admin
 {
     public class ErrorReports
     {
@@ -10,22 +10,22 @@ namespace LibLogic.Admin
         {
         }
 
-        public IEnumerable<LibPoco.Errors> RetrieveAll()
+        public IEnumerable<Majorsilence.Vpn.Poco.Errors> RetrieveAll()
         {
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                return db.Query<LibPoco.Errors>("SELECT * FROM Errors ORDER BY Id desc");
+                return db.Query<Majorsilence.Vpn.Poco.Errors>("SELECT * FROM Errors ORDER BY Id desc");
 
             }
         }
 
-        public IEnumerable<LibPoco.Errors> RetrieveLimit(int start, int count)
+        public IEnumerable<Majorsilence.Vpn.Poco.Errors> RetrieveLimit(int start, int count)
         {
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                return db.Query<LibPoco.Errors>("SELECT * FROM Errors LIMIT @Start, @Count", new {Start = start, Count = count});
+                return db.Query<Majorsilence.Vpn.Poco.Errors>("SELECT * FROM Errors LIMIT @Start, @Count", new {Start = start, Count = count});
 
             }
 

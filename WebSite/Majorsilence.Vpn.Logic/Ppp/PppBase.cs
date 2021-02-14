@@ -5,12 +5,12 @@ using System.Linq;
 using System.Data;
 using System.IO;
 
-namespace LibLogic.Ppp
+namespace Majorsilence.Vpn.Logic.Ppp
 {
     public abstract class PppBase
     {
-        protected LibPoco.Users userData;
-        protected LibPoco.VpnServers vpnData;
+        protected Majorsilence.Vpn.Poco.Users userData;
+        protected Majorsilence.Vpn.Poco.VpnServers vpnData;
         protected string userRequestedPassword;
         private Ssh.ISsh sshNewServer;
         private Ssh.ISsh sshRevokeServer;
@@ -23,8 +23,8 @@ namespace LibLogic.Ppp
         {
             using (var db = Setup.DbFactory)
             {
-                this.userData = db.Get<LibPoco.Users>(userId);
-                this.vpnData = db.Get<LibPoco.VpnServers>(vpnServerId);
+                this.userData = db.Get<Majorsilence.Vpn.Poco.Users>(userId);
+                this.vpnData = db.Get<Majorsilence.Vpn.Poco.VpnServers>(vpnServerId);
             }
 
             this.sshNewServer = sshNewServer;
@@ -34,7 +34,7 @@ namespace LibLogic.Ppp
 
         private bool IsActiveAccount()
         {
-            var pay = new LibLogic.Payments.Payment(userData.Id);
+            var pay = new Majorsilence.Vpn.Logic.Payments.Payment(userData.Id);
             return !pay.IsExpired();
         }
 
@@ -66,14 +66,14 @@ namespace LibLogic.Ppp
 
         }
 
-        protected abstract void AddUserImplementation(LibLogic.Ssh.ISsh sshClient);
+        protected abstract void AddUserImplementation(Majorsilence.Vpn.Logic.Ssh.ISsh sshClient);
 
         public void RevokeUser()
         {
             // we should only revoke if we have records indicating the user has an account on this server.
             using (var db = Setup.DbFactory)
             {
-                var certData = db.Query<LibPoco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
+                var certData = db.Query<Majorsilence.Vpn.Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
                                    new {UserId = userData.Id});
                 if (certData.Count() == 0)
                 {
@@ -96,19 +96,19 @@ namespace LibLogic.Ppp
 
         }
 
-        protected abstract void RevokeUserImplementation(LibLogic.Ssh.ISsh sshClient);
+        protected abstract void RevokeUserImplementation(Majorsilence.Vpn.Logic.Ssh.ISsh sshClient);
 
         protected void SaveUserInfo()
         {
             using (var db = Setup.DbFactory)
             {
 
-                var data = db.Query<LibPoco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
+                var data = db.Query<Majorsilence.Vpn.Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
                                new {UserId = userData.Id});
 
                 if (data.Count() == 0)
                 {
-                    var newData = new LibPoco.UserPptpInfo(userData.Id, false, DateTime.UtcNow, vpnData.Id, userRequestedPassword);
+                    var newData = new Majorsilence.Vpn.Poco.UserPptpInfo(userData.Id, false, DateTime.UtcNow, vpnData.Id, userRequestedPassword);
                     db.Insert(newData);
                 }
                 else

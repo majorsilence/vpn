@@ -7,7 +7,7 @@ using System.Text;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.OpenVpn
+namespace Majorsilence.Vpn.Logic.OpenVpn
 {
     public class CertsOpenVpnDownload
     {
@@ -16,15 +16,15 @@ namespace LibLogic.OpenVpn
         public byte[] UploadToClient(int userid)
         {
 
-            var ovpn = new LibLogic.OpenVpn.InlineOvpnProfile(userid);
+            var ovpn = new Majorsilence.Vpn.Logic.OpenVpn.InlineOvpnProfile(userid);
 
             using (ZipFile zip = new ZipFile())
             {
-                using (var db = LibLogic.Setup.DbFactory)
+                using (var db = Majorsilence.Vpn.Logic.Setup.DbFactory)
                 {
                     db.Open();
 
-                    var userCerts = db.Query<LibPoco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
+                    var userCerts = db.Query<Majorsilence.Vpn.Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
                                         new {UserId = userid});
 
                     if (userCerts.Count() > 0)

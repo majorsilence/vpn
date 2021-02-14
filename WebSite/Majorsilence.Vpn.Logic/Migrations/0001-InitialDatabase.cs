@@ -3,7 +3,7 @@ using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
 
-namespace LibLogic.Migrations
+namespace Majorsilence.Vpn.Logic.Migrations
 {
     [Migration(1, TransactionBehavior.Default)]
     public class InitialDatabase : Migration

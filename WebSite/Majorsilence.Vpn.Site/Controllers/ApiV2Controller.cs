@@ -57,18 +57,18 @@ namespace Majorsilence.Vpn.Site.Controllers
             string token = context.Request.Headers["VpnAuthToken"];
             int uid = -1;
             int.TryParse(context.Request.Headers["VpnUserId"], out uid);
-            var api = new LibLogic.Accounts.UserApiTokens();
+            var api = new Majorsilence.Vpn.Logic.Accounts.UserApiTokens();
             var data = api.Retrieve(uid);
            
             if (data.Token1 != token)
             {
-                LibLogic.Helpers.Logging.Log("data.Token1 != token", false);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log("data.Token1 != token", false);
                 return false;
             }
 
             if (data.Token1ExpireTime <= DateTime.UtcNow)
             {
-                LibLogic.Helpers.Logging.Log("data.Token1ExpireTime <= DateTime.UtcNow", false);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log("data.Token1ExpireTime <= DateTime.UtcNow", false);
                 return false;
             }
 
@@ -80,7 +80,7 @@ namespace Majorsilence.Vpn.Site.Controllers
         public ContentResult Auth()
         {
 
-            // LibLogic.DTO.ApiAuthResponse results;
+            // Majorsilence.Vpn.Logic.DTO.ApiAuthResponse results;
 
             try
             {
@@ -95,17 +95,17 @@ namespace Majorsilence.Vpn.Site.Controllers
                 var creds = ParseAuthHeader(authHeader);
 
 
-                var login = new LibLogic.Login(creds[0], creds[1]);
+                var login = new Majorsilence.Vpn.Logic.Login(creds[0], creds[1]);
 
               
                 try
                 {
                     login.Execute();
                 }
-                catch (LibLogic.Exceptions.InvalidDataException ex)
+                catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ex)
                 {
                     HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                    LibLogic.Helpers.Logging.Log(ex);
+                    Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                     return Content("InternalServerError");
 
                 }
@@ -123,10 +123,10 @@ namespace Majorsilence.Vpn.Site.Controllers
 
          
 
-                var toks = new LibLogic.Accounts.UserApiTokens();
+                var toks = new Majorsilence.Vpn.Logic.Accounts.UserApiTokens();
                 var tokData = toks.Retrieve(login.UserId);
 
-                var results = new LibLogic.DTO.ApiAuthResponse()
+                var results = new Majorsilence.Vpn.Logic.DTO.ApiAuthResponse()
                 {
                     Token1 = tokData.Token1,
                     Token2 = tokData.Token2,
@@ -143,7 +143,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 return Content("InternalServerError");
             }
         }
@@ -157,21 +157,21 @@ namespace Majorsilence.Vpn.Site.Controllers
                 if (!IsAuthenticateUserWithToken(this.HttpContext, out userid))
                 {
                     Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
-                    LibLogic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);
+                    Majorsilence.Vpn.Logic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);
                     return Content("Unauthorized");
                 }
             }
             catch (Exception ex)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 return Content("InternalServerError " + ex.Message + ex.StackTrace);
             }
 
             try
             {
 
-                var details = new LibLogic.Accounts.ServerDetails();
+                var details = new Majorsilence.Vpn.Logic.Accounts.ServerDetails();
                              
                 string data = Newtonsoft.Json.JsonConvert.SerializeObject(details.Info);
                 Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
@@ -180,7 +180,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 return Content("InternalServerError");
             }
         }
@@ -203,14 +203,14 @@ namespace Majorsilence.Vpn.Site.Controllers
                 if (!IsAuthenticateUserWithToken(this.HttpContext, out userid))
                 {
                     Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
-                    LibLogic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);
+                    Majorsilence.Vpn.Logic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);
                     return Content("Unauthorized");
                 }
             }
             catch (Exception ex)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 return Content("InternalServerError " + ex.Message + ex.StackTrace);
             }
 
@@ -223,7 +223,7 @@ namespace Majorsilence.Vpn.Site.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                LibLogic.Helpers.Logging.Log(ex);
+                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 return Content("InternalServerError");
             }
         }
@@ -231,7 +231,7 @@ namespace Majorsilence.Vpn.Site.Controllers
 
         private string WriteZippedCertsToString(int userid)
         {
-            var dl = new LibLogic.OpenVpn.CertsOpenVpnDownload();
+            var dl = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnDownload();
             var fileBytes = dl.UploadToClient(userid);
 
             return Convert.ToBase64String(fileBytes);

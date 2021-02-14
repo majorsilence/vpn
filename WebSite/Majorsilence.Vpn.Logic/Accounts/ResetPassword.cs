@@ -6,7 +6,7 @@ using System.Text;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     public class ResetPassword
     {
@@ -24,7 +24,7 @@ namespace LibLogic.Accounts
 
         public bool validateCode(string resetCode, string password)
         {
-            LibPoco.Users user = RetrieveUser("", resetCode);
+            Majorsilence.Vpn.Poco.Users user = RetrieveUser("", resetCode);
             if (user != null)
             {
                 if (user.PasswordResetCode == resetCode)
@@ -57,7 +57,7 @@ namespace LibLogic.Accounts
         public bool sendPasswordLink(string username)
         {
 
-            LibPoco.Users user = RetrieveUser(username, "");
+            Majorsilence.Vpn.Poco.Users user = RetrieveUser(username, "");
             string ressetCode = generateCode.GeneratePasswordResetCode(username);
             user.PasswordResetCode = ressetCode;
             using (var db = Setup.DbFactory)
@@ -75,25 +75,25 @@ namespace LibLogic.Accounts
                 
             email.SendMail(string.Format("Your Email Reset Code is: <a href=\"https://majorsilencevpn.com/validatecode?resetcode={0}\">{1}</a>", 
                 System.Web.HttpUtility.UrlEncode(ressetCode), ressetCode), 
-                "Password Reset", username, true, null, LibLogic.Email.EmailTemplates.Generic);
+                "Password Reset", username, true, null, Majorsilence.Vpn.Logic.Email.EmailTemplates.Generic);
             return true;
         }
 
-        private LibPoco.Users RetrieveUser(string username, string code)
+        private Majorsilence.Vpn.Poco.Users RetrieveUser(string username, string code)
         {
-            LibPoco.Users user = new LibPoco.Users();
+            Majorsilence.Vpn.Poco.Users user = new Majorsilence.Vpn.Poco.Users();
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                IEnumerable<LibPoco.Users> x = null;
+                IEnumerable<Majorsilence.Vpn.Poco.Users> x = null;
                 if (!string.IsNullOrEmpty(username))
                 {
-                    x = db.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email=@Email", 
+                    x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email", 
                         new {Email = username});
                 }
                 else if (!string.IsNullOrEmpty(code))
                 {
-                    x = db.Query<LibPoco.Users>("SELECT * FROM Users WHERE PasswordResetCode = @PasswordResetCode",
+                    x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE PasswordResetCode = @PasswordResetCode",
                         new {PasswordResetCode = code});
                 }
 	

@@ -6,28 +6,28 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
-namespace LibLogic.Admin
+namespace Majorsilence.Vpn.Logic.Admin
 {
     public class VpnServers
     {
 
-        public IEnumerable<LibPoco.VpnServers> Select()
+        public IEnumerable<Majorsilence.Vpn.Poco.VpnServers> Select()
         {
 
             using (var db = Setup.DbFactory)
             {
-                var vpnList = db.Query<LibPoco.VpnServers>("SELECT * FROM VpnServers");
+                var vpnList = db.Query<Majorsilence.Vpn.Poco.VpnServers>("SELECT * FROM VpnServers");
                 return vpnList;
             }
 
         }
 
-        public LibPoco.VpnServers Select(int id)
+        public Majorsilence.Vpn.Poco.VpnServers Select(int id)
         {
 
             using (var db = Setup.DbFactory)
             {
-                return db.Get<LibPoco.VpnServers>(id);
+                return db.Get<Majorsilence.Vpn.Poco.VpnServers>(id);
             }
 
         }
@@ -39,7 +39,7 @@ namespace LibLogic.Admin
             {
                 db.Open();
 
-                var vpn = new LibPoco.VpnServers(address,
+                var vpn = new Majorsilence.Vpn.Poco.VpnServers(address,
                               port, description,
                               regionId, active);
 
@@ -51,11 +51,11 @@ namespace LibLogic.Admin
         public void Update(int id, string address, int vpnPort, string description,
                            int regionId, bool active)
         {
-            using (var db = LibLogic.Setup.DbFactory)
+            using (var db = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
               
                 // update existing
-                var vpn = db.Get<LibPoco.VpnServers>(id);
+                var vpn = db.Get<Majorsilence.Vpn.Poco.VpnServers>(id);
                 vpn.Address = address;
                 vpn.Description = description;
                 vpn.VpnPort = vpnPort;

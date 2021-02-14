@@ -7,12 +7,12 @@ namespace Majorsilence.Vpn.Site.Models
     {
         public AdminRegions()
         {
-            _regionList = new LibLogic.Admin.Regions().Select();
+            _regionList = new Majorsilence.Vpn.Logic.Admin.Regions().Select();
         }
 
-        private readonly IEnumerable<LibPoco.Regions> _regionList;
+        private readonly IEnumerable<Majorsilence.Vpn.Poco.Regions> _regionList;
 
-        public IEnumerable<LibPoco.Regions> RegionList
+        public IEnumerable<Majorsilence.Vpn.Poco.Regions> RegionList
         { 
             get
             {

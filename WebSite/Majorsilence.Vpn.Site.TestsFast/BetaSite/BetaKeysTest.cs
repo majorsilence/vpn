@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dapper;
 
-namespace SiteTestsFast.BetaSite
+namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 {
     public class BetaKeysTest
     {
@@ -16,16 +16,16 @@ namespace SiteTestsFast.BetaSite
         public void ValidDataTest()
         {
        
-            var email = new LibLogic.Email.FakeEmail();
+            var email = new Majorsilence.Vpn.Logic.Email.FakeEmail();
 
-            var test = new LibLogic.Accounts.BetaKeys(email);
+            var test = new Majorsilence.Vpn.Logic.Accounts.BetaKeys(email);
             string betakey = test.MailInvite("sometestemailbetakey@majorsilence.com");
 
    
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
-                var data = cn.Query<LibPoco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code=@Code", new {Code=betakey});
+                var data = cn.Query<Majorsilence.Vpn.Poco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code=@Code", new {Code=betakey});
 
                 Assert.That(data.First().IsUsed, Is.False);
                 Assert.That(data.First().IsSent, Is.True);

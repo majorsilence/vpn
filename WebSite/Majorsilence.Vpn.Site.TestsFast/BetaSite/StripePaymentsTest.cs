@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Dapper;
 using Stripe;
 
-namespace SiteTestsFast.BetaSite
+namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 {
     public class StripePaymentsTest
     {
@@ -21,12 +21,12 @@ namespace SiteTestsFast.BetaSite
         [SetUp()]
         public void Setup()
         {
-            StripeConfiguration.SetApiKey(LibLogic.Helpers.SiteInfo.StripeAPISecretKey);
+            StripeConfiguration.SetApiKey(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
 
-            LibLogic.Helpers.SslSecurity.Callback();
+            Majorsilence.Vpn.Logic.Helpers.SslSecurity.Callback();
 
-            var peterAccount = new LibLogic.Accounts.CreateAccount(
-                                   new LibLogic.Accounts.CreateAccountInfo()
+            var peterAccount = new Majorsilence.Vpn.Logic.Accounts.CreateAccount(
+                                   new Majorsilence.Vpn.Logic.Accounts.CreateAccountInfo()
                 {
                     Email = emailAddress,
                     EmailConfirm = emailAddress,
@@ -36,7 +36,7 @@ namespace SiteTestsFast.BetaSite
                     PasswordConfirm = "Password1",
                     BetaKey = betaKey
                 }
-                , true, LibLogic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.Setup.Email);
 
             this.userid = peterAccount.Execute();
 
@@ -62,7 +62,7 @@ namespace SiteTestsFast.BetaSite
             myToken.CardName = "Test Name";
             myToken.CardNumber = "4242424242424242";
 
-            var tokenService = new StripeTokenService(LibLogic.Helpers.SiteInfo.StripeAPISecretKey);
+            var tokenService = new StripeTokenService(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
             StripeToken stripeToken = tokenService.Create(myToken);
             this.token = stripeToken.Id;
             System.Console.WriteLine("Token is: " + token);
@@ -73,15 +73,15 @@ namespace SiteTestsFast.BetaSite
         {
             token = "";
 
-            using (var cn = LibLogic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM UserPayments");
-                var userData = cn.Query<LibPoco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
+                var userData = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
 
                 if (userData.First().StripeCustomerAccount.Trim() != "")
                 {
-                    var customerService = new StripeCustomerService(LibLogic.Helpers.SiteInfo.StripeAPISecretKey);
+                    var customerService = new StripeCustomerService(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
                     customerService.Delete(userData.First().StripeCustomerAccount);
                 }
 
@@ -93,18 +93,18 @@ namespace SiteTestsFast.BetaSite
         [Test()]
         public void HappyPathNoCouponTest()
         {
-            LibLogic.Helpers.SslSecurity.Callback();
-            var pay = new LibLogic.Payments.StripePayment(userid, new LibLogic.Email.FakeEmail());
+            Majorsilence.Vpn.Logic.Helpers.SslSecurity.Callback();
+            var pay = new Majorsilence.Vpn.Logic.Payments.StripePayment(userid, new Majorsilence.Vpn.Logic.Email.FakeEmail());
             pay.MakePayment(this.token, "");
         }
 
         [Test()]
         public void MissingTokenTest()
         {
-            LibLogic.Helpers.SslSecurity.Callback();
-            var pay = new LibLogic.Payments.StripePayment(userid, new LibLogic.Email.FakeEmail());
+            Majorsilence.Vpn.Logic.Helpers.SslSecurity.Callback();
+            var pay = new Majorsilence.Vpn.Logic.Payments.StripePayment(userid, new Majorsilence.Vpn.Logic.Email.FakeEmail());
 
-            Assert.Throws<LibLogic.Exceptions.InvalidStripeTokenException>(() => pay.MakePayment("", ""));
+            Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidStripeTokenException>(() => pay.MakePayment("", ""));
            
         }
 

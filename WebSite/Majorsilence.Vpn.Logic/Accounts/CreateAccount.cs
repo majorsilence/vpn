@@ -6,7 +6,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using System.Data;
 
-namespace LibLogic.Accounts
+namespace Majorsilence.Vpn.Logic.Accounts
 {
     public class CreateAccount
     {
@@ -17,7 +17,7 @@ namespace LibLogic.Accounts
         }
 
         private CreateAccountInfo details;
-        private LibPoco.BetaKeys betaKey;
+        private Majorsilence.Vpn.Poco.BetaKeys betaKey;
 
         public CreateAccount(CreateAccountInfo details, Email.IEmail email)
         {
@@ -48,7 +48,7 @@ namespace LibLogic.Accounts
 
                     var pwd = new CreatePasswords(details.Password, details.Firstname + details.Lastname);
 
-                    var userid = db.Insert(new LibPoco.Users(
+                    var userid = db.Insert(new Majorsilence.Vpn.Poco.Users(
                                      details.Email,
                                      pwd.Password,
                                      pwd.Salt,
@@ -104,7 +104,7 @@ namespace LibLogic.Accounts
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                var info = db.Query<LibPoco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code = @code", new { code = details.BetaKey });
+                var info = db.Query<Majorsilence.Vpn.Poco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code = @code", new { code = details.BetaKey });
                 if (info.Count() != 1)
                 {
                     throw new Exceptions.InvalidBetaKeyException("There appears to have been an error validating the beta key.");
@@ -176,7 +176,7 @@ namespace LibLogic.Accounts
             using (var db = Setup.DbFactory)
             {
                 db.Open();
-                var info = db.Query<LibPoco.BetaKeys>("SELECT * FROM Users WHERE Email = @Email", new { Email = details.Email });
+                var info = db.Query<Majorsilence.Vpn.Poco.BetaKeys>("SELECT * FROM Users WHERE Email = @Email", new { Email = details.Email });
                 if (info.Count() > 0)
                 {
                     throw new Exceptions.EmailAddressAlreadyUsedException("The email address specified for this account has already been used.");

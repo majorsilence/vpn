@@ -7,7 +7,7 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using Stripe;
 
-namespace LibLogic.Payments
+namespace Majorsilence.Vpn.Logic.Payments
 {
     public class StripePayment
     {
@@ -16,13 +16,13 @@ namespace LibLogic.Payments
         }
 
         private int _userId;
-        private  LibLogic.Email.IEmail email;
+        private  Majorsilence.Vpn.Logic.Email.IEmail email;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="userId"></param>
-        public StripePayment(int userId, LibLogic.Email.IEmail email)
+        public StripePayment(int userId, Majorsilence.Vpn.Logic.Email.IEmail email)
         {
             _userId = userId;
             this.email = email;
@@ -70,13 +70,13 @@ namespace LibLogic.Payments
             using (var db = Setup.DbFactory)
             {
 
-                var data = db.Get<LibPoco.Users>(_userId);
+                var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
                 data.StripeCustomerAccount = "";
                 db.Update(data);
 
                 this.email.SendMail_BackgroundThread("Your vpn credit card account has been deleted.  " +
                 "You will not be billed again.  You will continue to have access until your current payment expires.", 
-                    "VPN Credit Card Account Deleted", data.Email, true, null, LibLogic.Email.EmailTemplates.Generic);
+                    "VPN Credit Card Account Deleted", data.Email, true, null, Majorsilence.Vpn.Logic.Email.EmailTemplates.Generic);
 
             }
 
@@ -97,13 +97,13 @@ namespace LibLogic.Payments
             using (var db = Setup.DbFactory)
             {
 
-                var data = db.Get<LibPoco.Users>(_userId);
+                var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
                 data.StripeSubscriptionId = "";
                 db.Update(data);
 
                 this.email.SendMail_BackgroundThread("Your vpn account subscription has been cancelled.  " +
                 "You will not be billed again.  You will continue to have access until your current payment expires.", 
-                    "VPN Account Subscription Cancelled", data.Email, true, null, LibLogic.Email.EmailTemplates.Generic);
+                    "VPN Account Subscription Cancelled", data.Email, true, null, Majorsilence.Vpn.Logic.Email.EmailTemplates.Generic);
 
             }
 
@@ -120,7 +120,7 @@ namespace LibLogic.Payments
             using (var db = Setup.DbFactory)
             {
 
-                var data = db.Get<LibPoco.Users>(_userId);
+                var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
 
 
                 var options = new Stripe.StripeSubscriptionCreateOptions();
@@ -164,7 +164,7 @@ namespace LibLogic.Payments
             using (var db = Setup.DbFactory)
             {
 
-                var data = db.Get<LibPoco.Users>(_userId);
+                var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
 
 
                 // If it is the first time the customer has paid we have not created an account yet
@@ -223,7 +223,7 @@ namespace LibLogic.Payments
             using (var db = Setup.DbFactory)
             {
 
-                var data = db.Get<LibPoco.Users>(_userId);
+                var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
 
                 stripeCustId = data.StripeCustomerAccount;
                 stripeSubscriptionId = data.StripeSubscriptionId;

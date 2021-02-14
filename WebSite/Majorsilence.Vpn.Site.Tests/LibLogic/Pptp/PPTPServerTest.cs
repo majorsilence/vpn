@@ -9,10 +9,10 @@ namespace SiteTests.Tests
     {
         public void CreatePptp()
         {
-            using (var sshNewServer = new LibLogic.Ssh.FakeSsh())
-            using (var sshRevokeServer = new LibLogic.Ssh.FakeSsh())
+            using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.FakeSsh())
+            using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.FakeSsh())
             {
-                var ppt = new LibLogic.Ppp.ManagePPTP(2, 1, sshNewServer, sshRevokeServer);
+                var ppt = new Majorsilence.Vpn.Logic.Ppp.ManagePPTP(2, 1, sshNewServer, sshRevokeServer);
                 ppt.AddUser();
             }
 

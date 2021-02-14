@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibLogic\LibLogic.csproj" />
+    <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj" />
   </ItemGroup>
 
   <ItemGroup>

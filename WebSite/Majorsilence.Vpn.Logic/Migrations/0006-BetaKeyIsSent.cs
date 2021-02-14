@@ -2,7 +2,7 @@ using System;
 using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
-namespace LibLogic.Migrations
+namespace Majorsilence.Vpn.Logic.Migrations
 {
     [Migration(6, TransactionBehavior.Default)]
     public class BetaKeyIsSent : Migration

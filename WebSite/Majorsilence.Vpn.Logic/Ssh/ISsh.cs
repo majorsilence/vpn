@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace LibLogic.Ssh
+namespace Majorsilence.Vpn.Logic.Ssh
 {
     public interface ISsh : IDisposable
     {
