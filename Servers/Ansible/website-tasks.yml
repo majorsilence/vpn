@@ -5,9 +5,6 @@
   - name: Execute configuresudo.sh on server
     script: ../websitescripts/configuresudo.sh {{ vpnsshuser }}
 
-  - name: Execute configuremono.sh on server
-    script: ../websitescripts/configuremono.sh
-
   - name: Execute configuressh.sh on server
     script: ../websitescripts/configuressh.sh {{ vpnsshuser }} {{ vpnsshpassword }}
 

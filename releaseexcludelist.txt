@@ -1,5 +1,0 @@
-*.csproj
-*.mdb
-*.cs
-*VpnSite/Properties
-*VpnSite/obj
