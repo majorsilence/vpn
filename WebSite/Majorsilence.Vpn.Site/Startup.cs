@@ -60,7 +60,7 @@ namespace Majorsilence.Vpn.Site
                 options.Cookie.IsEssential = true;
             });
 
-            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddLocalization(options => options.ResourcesPath = "App_GlobalResources");
 
             services.AddControllersWithViews();
 
