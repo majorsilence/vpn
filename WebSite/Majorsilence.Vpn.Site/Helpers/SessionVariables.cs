@@ -9,9 +9,9 @@ namespace Majorsilence.Vpn.Site.Helpers
     public class SessionVariables : ISessionVariables
     {
         HttpContext context;
-        public SessionVariables(HttpContext context)
+        public SessionVariables(IHttpContextAccessor context)
         {
-            this.context = context;
+            this.context = context.HttpContext;
         }
 
         //  public static SessionVariables Instance = new SessionVariables();

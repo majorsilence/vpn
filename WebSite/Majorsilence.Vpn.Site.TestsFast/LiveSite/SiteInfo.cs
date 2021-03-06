@@ -20,7 +20,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
         public void Setup()
         {
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 
@@ -36,7 +36,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
         public void Teardown()
         {
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 
@@ -74,7 +74,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
             Majorsilence.Vpn.Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
 
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 

@@ -20,7 +20,7 @@ namespace Majorsilence.Vpn.Logic.OpenVpn
 
             using (ZipFile zip = new ZipFile())
             {
-                using (var db = Majorsilence.Vpn.Logic.Setup.DbFactory)
+                using (var db = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
                 {
                     db.Open();
 

@@ -35,7 +35,7 @@ namespace Majorsilence.Vpn.Logic
         private string RetrieveUserSalt()
         {
             string salt = "";
-            using (IDbConnection db = Setup.DbFactory)
+            using (IDbConnection db = InitializeSettings.DbFactory)
             {
                 var x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email",
                             new {Email = Username});
@@ -73,7 +73,7 @@ namespace Majorsilence.Vpn.Logic
            
             var saltedpassword = Helpers.Hashes.GetSHA512StringHash(Password, salt);
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email AND Password = @Password", 

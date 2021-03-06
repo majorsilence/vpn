@@ -28,11 +28,11 @@ namespace SiteTests
 
 			// setup database and shit
             var email = new Majorsilence.Vpn.Logic.Email.FakeEmail();
-			var setup = new Majorsilence.Vpn.Logic.Setup("localhost", testingdb, email, false);
+			var setup = new Majorsilence.Vpn.Logic.InitializeSettings("localhost", testingdb, email, false);
 			setup.Execute();
 
 			// set test server ssh port
-			using (IDbConnection db = Majorsilence.Vpn.Logic.Setup.DbFactory) 
+			using (IDbConnection db = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory) 
 			{
                 db.Open();
                 var siteInfo = db.Query<Majorsilence.Vpn.Poco.SiteInfo> ("SELECT * FROM SiteInfo");
@@ -62,7 +62,7 @@ namespace SiteTests
         [TearDown]
         public void TearDown()
         {
-            string connStrDrop = Majorsilence.Vpn.Logic.Setup.DbFactoryWithoutDatabase.ConnectionString;
+            string connStrDrop = Majorsilence.Vpn.Logic.InitializeSettings.DbFactoryWithoutDatabase.ConnectionString;
             var cnDrop = new MySql.Data.MySqlClient.MySqlConnection(connStrDrop);
             var cmdDrop = cnDrop.CreateCommand();
             cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);

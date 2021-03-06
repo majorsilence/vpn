@@ -13,7 +13,7 @@ namespace Majorsilence.Vpn.Logic.Admin
 
         public IEnumerable<Majorsilence.Vpn.Poco.Regions> Select()
         {
-            using (IDbConnection db = Setup.DbFactory)
+            using (IDbConnection db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var regions = db.Query<Majorsilence.Vpn.Poco.Regions>("SELECT * FROM Regions");
@@ -26,7 +26,7 @@ namespace Majorsilence.Vpn.Logic.Admin
         public int Insert(string description, bool active)
         {
         
-            using (IDbConnection db = Setup.DbFactory)
+            using (IDbConnection db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var region = new Majorsilence.Vpn.Poco.Regions(description, active);
@@ -38,7 +38,7 @@ namespace Majorsilence.Vpn.Logic.Admin
         public void Update(int id, string description, bool active)
         {
         
-            using (IDbConnection db = Setup.DbFactory)
+            using (IDbConnection db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 // update existing

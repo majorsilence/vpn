@@ -16,7 +16,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM Users WHERE Email = @email", new {email = emailAddress});
@@ -27,7 +27,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
 
         private bool AccountExists(string email)
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var users = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @Email", new {Email = email});
@@ -53,7 +53,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             var userid = peterAccount.Execute();
 
@@ -89,7 +89,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             var userid = peterAccount.Execute();
 
@@ -139,7 +139,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             var userid = peterAccount.Execute();
 
@@ -173,7 +173,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             var userid = peterAccount.Execute();
 
@@ -207,7 +207,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             var userid = peterAccount.Execute();
 
@@ -241,7 +241,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             var userid = peterAccount.Execute();
 
@@ -256,7 +256,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                 PasswordConfirm = "Password2",
                 BetaKey = ""
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount2.Execute();
 

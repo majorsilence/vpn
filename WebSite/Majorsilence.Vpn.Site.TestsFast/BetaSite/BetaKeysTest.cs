@@ -22,7 +22,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
             string betakey = test.MailInvite("sometestemailbetakey@majorsilence.com");
 
    
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var data = cn.Query<Majorsilence.Vpn.Poco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code=@Code", new {Code=betakey});

@@ -12,7 +12,7 @@ namespace Majorsilence.Vpn.Logic.Admin
 
         public IEnumerable<Majorsilence.Vpn.Poco.Errors> RetrieveAll()
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 return db.Query<Majorsilence.Vpn.Poco.Errors>("SELECT * FROM Errors ORDER BY Id desc");
@@ -22,7 +22,7 @@ namespace Majorsilence.Vpn.Logic.Admin
 
         public IEnumerable<Majorsilence.Vpn.Poco.Errors> RetrieveLimit(int start, int count)
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 return db.Query<Majorsilence.Vpn.Poco.Errors>("SELECT * FROM Errors LIMIT @Start, @Count", new {Start = start, Count = count});

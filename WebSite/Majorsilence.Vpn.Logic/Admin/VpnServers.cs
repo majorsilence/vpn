@@ -14,7 +14,7 @@ namespace Majorsilence.Vpn.Logic.Admin
         public IEnumerable<Majorsilence.Vpn.Poco.VpnServers> Select()
         {
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 var vpnList = db.Query<Majorsilence.Vpn.Poco.VpnServers>("SELECT * FROM VpnServers");
                 return vpnList;
@@ -25,7 +25,7 @@ namespace Majorsilence.Vpn.Logic.Admin
         public Majorsilence.Vpn.Poco.VpnServers Select(int id)
         {
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 return db.Get<Majorsilence.Vpn.Poco.VpnServers>(id);
             }
@@ -35,7 +35,7 @@ namespace Majorsilence.Vpn.Logic.Admin
         public int Insert(string address, int port, string description, 
                           int regionId, bool active)
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
 
@@ -51,7 +51,7 @@ namespace Majorsilence.Vpn.Logic.Admin
         public void Update(int id, string address, int vpnPort, string description,
                            int regionId, bool active)
         {
-            using (var db = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var db = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
               
                 // update existing

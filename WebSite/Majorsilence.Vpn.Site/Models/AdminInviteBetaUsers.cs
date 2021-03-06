@@ -10,7 +10,7 @@ namespace Majorsilence.Vpn.Site.Models
     {
         public AdminInviteBetaUsers()
         {
-            var keys = new Majorsilence.Vpn.Logic.Accounts.BetaKeys(Majorsilence.Vpn.Logic.Setup.Email);
+            var keys = new Majorsilence.Vpn.Logic.Accounts.BetaKeys(Majorsilence.Vpn.Logic.InitializeSettings.Email);
             _remainingBetaKeys = keys.UnsuedKeyCount();
         }
 
@@ -34,7 +34,7 @@ namespace Majorsilence.Vpn.Site.Models
 
         public void SendMail(string emailAddress)
         {
-            var keys = new Majorsilence.Vpn.Logic.Accounts.BetaKeys(Majorsilence.Vpn.Logic.Setup.Email);
+            var keys = new Majorsilence.Vpn.Logic.Accounts.BetaKeys(Majorsilence.Vpn.Logic.InitializeSettings.Email);
             keys.MailInvite(emailAddress);
             _emailSent = true;
 

@@ -21,7 +21,7 @@ namespace Majorsilence.Vpn.Logic.OpenVpn
 
         public CertsOpenVpnRevokeCommand(int userId, Ssh.ISsh sshClient)
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 this.userData = db.Get<Majorsilence.Vpn.Poco.Users>(userId); 
@@ -35,7 +35,7 @@ namespace Majorsilence.Vpn.Logic.OpenVpn
 
             string certName = "";
             Majorsilence.Vpn.Poco.VpnServers vpnData = null;
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var certData = db.Query<Majorsilence.Vpn.Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId", 

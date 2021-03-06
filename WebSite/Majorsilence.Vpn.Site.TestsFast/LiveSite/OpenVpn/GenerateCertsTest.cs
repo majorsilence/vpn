@@ -31,7 +31,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
                     PasswordConfirm = "Password54",
                     BetaKey = ""
                 }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             this.userid = peterAccount.Execute();
 
@@ -46,7 +46,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM ActionLog WHERE UserId=@UserId", new {UserId = this.userid});

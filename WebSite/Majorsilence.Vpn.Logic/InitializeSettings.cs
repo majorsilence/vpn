@@ -10,21 +10,21 @@ using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Logic
 {
-    public class Setup : ICommand
+    public class InitializeSettings : ICommand
     {
         private System.Timers.Timer dailyProcessingTimer;
         private bool isLiveSite;
 
-        private Setup()
+        private InitializeSettings()
         {
         }
 
-        public Setup(string strVpnConnection,  string sessionsConnection, Email.IEmail email, bool isLiveSite)
+        public InitializeSettings(string strVpnConnection, string sessionsConnection, Email.IEmail email, bool isLiveSite)
         {
-            Setup.strConnectionVpn = strVpnConnection;
-            Setup.strConnectionSessions = sessionsConnection;
+            InitializeSettings.strConnectionVpn = strVpnConnection;
+            InitializeSettings.strConnectionSessions = sessionsConnection;
 
-            Setup._email = email;
+            InitializeSettings._email = email;
             this.isLiveSite = isLiveSite;
         }
 
@@ -35,7 +35,7 @@ namespace Majorsilence.Vpn.Logic
             LoadCacheVariables();
             CreateTestAccount();
             InitializeTimers();
-           
+
         }
 
         private static Email.IEmail _email;
@@ -51,7 +51,7 @@ namespace Majorsilence.Vpn.Logic
         private static string strConnectionVpn = null;
         private static string strConnectionSessions = null;
 
-      
+
 
 
         public static IDbConnection DbFactory
@@ -98,15 +98,11 @@ namespace Majorsilence.Vpn.Logic
         private void LoadCacheVariables()
         {
             LoadSiteInfo();
-
-
-
-
         }
 
         private void LoadSiteInfo()
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
 
@@ -120,13 +116,13 @@ namespace Majorsilence.Vpn.Logic
                 {
                     throw new Exceptions.InvalidDataException("Invalid data in SiteInfo.  Multiple rows found.");
                 }
-               
+
                 data.First().LiveSite = isLiveSite;
                 db.Update(data.First());
 
-                var paymenttypes = LoadLookupPaymentTypes();  
+                var paymenttypes = LoadLookupPaymentTypes();
                 var rates = LoadCurrentRates();
-               
+
                 Majorsilence.Vpn.Logic.Helpers.SiteInfo.Initialize(data.First(), paymenttypes.Item1, rates.Item1, rates.Item2,
                     paymenttypes.Item2);
 
@@ -137,7 +133,7 @@ namespace Majorsilence.Vpn.Logic
         private Tuple<int, int> LoadLookupPaymentTypes()
         {
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
 
@@ -170,8 +166,8 @@ namespace Majorsilence.Vpn.Logic
 
         private Tuple<decimal, decimal> LoadCurrentRates()
         {
-         
-            using (var db = Setup.DbFactory)
+
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
 
@@ -207,7 +203,7 @@ namespace Majorsilence.Vpn.Logic
             };
 
             var factory = new FluentMigrator.Runner.Processors.MySql.MySql5ProcessorFactory();
-            var processor = factory.Create(Setup.DbFactory.ConnectionString, announcer, options);
+            var processor = factory.Create(InitializeSettings.DbFactory.ConnectionString, announcer, options);
             var runner = new FluentMigrator.Runner.MigrationRunner(assembly, migrationContext, processor);
             runner.MigrateUp(true);
 
@@ -219,14 +215,16 @@ namespace Majorsilence.Vpn.Logic
         /// <remarks>Mysql/mariadb specific</remarks>
         private void CreateIfNotExists()
         {
-        
-            using (var cn = new MySql.Data.MySqlClient.MySqlConnection(strConnectionVpn))
+            // return new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Uid={1};Pwd={2};Port={3};CharSet=utf8mb4;",
+            //   server, username, password, port));
+
+            var x = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder(strConnectionVpn);
+            string serverConnectionVpn = $"server={x.Server};user={x.UserID};pwd={x.Password};Port={x.Port};CharSet=utf8mb4;";
+
+            using (var cn = new MySql.Data.MySqlClient.MySqlConnection(serverConnectionVpn))
             {
-                string databaseName = cn.Database;
-                cn.ChangeDatabase("");
                 var cmd = cn.CreateCommand();
-                cmd.CommandText = string.Format("CREATE DATABASE IF NOT EXISTS `{0}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;",
-                  databaseName);
+                cmd.CommandText =$"CREATE DATABASE IF NOT EXISTS `{x.Database}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
 
                 cmd.CommandType = System.Data.CommandType.Text;
 
@@ -239,11 +237,15 @@ namespace Majorsilence.Vpn.Logic
             // Alls sessions are store in mysql instead of in process.
             // Provides better support for clustering, load balancing and restarting sites after updates
             // without users being logged out or loosing data
-            using (var cn2 = new MySql.Data.MySqlClient.MySqlConnection(strConnectionSessions))
+
+            var y = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder(strConnectionSessions);
+            string serverConnectionSession = $"server={y.Server};user={y.UserID};pwd={y.Password};Port={y.Port};CharSet=utf8mb4;";
+
+
+            using (var cn2 = new MySql.Data.MySqlClient.MySqlConnection(serverConnectionSession))
             {
-                cn2.ChangeDatabase("");
                 var cmd2 = cn2.CreateCommand();
-                cmd2.CommandText = "CREATE DATABASE IF NOT EXISTS `VpnSessions` CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
+                cmd2.CommandText = $"CREATE DATABASE IF NOT EXISTS `{y.Database}` CHARACTER SET utf8 COLLATE utf8_unicode_ci;";
                 cmd2.CommandType = System.Data.CommandType.Text;
 
                 cn2.Open();
@@ -255,32 +257,36 @@ namespace Majorsilence.Vpn.Logic
 
         private void CreateTestAccount()
         {
-            using (var db = Setup.DbFactory)
+
+
+            // TODO: Replace values with settings in appSetting.json
+
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
-                var peter = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @Email", 
-                                new {Email = "atestuser@majorsilence.com"});
+                var peter = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @Email",
+                                new { Email = "atestuser@majorsilence.com" });
                 if (peter.Count() == 0)
                 {
                     var peterAccount = new Accounts.CreateAccount(
                                            new Accounts.CreateAccountInfo()
-                        {
-                            Email = "atestuser@majorsilence.com",
-                            EmailConfirm = "atestuser@majorsilence.com",
-                            Firstname = "A Test",
-                            Lastname = "User",
-                            Password = "Password1",
-                            PasswordConfirm = "Password1",
-                            BetaKey = "AbC56#",
-                        }
-                        , true, Setup._email);
+                                           {
+                                               Email = "atestuser@majorsilence.com",
+                                               EmailConfirm = "atestuser@majorsilence.com",
+                                               Firstname = "A Test",
+                                               Lastname = "User",
+                                               Password = "Password1",
+                                               PasswordConfirm = "Password1",
+                                               BetaKey = "AbC56#",
+                                           }
+                        , true, InitializeSettings._email);
                     peterAccount.Execute();
                 }
-                    
+
 
             }
-		
-           
+
+
         }
     }
 }

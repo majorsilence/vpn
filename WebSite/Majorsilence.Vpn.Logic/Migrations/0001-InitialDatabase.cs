@@ -168,6 +168,7 @@ namespace Majorsilence.Vpn.Logic.Migrations
 				Description = "default vagrant testing vpn authority, access from vagrant web site", RegionId = canadaRegionId, Active = true});
 			
 
+			// TODO: Replace values with settings in appSetting.json
             // SiteInfo
             int port = 22;
             bool liveSite = false;

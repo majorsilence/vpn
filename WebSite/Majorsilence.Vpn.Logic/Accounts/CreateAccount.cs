@@ -38,7 +38,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
         {
             ValidateData();
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                
@@ -101,7 +101,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
         private void BetaKeySetup()
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var info = db.Query<Majorsilence.Vpn.Poco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code = @code", new { code = details.BetaKey });
@@ -173,7 +173,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
         private void ValidateEmailNotAlreadyUsed()
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var info = db.Query<Majorsilence.Vpn.Poco.BetaKeys>("SELECT * FROM Users WHERE Email = @Email", new { Email = details.Email });

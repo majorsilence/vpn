@@ -39,7 +39,7 @@ namespace Majorsilence.Vpn.Logic.Helpers
         public static void SaveCurrentSettingsToDb()
         {
 
-            using (var cn = Setup.DbFactory)
+            using (var cn = InitializeSettings.DbFactory)
             {
                 cn.Open();
                 using (var txn = cn.BeginTransaction())

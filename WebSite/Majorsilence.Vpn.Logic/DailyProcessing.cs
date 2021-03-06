@@ -33,7 +33,7 @@ namespace Majorsilence.Vpn.Logic
             // retrieve all events for the past day and proceed to process 
             // subscription cancellations.
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
 
                 var data = db.Query<Majorsilence.Vpn.Poco.DatabaseInfo>("SELECT * FROM DatabaseInfo");
@@ -84,7 +84,7 @@ namespace Majorsilence.Vpn.Logic
                                  stripeCustomerId);
 
                         Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
-                        Setup.Email.SendMail_BackgroundThread("Error running DailyProcessing: " + ex.Message,
+                        InitializeSettings.Email.SendMail_BackgroundThread("Error running DailyProcessing: " + ex.Message,
                             "Error running DailyProcessing", Majorsilence.Vpn.Logic.Helpers.SiteInfo.AdminEmail, true, null, 
                             Email.EmailTemplates.Generic);
 

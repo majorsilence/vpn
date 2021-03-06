@@ -25,7 +25,7 @@ namespace Majorsilence.Vpn.Logic.OpenVpn
                                            Ssh.ISsh sshClientRevokeServer, Ssh.ISftp sftpClient)
         {
         
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 this.userData = db.Get<Majorsilence.Vpn.Poco.Users>(userId);
@@ -56,7 +56,7 @@ namespace Majorsilence.Vpn.Logic.OpenVpn
                 this.userData.Id);
 
             ulong num = 0;
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 using (var txn = db.BeginTransaction())
@@ -177,7 +177,7 @@ namespace Majorsilence.Vpn.Logic.OpenVpn
         private void SaveUserCert(string certName, byte[] certCa, byte[]certCrt, 
                                   byte[] certKey, bool expired)
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 // TODO: how does this work, id is user id not UserOpenVpnCerts id

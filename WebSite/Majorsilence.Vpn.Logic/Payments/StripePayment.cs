@@ -67,7 +67,7 @@ namespace Majorsilence.Vpn.Logic.Payments
             var custService = new StripeCustomerService(Helpers.SiteInfo.StripeAPISecretKey);
             custService.Delete(customerDetails.Item1);    
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
 
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
@@ -94,7 +94,7 @@ namespace Majorsilence.Vpn.Logic.Payments
                 subscriptionService.Cancel(customerDetails.Item1, customerDetails.Item2);    
             }
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
 
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
@@ -117,7 +117,7 @@ namespace Majorsilence.Vpn.Logic.Payments
         private void CreateStripeSubscription(string stripeToken, string coupon)
         {
  
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
 
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
@@ -161,7 +161,7 @@ namespace Majorsilence.Vpn.Logic.Payments
         {
 
             var customer = new Stripe.StripeCustomerCreateOptions();
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
 
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
@@ -220,7 +220,7 @@ namespace Majorsilence.Vpn.Logic.Payments
             string stripeCustId = "";
             string stripeSubscriptionId = "";
     
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
 
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);

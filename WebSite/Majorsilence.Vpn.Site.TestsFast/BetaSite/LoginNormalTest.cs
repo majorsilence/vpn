@@ -27,11 +27,11 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                     PasswordConfirm = this.password,
                     BetaKey = betaKey
                 }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount.Execute();
             System.Console.WriteLine("Created account");
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var users = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @Email", new {Email = emailAddress});
@@ -51,7 +51,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM Users WHERE Email = @email", new {email = emailAddress});

@@ -27,7 +27,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
             sql.Append("join UserOpenVpnCerts c on c.VpnServersId = a.Id ");
             sql.Append("where c.userid = @uid");
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var info = db.Query<UserServerDetailsInfo>(sql.ToString(), new { uid = userId });

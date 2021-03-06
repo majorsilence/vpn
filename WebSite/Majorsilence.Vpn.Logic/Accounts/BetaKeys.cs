@@ -18,7 +18,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
         public int UnsuedKeyCount()
         {
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
 
@@ -31,7 +31,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
         private string RetrieveAndMarkSendKey()
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 using (var txn = db.BeginTransaction())
@@ -76,7 +76,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
         private string GenerateKeyAndMarkSent()
         {
             string betaKey = System.Guid.NewGuid().ToString();
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                
@@ -92,7 +92,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
             string sentFromFirstName;
             string sentFromLastName;
             string sentFromEmailAddress;
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
       

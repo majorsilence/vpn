@@ -3,6 +3,7 @@ using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,11 +27,14 @@ namespace Majorsilence.Vpn.Site
 
             var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
             var email = new Majorsilence.Vpn.Logic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
-            var setup = new Majorsilence.Vpn.Logic.Setup(vpnConnectionString, sessionConnectionString, email, false);
+            var setup = new Majorsilence.Vpn.Logic.InitializeSettings(vpnConnectionString, sessionConnectionString, email, false);
 
             try
             {
-                setup.Execute();
+                Logic.Retry.Do(() =>
+                {
+                    setup.Execute();
+                }, TimeSpan.FromSeconds(2), maxAttemptCount: 5);
             }
             catch (Exception ex)
             {
@@ -45,6 +49,7 @@ namespace Majorsilence.Vpn.Site
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddDistributedMemoryCache();
 
             services.AddSession(options =>
@@ -55,6 +60,7 @@ namespace Majorsilence.Vpn.Site
                 options.Cookie.IsEssential = true;
             });
 
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddControllersWithViews();
 
@@ -66,6 +72,9 @@ namespace Majorsilence.Vpn.Site
                 return new Majorsilence.Vpn.Logic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
             });
             services.AddScoped<ISessionVariables, SessionVariables>();
+
+            services.AddMvc()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

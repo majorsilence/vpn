@@ -33,7 +33,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                     PasswordConfirm = "Password1",
                     BetaKey = betaKey
                 }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             this.userid = peterAccount.Execute();
 
@@ -48,7 +48,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                     PasswordConfirm = "Password1",
                     BetaKey = betaKey2
                 }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             this.nonAdminUserId = account2.Execute();
 
@@ -57,7 +57,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM UserPayments");
@@ -80,7 +80,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
             var pay = new Majorsilence.Vpn.Logic.Payments.Payment(this.userid);
             pay.SaveUserPayment(payment, createDate, paycode);
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var data = cn.Query<Majorsilence.Vpn.Poco.UserPayments>("SELECT * FROM UserPayments WHERE UserId = @UserId AND AmountPaid=@amount AND " +

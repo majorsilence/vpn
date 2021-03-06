@@ -23,7 +23,7 @@ namespace Majorsilence.Vpn.Logic.Payments
         {
             this.userId = userId;
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 userInfo = db.Get<Majorsilence.Vpn.Poco.Users>(userId);
@@ -33,7 +33,7 @@ namespace Majorsilence.Vpn.Logic.Payments
         public IEnumerable<Majorsilence.Vpn.Poco.UserPayments> History()
         {
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 var x = db.Query<Majorsilence.Vpn.Poco.UserPayments>("SELECT * FROM UserPayments WHERE UserId=@UserId", 
                             new {UserId = userId});
@@ -68,7 +68,7 @@ namespace Majorsilence.Vpn.Logic.Payments
         public DateTime ExpireDate()
         {
            
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var x = db.Query<Majorsilence.Vpn.Poco.UserPayments>("SELECT * FROM UserPayments WHERE UserId=@uid ORDER BY CreateTime DESC LIMIT 1", 
@@ -114,7 +114,7 @@ namespace Majorsilence.Vpn.Logic.Payments
                 throw new Majorsilence.Vpn.Logic.Exceptions.InvalidUserIdException(string.Format("The user attempting to make payments does not exist.", this.userId));
             }
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
 

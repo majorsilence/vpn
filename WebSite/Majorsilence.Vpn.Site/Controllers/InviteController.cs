@@ -25,7 +25,7 @@ namespace Majorsilence.Vpn.Site.Controllers
                 return null;
             }
 
-            var keys = new Majorsilence.Vpn.Logic.Accounts.BetaKeys(Majorsilence.Vpn.Logic.Setup.Email);
+            var keys = new Majorsilence.Vpn.Logic.Accounts.BetaKeys(Majorsilence.Vpn.Logic.InitializeSettings.Email);
             keys.MailInvite(emailladdress, sessionInstance.UserId);
 
             return View();

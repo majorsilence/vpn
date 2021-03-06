@@ -24,7 +24,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
             sql.Append("from VpnServers a ");
             sql.Append("join Regions b on a.RegionId = b.Id WHERE a.Active=1");
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 details = db.Query<UserServerDetailsInfo>(sql.ToString());

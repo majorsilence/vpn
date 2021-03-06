@@ -11,7 +11,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
         public void ToggleIsAdmin(int userid)
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
 

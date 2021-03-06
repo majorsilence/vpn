@@ -15,7 +15,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
         [TearDown]
         public void Cleanup()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM users WHERE email = @email", new {email = emailAddress});

@@ -13,7 +13,7 @@ namespace Majorsilence.Vpn.Logic
 
         public void Log(string action, int userid)
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 

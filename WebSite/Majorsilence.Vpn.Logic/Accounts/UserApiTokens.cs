@@ -22,7 +22,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
         public Majorsilence.Vpn.Poco.UsersApiTokens Create(int userId)
         {
         
-            using (var cn = Setup.DbFactory)
+            using (var cn = InitializeSettings.DbFactory)
             {
                 cn.Open();
 
@@ -70,7 +70,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
         public Majorsilence.Vpn.Poco.UsersApiTokens Retrieve(int userid)
         {
-            using (var cn = Setup.DbFactory)
+            using (var cn = InitializeSettings.DbFactory)
             {
                 cn.Open();
 

@@ -28,7 +28,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                     PasswordConfirm = this.password,
                     BetaKey = betaKey
                 }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             this.userid = peterAccount.Execute();
 
@@ -37,7 +37,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM Users WHERE Email = @email", new {email = emailAddress});

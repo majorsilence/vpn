@@ -10,11 +10,7 @@ namespace Majorsilence.Vpn.Logic.Migrations
 
         public override void Up()
         {
-
-            Alter.Table("BetaKeys").AddColumn("IsSent").AsBoolean().Nullable();
-            Update.Table("BetaKeys").Set(new { IsSent = false}).AllRows();
-            Alter.Table("BetaKeys").AlterColumn("IsSent").AsBoolean().NotNullable();
-
+            Alter.Table("BetaKeys").AddColumn("IsSent").AsBoolean().WithDefaultValue(false).NotNullable();
         }
 
         public override void Down()

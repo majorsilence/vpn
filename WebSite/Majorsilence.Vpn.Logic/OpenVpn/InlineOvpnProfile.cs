@@ -20,7 +20,7 @@ namespace Majorsilence.Vpn.Logic.OpenVpn
         public InlineOvpnProfile(int userId)
         {
 
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 var data = db.Query<Majorsilence.Vpn.Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",

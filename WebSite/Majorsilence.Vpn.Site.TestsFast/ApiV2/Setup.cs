@@ -44,7 +44,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.ApiV2
                                        PasswordConfirm = password,
                                        BetaKey = betaKey
                                    }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             userid = peterAccount.Execute();
 
@@ -118,12 +118,12 @@ namespace Majorsilence.Vpn.Site.TestsFast.ApiV2
 
             // setup database and shit
             var email = new Majorsilence.Vpn.Logic.Email.FakeEmail();
-            var setup = new Majorsilence.Vpn.Logic.Setup("localhost", testingdb, email, false);
+            var setup = new Majorsilence.Vpn.Logic.InitializeSettings("localhost", testingdb, email, false);
             setup.Execute();
 
 
             // set test server ssh port
-            using (var db = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var db = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 db.Open();
                 var siteInfo = db.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo");
@@ -149,7 +149,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.ApiV2
 
         private void CleanLogin()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM UsersApiTokens WHERE UserId = @Id", new { Id = userid });
@@ -165,7 +165,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.ApiV2
         public void TearDown()
         {
 
-            string connStrDrop = Majorsilence.Vpn.Logic.Setup.DbFactoryWithoutDatabase.ConnectionString;
+            string connStrDrop = Majorsilence.Vpn.Logic.InitializeSettings.DbFactoryWithoutDatabase.ConnectionString;
             var cnDrop = new MySql.Data.MySqlClient.MySqlConnection(connStrDrop);
             var cmdDrop = cnDrop.CreateCommand();
             cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);

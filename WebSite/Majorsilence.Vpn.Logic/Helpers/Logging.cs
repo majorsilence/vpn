@@ -15,7 +15,7 @@ namespace Majorsilence.Vpn.Logic.Helpers
         public static void Log(string msg, bool emailErrorToAdmin)
         {
         
-            using (IDbConnection db = Setup.DbFactory)
+            using (IDbConnection db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 db.Insert<Majorsilence.Vpn.Poco.Errors>(new Majorsilence.Vpn.Poco.Errors(
@@ -30,7 +30,7 @@ namespace Majorsilence.Vpn.Logic.Helpers
             if (emailErrorToAdmin)
             {
 
-                Setup.Email.SendMail_BackgroundThread("Message: " + msg + System.Environment.NewLine,
+                InitializeSettings.Email.SendMail_BackgroundThread("Message: " + msg + System.Environment.NewLine,
                     "Msg somewhere in the system", Helpers.SiteInfo.AdminEmail, true, null,
                     Email.EmailTemplates.Generic);
             }
@@ -41,7 +41,7 @@ namespace Majorsilence.Vpn.Logic.Helpers
         {
 			
             string innerException = GetInnerException(ex);
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 db.Insert<Majorsilence.Vpn.Poco.Errors>(new Majorsilence.Vpn.Poco.Errors(
@@ -56,7 +56,7 @@ namespace Majorsilence.Vpn.Logic.Helpers
             if (emailErrorToAdmin)
             {
 
-                Setup.Email.SendMail_BackgroundThread("Error: " + ex.Message + System.Environment.NewLine + innerException,
+                InitializeSettings.Email.SendMail_BackgroundThread("Error: " + ex.Message + System.Environment.NewLine + innerException,
                     "Error somewhere in the system", Helpers.SiteInfo.AdminEmail, true, null,
                     Email.EmailTemplates.Generic);
             }

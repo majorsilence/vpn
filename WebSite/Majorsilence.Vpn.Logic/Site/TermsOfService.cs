@@ -12,7 +12,7 @@ namespace Majorsilence.Vpn.Logic.Site
 
         public Majorsilence.Vpn.Poco.TermsOfService CurrentTermsOfService()
         {
-            using (var cn = Setup.DbFactory)
+            using (var cn = InitializeSettings.DbFactory)
             {
                 cn.Open();
 

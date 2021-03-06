@@ -21,7 +21,7 @@ namespace Majorsilence.Vpn.Logic.Ppp
 
         protected PppBase(int userId, int vpnServerId, Ssh.ISsh sshNewServer, Ssh.ISsh sshRevokeServer)
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 this.userData = db.Get<Majorsilence.Vpn.Poco.Users>(userId);
                 this.vpnData = db.Get<Majorsilence.Vpn.Poco.VpnServers>(vpnServerId);
@@ -71,7 +71,7 @@ namespace Majorsilence.Vpn.Logic.Ppp
         public void RevokeUser()
         {
             // we should only revoke if we have records indicating the user has an account on this server.
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 var certData = db.Query<Majorsilence.Vpn.Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
                                    new {UserId = userData.Id});
@@ -100,7 +100,7 @@ namespace Majorsilence.Vpn.Logic.Ppp
 
         protected void SaveUserInfo()
         {
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
 
                 var data = db.Query<Majorsilence.Vpn.Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",

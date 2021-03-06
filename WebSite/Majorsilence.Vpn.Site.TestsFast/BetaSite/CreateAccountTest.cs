@@ -17,7 +17,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
         [TearDown()]
         public void Cleanup()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 cn.Execute("DELETE FROM Users WHERE Email = @email", new {email = emailAddress});
@@ -29,7 +29,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 
         private bool AccountExists(string email)
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var users = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @Email", new {Email = email});
@@ -55,7 +55,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount.Execute();
 
@@ -79,7 +79,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount.Execute();
 
@@ -95,7 +95,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey2
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.EmailAddressAlreadyUsedException>(() => peterAccount2.Execute());
    
@@ -118,7 +118,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "A different password",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.PasswordMismatchException>(() => peterAccount.Execute());
            
@@ -141,7 +141,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.PasswordLengthException>(() => peterAccount.Execute());
@@ -166,7 +166,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.EmailMismatchException>(() => peterAccount.Execute());
             
@@ -191,11 +191,11 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "β",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount.Execute();
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var data = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = unicodeEmailAddress});
@@ -225,11 +225,11 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount.Execute();
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var data = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
@@ -256,11 +256,11 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , false, Majorsilence.Vpn.Logic.Setup.Email);
+                , false, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount.Execute();
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
                 var data = cn.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email = @email", new {email = emailAddress});
@@ -287,7 +287,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
            
@@ -311,7 +311,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
            
@@ -335,7 +335,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidDataException>(() => peterAccount.Execute());
             
@@ -360,7 +360,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             peterAccount.Execute();
 
@@ -375,7 +375,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.BetaKeyAlreadyUsedException>(() => peterAccount2.Execute());
             
@@ -401,7 +401,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = "A Fake Beta Key"
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
@@ -428,7 +428,7 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-                , true, Majorsilence.Vpn.Logic.Setup.Email);
+                , true, Majorsilence.Vpn.Logic.InitializeSettings.Email);
 
             Assert.Throws<Majorsilence.Vpn.Logic.Exceptions.InvalidBetaKeyException>(() => peterAccount.Execute());
             

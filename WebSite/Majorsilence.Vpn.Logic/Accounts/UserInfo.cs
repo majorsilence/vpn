@@ -16,7 +16,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
         public static IEnumerable<Majorsilence.Vpn.Poco.Users> RetrieveUserList()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 
@@ -28,7 +28,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
         public UserInfo(int userid)
         {
 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 
@@ -40,7 +40,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
         public void RemoveAccount()
         {
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 
@@ -77,7 +77,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
 
 
             var pwd = new CreatePasswords(newPassword, details.FirstName + details.LastName);
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 
@@ -105,7 +105,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
                 throw new Exceptions.InvalidDataException("A last name must be entered.");
             }
                 
-            using (var cn = Majorsilence.Vpn.Logic.Setup.DbFactory)
+            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
             {
                 cn.Open();
 

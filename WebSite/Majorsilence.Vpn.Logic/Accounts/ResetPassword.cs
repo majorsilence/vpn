@@ -33,7 +33,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
                     user.PasswordResetCode = "";
                     user.Password = pwd.Password;
                     user.Salt = pwd.Salt;
-                    using (var db = Setup.DbFactory)
+                    using (var db = InitializeSettings.DbFactory)
                     {
                         db.Open();
 
@@ -60,7 +60,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
             Majorsilence.Vpn.Poco.Users user = RetrieveUser(username, "");
             string ressetCode = generateCode.GeneratePasswordResetCode(username);
             user.PasswordResetCode = ressetCode;
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 using (var txn = db.BeginTransaction())
@@ -82,7 +82,7 @@ namespace Majorsilence.Vpn.Logic.Accounts
         private Majorsilence.Vpn.Poco.Users RetrieveUser(string username, string code)
         {
             Majorsilence.Vpn.Poco.Users user = new Majorsilence.Vpn.Poco.Users();
-            using (var db = Setup.DbFactory)
+            using (var db = InitializeSettings.DbFactory)
             {
                 db.Open();
                 IEnumerable<Majorsilence.Vpn.Poco.Users> x = null;
