@@ -12,7 +12,7 @@ configurenginxbasic()
 	# and http://wiki.nginx.org/Mono
 	# and http://sourcecodebean.com/archives/serving-your-asp-net-mvc-site-on-nginx-fastcgi-mono-server4/1617
 	# and https://github.com/ServiceStack/ServiceStack/wiki/Run-ServiceStack-in-Fastcgi-hosted-on-nginx
-	apt-get install -y nginx mono-fastcgi-server acl
+	apt-get install -y nginx acl
 	echo "Installing nginx software finished" 
 
 	if [ ! -d "/var/www/$webaddress" ]; then

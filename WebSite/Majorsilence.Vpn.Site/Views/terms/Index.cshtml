@@ -1,0 +1,11 @@
+﻿@model Majorsilence.Vpn.Site.Models.Terms
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewBag.Title = "Terms of Service";
+    Layout = "~/Views/GeneralLayout.cshtml";
+}
+
+<h1>@Localizer["FooterTos"]</h1>
+
+@Html.Raw(Model.TOS.Terms)

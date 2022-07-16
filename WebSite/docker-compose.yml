@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  db:
+    container_name: MariaDbServer
+    image: mariadb:10.5
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: vpndb
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: Password123
+      MYSQL_ROOT_PASSWORD: Password123
+      #MYSQL_ROOT_HOST: 172.17.0.1
+    volumes:
+      - dbdata:/var/lib/mysql
+      #- ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
+    restart: always
+
+  majorsilence.vpn.site:
+    image: ${DOCKER_REGISTRY-}majorsilencevpnsite
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__MySqlSessions: server=MariaDbServer;user=dbuser;pwd=Password123;database=VpnSessions;CharSet=utf8mb4;
+      ConnectionStrings__MySqlVpn: server=MariaDbServer;user=dbuser;pwd=Password123;database=vpndb;CharSet=utf8mb4;
+    build:
+      context: .
+      dockerfile: Majorsilence.Vpn.Site/Dockerfile
+
+volumes:
+  dbdata:

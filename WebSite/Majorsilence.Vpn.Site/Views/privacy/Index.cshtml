@@ -1,0 +1,12 @@
+﻿@model Majorsilence.Vpn.Site.Models.Privacy
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewBag.Title = "Privacy Policy";
+    Layout = "~/Views/GeneralLayout.cshtml";
+}
+
+<h1>@Localizer["FooterPPolicy"]</h1>
+
+@Html.Raw(Model.CurrentPrivacy.Policy)
+

@@ -1,0 +1,49 @@
+﻿@model Majorsilence.Vpn.Site.Models.AdminRegions
+@{
+    ViewBag.Title = "Admin Regions";
+    Layout = "~/Views/AdminView.cshtml";
+}
+
+@{
+	<h1>Regions</h1>
+	<a href="/adminregionsedit?id=new&desc=newregion&active=checked">Add New Region</a>
+	<br /><br />
+	var html = new System.Text.StringBuilder();
+	html.Append("<table class=\"table\">");
+	html.Append("<tr>");
+	html.Append("<th>ID</th>");
+	html.Append("<th>Description</th>");
+	html.Append("<th>Active</th>");
+	html.Append("</tr>");
+
+
+	foreach (var region in @Model.RegionList)
+	{
+		html.Append("<tr>");
+
+		html.Append("<td>");
+		html.Append(string.Format("<a href=\"/adminregionsedit?id={0}&desc={1}&active={2}\">{0}</a>", 
+			region.Id, Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(region.Description),
+			region.Active? "checked":""));
+		html.Append("</td>");
+
+		html.Append("<td>");
+		html.Append(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(region.Description));
+		html.Append("</td>");
+
+		html.Append("<td>");
+		html.Append(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(region.Active.ToString()));
+		html.Append("</td>");
+
+		html.Append("</tr>");
+	}
+
+
+
+	html.Append("</table>");
+	
+	@Html.Raw(html.ToString())
+}
+
+
+
