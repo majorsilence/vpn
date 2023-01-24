@@ -1,4 +1,4 @@
-﻿using Stripe;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +21,10 @@ namespace Majorsilence.Vpn.Logic.Payments
 
         public void Execute()
         {
-            var stripeEvent = StripeEventUtility.ParseEvent(json);
+            
+            var stripeEvent = Stripe.EventUtility.ParseEvent(json);
 
-            if (stripeEvent.LiveMode == false)
+            if (stripeEvent.Livemode == false)
             {
                 return;
             }
@@ -33,14 +34,14 @@ namespace Majorsilence.Vpn.Logic.Payments
             {
                 case "customer.subscription.deleted":
                     // Event fires when a user cancels a subscription
-                    var aa = Stripe.Mapper<StripeSubscription>.MapFromJson(stripeEvent.Data.Object.ToString());
+                    var aa = (Stripe.Subscription)stripeEvent.Data.Object;
                     var customerId = aa.CustomerId;
                     break;
                 case "charge.refunded":  // take a look at all the types here: https://stripe.com/docs/api#event_types
-                    var stripeCharge = Stripe.Mapper<StripeCharge>.MapFromJson(stripeEvent.Data.Object.ToString());
+                    var stripeCharge = (Stripe.Charge)stripeEvent.Data.Object;
                     break;
             }
-
+            
 
             // TODO: Actually handle the hook if Majorsilence.Vpn.Logic.DailyProcessing is not being used
 

@@ -37,8 +37,9 @@ namespace Majorsilence.Vpn.Site.TestsFast.LiveSite
 
                 // See Vagrantfile vpnauthoritytest for ssh port number
                 siteInfo.First().SshPort = 8023;
-                siteInfo.First().StripeAPIPublicKey = "pk_test_DBLlRp19zx2pnEYPgbPszWFr";
-                siteInfo.First().StripeAPISecretKey = "sk_test_d2130qPEHAk9VNSXSX7fQFB9";
+                // FIXME: Read api keys from appsettings.json
+                siteInfo.First().StripeAPIPublicKey = "";
+                siteInfo.First().StripeAPISecretKey = "";
 
                 db.Update<Majorsilence.Vpn.Poco.SiteInfo>(siteInfo.First());
 

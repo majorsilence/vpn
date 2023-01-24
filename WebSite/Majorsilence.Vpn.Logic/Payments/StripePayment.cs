@@ -63,8 +63,8 @@ namespace Majorsilence.Vpn.Logic.Payments
             {
                 throw new Exceptions.InvalidDataException("Attempting to cancel an account but the customer does not have any stripe details");
             }
-
-            var custService = new StripeCustomerService(Helpers.SiteInfo.StripeAPISecretKey);
+            var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+            var custService = new Stripe.CustomerService(client);
             custService.Delete(customerDetails.Item1);    
 
             using (var db = InitializeSettings.DbFactory)
@@ -90,7 +90,8 @@ namespace Majorsilence.Vpn.Logic.Payments
             var customerDetails = GetSavedCustomerStripeDetails();
             if (customerDetails != null)
             {
-                var subscriptionService = new StripeSubscriptionService(Helpers.SiteInfo.StripeAPISecretKey);
+                var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+                var subscriptionService = new Stripe.SubscriptionService(client);
                 subscriptionService.Cancel(customerDetails.Item1, customerDetails.Item2);    
             }
 
@@ -123,19 +124,19 @@ namespace Majorsilence.Vpn.Logic.Payments
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
 
 
-                var options = new Stripe.StripeSubscriptionCreateOptions();
+                var options = new Stripe.SubscriptionCreateOptions();
                 options.TokenId = stripeToken;
                 if (coupon.Trim() != "")
                 {
                     options.CouponId = coupon;
                 }
 
-                var subscriptionService = new StripeSubscriptionService();
-                StripeSubscription stripeSubscription = subscriptionService.Create(data.StripeCustomerAccount, 
+                var subscriptionService = new Stripe.SubscriptionService();
+                Stripe.Subscription stripeSubscription = subscriptionService.Create(data.StripeCustomerAccount, 
                                                             Helpers.SiteInfo.StripePlanId, options);
 
-
-                var subscriptionInfo = new StripeSubscriptionService(Helpers.SiteInfo.StripeAPISecretKey);
+                var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+                var subscriptionInfo = new Stripe.SubscriptionService(client);
                 var subscriptionList = subscriptionInfo.List(data.StripeCustomerAccount).ToList();
 
                 if (subscriptionList.Count() > 1)
@@ -160,7 +161,7 @@ namespace Majorsilence.Vpn.Logic.Payments
         private void CreateStripeCustomer(string stripeToken, string coupon)
         {
 
-            var customer = new Stripe.StripeCustomerCreateOptions();
+            var customer = new Stripe.CustomerCreateOptions();
             using (var db = InitializeSettings.DbFactory)
             {
 
@@ -178,10 +179,11 @@ namespace Majorsilence.Vpn.Logic.Payments
                 {
                     customer.CouponId = coupon;
                 }
-                var customerService = new StripeCustomerService(Helpers.SiteInfo.StripeAPISecretKey);
+                var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+                var customerService = new Stripe.CustomerService(client);
                 var cust = customerService.Create(customer);
 
-                var subscriptionInfo = new StripeSubscriptionService(Helpers.SiteInfo.StripeAPISecretKey);
+                var subscriptionInfo = new Stripe.SubscriptionService(client);
                 var subscriptionList = subscriptionInfo.List(cust.Id).ToList();
 
                 if (subscriptionList.Count() > 1)

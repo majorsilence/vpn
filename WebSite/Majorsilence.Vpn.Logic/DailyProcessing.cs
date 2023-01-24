@@ -46,18 +46,19 @@ namespace Majorsilence.Vpn.Logic
 
                 Helpers.SslSecurity.Callback();
 
-                var eventService = new StripeChargeService(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
-                var options = new StripeChargeListOptions()
+                var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+                var eventService = new Stripe.ChargeService(client);
+                var options = new Stripe.ChargeListOptions()
                 {
                     Limit = 1000,
-                    Created = new StripeDateFilter
-                    { 
+                    Created = new AnyOf<DateTime?, DateRangeOptions>(new DateRangeOptions()
+                    {
                         GreaterThanOrEqual = data.First().LastDailyProcess
-                    }
+                    })
                 };
                  
 
-                IEnumerable<StripeCharge> response = eventService.List(options);
+                IEnumerable<Stripe.Charge> response = eventService.List(options);
 
                 foreach (var evt in response)
                 {
