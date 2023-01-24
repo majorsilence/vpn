@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid>{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}</ProjectGuid>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <TargetFrameworks>net5.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
@@ -25,11 +25,11 @@
     <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.15.0" />
-    <PackageReference Include="FluentMigrator.Runner" Version="3.2.11" />
-    <PackageReference Include="MySql.Data" Version="8.0.23" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="DotNetZip" Version="1.16.0" />
+    <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
+    <PackageReference Include="MySql.Data" Version="8.0.32" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="RestSharp" Version="108.0.3" />
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
     <PackageReference Include="Stripe.net" Version="2.5.1" />
   </ItemGroup>

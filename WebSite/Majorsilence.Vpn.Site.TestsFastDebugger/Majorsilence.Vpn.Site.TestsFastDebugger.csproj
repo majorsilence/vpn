@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net5.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <AssemblyTitle>Majorsilence.Vpn.Site.TestsFastDebugger</AssemblyTitle>
     <Company>Majorsilence Solutions Inc.</Company>
     <Copyright>Peter Gill</Copyright>
@@ -21,6 +21,6 @@
     <ProjectReference Include="..\Majorsilence.Vpn.Site.TestsFast\Majorsilence.Vpn.Site.TestsFast.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.23" />
+    <PackageReference Include="MySql.Data" Version="8.0.32" />
   </ItemGroup>
 </Project>

@@ -12,19 +12,20 @@ namespace Majorsilence.Vpn.Logic.Payments
 {
     public class PaypalPayment
     {
-
         private string url;
         private static string accessToken = "";
         private static string paymentid = "";
         private int userId;
+        private IPaypalSettings _paypalSettings;
 
         private PaypalPayment()
         {
         }
 
-        public PaypalPayment(int userId)
+        public PaypalPayment(int userId, IPaypalSettings paypalSettings)
         {
             this.userId = userId;
+            _paypalSettings = paypalSettings;
         }
 
         /// <summary>
@@ -43,6 +44,7 @@ namespace Majorsilence.Vpn.Logic.Payments
             {
                 throw new Exceptions.InvalidDataException("Invalid");
             }
+
             if (amount == 0)
             {
                 throw new Exceptions.InvalidDataException("Invalid");
@@ -65,12 +67,12 @@ namespace Majorsilence.Vpn.Logic.Payments
 
         private string GetAccessToken()
         {
-
-            var client = new RestClient("https://api.sandbox.paypal.com/v1/oauth2/token");
+            var options = new RestClientOptions(_paypalSettings.Url);
+            using var client = new RestClient(options);
             client.Authenticator = new HttpBasicAuthenticator(
-                "AfhMaBAlk7Psj-PumK7fhiO2Ata3Pq8EBUyfbWyfBX3hbhCaL3OSyPPJure_",
-                "ELgWJxB-qFjyorRj75ZM8tb0y_7_Cqzt_U02hhGFPy5Nw1QU4zFh7Ii5LMN6");
-            var request = new RestRequest(Method.POST);
+                _paypalSettings.Username,
+                _paypalSettings.Password);
+            var request = new RestRequest("/v1/oauth2/token", Method.Post);
             request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddParameter("grant_type", "client_credentials");
             try
@@ -88,15 +90,11 @@ namespace Majorsilence.Vpn.Logic.Payments
                 {
                     throw new Exceptions.InvalidDataException(response.StatusDescription);
                 }
-
             }
             catch (Exception ex)
             {
-
                 throw new Exceptions.InvalidDataException(ex.Message);
-
             }
-
         }
 
         /// <summary>
@@ -107,9 +105,9 @@ namespace Majorsilence.Vpn.Logic.Payments
         /// <returns></returns>
         private string DoPayment(string token, decimal amount)
         {
-
-            var client = new RestClient("https://api.sandbox.paypal.com/v1/payments/payment");
-            var request = new RestRequest(Method.POST);
+            var options = new RestClientOptions(_paypalSettings.Url);
+            using var client = new RestClient(options);
+            var request = new RestRequest("/v1/payments/payment", Method.Post);
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("Authorization", token);
 
@@ -125,9 +123,9 @@ namespace Majorsilence.Vpn.Logic.Payments
             preq.transactions = new List<DTO.PayPalTransactions>
             {
                 new DTO.PayPalTransactions
-                { 
+                {
                     amount = new DTO.PayPalAmount { total = amount.ToString("0.00"), currency = "USD" },
-                    description = "test" 
+                    description = "test"
                 }
             };
             request.AddBody(preq);
@@ -138,8 +136,9 @@ namespace Majorsilence.Vpn.Logic.Payments
                 if (response.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     var content = response.Content;
-                   
-                    var payPalResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.PaypalPaymentResponse>(content);
+
+                    var payPalResponse =
+                        Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.PaypalPaymentResponse>(content);
 
                     // Send back the approval URL
                     foreach (DTO.PayPallinks link in payPalResponse.links)
@@ -157,13 +156,10 @@ namespace Majorsilence.Vpn.Logic.Payments
                 {
                     throw new Exceptions.InvalidDataException(response.StatusDescription);
                 }
-
             }
             catch (Exception ex)
             {
-
                 throw new Exceptions.InvalidDataException(ex.Message);
-
             }
         }
 
@@ -174,23 +170,25 @@ namespace Majorsilence.Vpn.Logic.Payments
         /// <param name="tokenn"></param>
         public void ExecutePayment(string payid, string tokenn)
         {
-
             //validate
             if (String.IsNullOrEmpty(payid))
             {
                 throw new Exceptions.InvalidDataException("Invalid Request");
             }
+
             if (String.IsNullOrEmpty(paymentid))
             {
                 throw new Exceptions.InvalidDataException("Invalid Request");
             }
+
             if (String.IsNullOrEmpty(accessToken))
             {
                 throw new Exceptions.InvalidDataException("Invalid Request");
             }
 
-            var client = new RestClient("https://api.sandbox.paypal.com/v1/payments/payment/" + paymentid + "/execute/");
-            var request = new RestRequest(Method.POST);
+            var options = new RestClientOptions(_paypalSettings.Url);
+            using var client = new RestClient(options);
+            var request = new RestRequest("/v1/payments/payment/" + paymentid + "/execute/", Method.Post);
             request.RequestFormat = DataFormat.Json;
             //string token=GetAccessToken();
             request.AddHeader("Content-Type", "application/json");
@@ -204,7 +202,8 @@ namespace Majorsilence.Vpn.Logic.Payments
                     var content = response.Content;
                     accessToken = null;
                     paymentid = null;
-                    var payPalResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.PaypalPayExecuteResponse>(content);
+                    var payPalResponse =
+                        Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.PaypalPayExecuteResponse>(content);
 
                     var pay = new Payment(this.userId);
                     foreach (DTO.PayPalTransactions transaction in payPalResponse.transactions)
@@ -218,16 +217,11 @@ namespace Majorsilence.Vpn.Logic.Payments
                 {
                     throw new Exceptions.InvalidDataException(response.StatusDescription);
                 }
-
             }
             catch (Exception ex)
             {
-
                 throw new Exceptions.InvalidDataException(ex.Message);
-
             }
-
         }
-
     }
 }

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Majorsilence.Vpn.Logic.Payments;
 using VpnSite.Models;
 
 namespace Majorsilence.Vpn.Site
@@ -71,6 +72,7 @@ namespace Majorsilence.Vpn.Site
                 var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
                 return new Majorsilence.Vpn.Logic.Email.LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
             });
+            services.AddScoped<IPaypalSettings>(i => Configuration.GetSection("Paypal").Get<PaypalSettings>());
             services.AddScoped<ISessionVariables, SessionVariables>();
 
             services.AddMvc()
