@@ -1,11 +1,12 @@
 ﻿using System;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("TermsOfService")]
+[Table("TermsOfService")]
 public class TermsOfService
 {
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public string Terms { get; set; }
 

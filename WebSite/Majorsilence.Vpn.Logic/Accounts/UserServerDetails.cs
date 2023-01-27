@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
+using System.Text;
 using Dapper;
-using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
@@ -14,13 +12,11 @@ public class UserServerDetails
     {
     }
 
-    private UserServerDetailsInfo details = null;
-
     public UserServerDetails(int userId)
     {
         //  this._userId = userId;
 
-        var sql = new System.Text.StringBuilder();
+        var sql = new StringBuilder();
         sql.Append(
             "select a.Id as 'VpnServerId', b.Id as 'RegionId', a.Description as 'VpnServerName', b.Description as 'RegionName', a.Address, '' as 'Password'");
         sql.Append("from VpnServers a ");
@@ -33,21 +29,21 @@ public class UserServerDetails
             db.Open();
             var info = db.Query<UserServerDetailsInfo>(sql.ToString(), new { uid = userId });
             if (info.Count() == 1)
-                details = info.FirstOrDefault();
+                Info = info.FirstOrDefault();
             else if (info.Count() > 1)
-                throw new Exceptions.InvalidDataException(
+                throw new InvalidDataException(
                     "Some how you have multiple vpn certs and that is not supposed to be possible yet.");
 
 
-            var pptp = db.Query<Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo WHERE UserId=@UserId",
+            var pptp = db.Query<UserPptpInfo>("SELECT * FROM UserPptpInfo WHERE UserId=@UserId",
                 new { UserId = userId });
             if (pptp.Count() == 1)
-                details.PptpPassword = pptp.FirstOrDefault().Password;
+                Info.PptpPassword = pptp.FirstOrDefault().Password;
             else if (pptp.Count() > 1)
-                throw new Exceptions.InvalidDataException(
+                throw new InvalidDataException(
                     "Some how you have multiple pptp accounts or vpn certs and that is not supposed to be possible yet.");
         }
     }
 
-    public UserServerDetailsInfo Info => details;
+    public UserServerDetailsInfo Info { get; }
 }

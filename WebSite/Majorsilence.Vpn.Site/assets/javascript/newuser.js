@@ -26,7 +26,7 @@ var NewUser;
     function CreateNewUser() {
         var firstname_val = $("#fname").val();
         var lastname_val = $("#lname").val();
-        ;
+
         var password_val = $("#password").val();
         var confirmPassword = $("#cpassword").val();
         var email_val = $("#email").val();

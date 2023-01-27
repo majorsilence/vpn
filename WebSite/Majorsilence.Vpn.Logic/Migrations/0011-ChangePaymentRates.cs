@@ -1,10 +1,8 @@
-﻿using System;
-using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
+﻿using FluentMigrator;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(11, TransactionBehavior.Default)]
+[Migration(11)]
 public class ChangePaymentRates : Migration
 {
     public override void Up()

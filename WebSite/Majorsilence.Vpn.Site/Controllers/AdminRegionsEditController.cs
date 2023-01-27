@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Majorsilence.Vpn.Logic.Admin;
 using Majorsilence.Vpn.Site.Helpers;
+using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -22,7 +20,7 @@ public class AdminRegionsEditController : Controller
         ViewData["id"] = id;
         ViewData["desc"] = desc;
         ViewData["active"] = active;
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 
     public ActionResult EditRegions(int? id, string desc, string active)
@@ -31,7 +29,7 @@ public class AdminRegionsEditController : Controller
 
         int n;
 
-        var edit = new Logic.Admin.Regions();
+        var edit = new Regions();
 
 
         var activeYes = false;
@@ -43,6 +41,6 @@ public class AdminRegionsEditController : Controller
             edit.Insert(desc, activeYes);
 
 
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 }

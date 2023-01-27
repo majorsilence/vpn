@@ -1,37 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
+using System.Text;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Data;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.OpenVpn;
 
 /// <summary>
-/// Create a ovpn profile for openvpn that inlines the ca, cert, and key
+///     Create a ovpn profile for openvpn that inlines the ca, cert, and key
 /// </summary>
 public class InlineOvpnProfile
 {
-    private Poco.UserOpenVpnCerts userCertData = null;
-    private Poco.VpnServers serverData = null;
+    private readonly VpnServers serverData;
+    private readonly UserOpenVpnCerts userCertData;
 
     public InlineOvpnProfile(int userId)
     {
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            var data = db.Query<Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
+            var data = db.Query<UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
                 new { UserId = userId });
 
             if (data.Count() == 1)
             {
                 userCertData = data.First();
-                serverData = db.Get<Poco.VpnServers>(userCertData.VpnServersId);
+                serverData = db.Get<VpnServers>(userCertData.VpnServersId);
             }
             else if (data.Count() > 1)
             {
-                throw new Exceptions.InvalidDataException("InlineOvpnProfile, to many values found.");
+                throw new InvalidDataException("InlineOvpnProfile, to many values found.");
             }
         }
     }
@@ -43,7 +42,7 @@ public class InlineOvpnProfile
         {
             if (userCertData == null) return "";
 
-            var data = new System.Text.StringBuilder();
+            var data = new StringBuilder();
             data.Append("client");
             data.Append("\r\n");
             data.Append("\r\n");
@@ -104,7 +103,7 @@ public class InlineOvpnProfile
         {
             if (userCertData == null) return "";
 
-            var data = new System.Text.StringBuilder();
+            var data = new StringBuilder();
             data.Append("client");
             data.Append("\r\n");
             data.Append("\r\n");
@@ -158,7 +157,7 @@ public class InlineOvpnProfile
             data.Append("<ca>");
             data.Append("\r\n");
             data.Append("\r\n");
-            data.Append(System.Text.Encoding.UTF8.GetString(userCertData.CertCa).Replace("\n", "\r\n"));
+            data.Append(Encoding.UTF8.GetString(userCertData.CertCa).Replace("\n", "\r\n"));
             data.Append("\r\n");
             data.Append("\r\n");
             data.Append("</ca>");
@@ -167,7 +166,7 @@ public class InlineOvpnProfile
             data.Append("\r\n");
 
             data.Append("\r\n");
-            data.Append(System.Text.Encoding.UTF8.GetString(userCertData.CertCrt).Replace("\n", "\r\n"));
+            data.Append(Encoding.UTF8.GetString(userCertData.CertCrt).Replace("\n", "\r\n"));
             data.Append("\r\n");
 
             data.Append("\r\n");
@@ -177,7 +176,7 @@ public class InlineOvpnProfile
             data.Append("\r\n");
 
             data.Append("\r\n");
-            data.Append(System.Text.Encoding.UTF8.GetString(userCertData.CertKey).Replace("\n", "\r\n"));
+            data.Append(Encoding.UTF8.GetString(userCertData.CertKey).Replace("\n", "\r\n"));
             data.Append("\r\n");
 
             data.Append("\r\n");

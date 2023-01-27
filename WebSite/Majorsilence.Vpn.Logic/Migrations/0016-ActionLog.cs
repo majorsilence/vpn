@@ -1,16 +1,10 @@
-﻿using System;
-using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
+﻿using FluentMigrator;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(16, TransactionBehavior.Default)]
+[Migration(16)]
 public class ActionLog : Migration
 {
-    public ActionLog()
-    {
-    }
-
     public override void Up()
     {
         Create.Table("ActionLog")

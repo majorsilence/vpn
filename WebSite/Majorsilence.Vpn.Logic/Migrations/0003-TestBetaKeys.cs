@@ -1,16 +1,10 @@
-﻿using System;
-using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
+﻿using FluentMigrator;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(3, TransactionBehavior.Default)]
+[Migration(3)]
 public class TestBetaKeys : Migration
 {
-    public TestBetaKeys()
-    {
-    }
-
     public override void Up()
     {
         Insert.IntoTable("BetaKeys").Row(new { Code = "AbC56#", IsUsed = false });

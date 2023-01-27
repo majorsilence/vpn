@@ -1,16 +1,10 @@
-﻿using System;
-using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
+﻿using FluentMigrator;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(14, TransactionBehavior.Default)]
+[Migration(14)]
 public class StripePlanAndCurrency : Migration
 {
-    public StripePlanAndCurrency()
-    {
-    }
-
     public override void Up()
     {
         Alter.Table("SiteInfo").AddColumn("StripePlanId").AsString(255).Nullable();

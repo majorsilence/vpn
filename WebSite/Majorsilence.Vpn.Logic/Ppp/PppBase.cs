@@ -1,30 +1,33 @@
 using System;
+using System.Linq;
+using System.Threading;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Linq;
-using System.Data;
-using System.IO;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Logic.Ssh;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Ppp;
 
 public abstract class PppBase
 {
-    protected Poco.Users userData;
-    protected Poco.VpnServers vpnData;
+    private readonly ISsh sshNewServer;
+    private readonly ISsh sshRevokeServer;
+    protected Users userData;
     protected string userRequestedPassword;
-    private Ssh.ISsh sshNewServer;
-    private Ssh.ISsh sshRevokeServer;
+    protected VpnServers vpnData;
 
     protected PppBase()
     {
     }
 
-    protected PppBase(int userId, int vpnServerId, Ssh.ISsh sshNewServer, Ssh.ISsh sshRevokeServer)
+    protected PppBase(int userId, int vpnServerId, ISsh sshNewServer, ISsh sshRevokeServer)
     {
         using (var db = InitializeSettings.DbFactory)
         {
-            userData = db.Get<Poco.Users>(userId);
-            vpnData = db.Get<Poco.VpnServers>(vpnServerId);
+            userData = db.Get<Users>(userId);
+            vpnData = db.Get<VpnServers>(vpnServerId);
         }
 
         this.sshNewServer = sshNewServer;
@@ -34,7 +37,7 @@ public abstract class PppBase
 
     private bool IsActiveAccount()
     {
-        var pay = new Payments.Payment(userData.Id);
+        var pay = new Payment(userData.Id);
         return !pay.IsExpired();
     }
 
@@ -43,7 +46,7 @@ public abstract class PppBase
         RevokeUser();
 
         if (IsActiveAccount() == false)
-            throw new Exceptions.AccountNotActiveException(
+            throw new AccountNotActiveException(
                 "Do generate a new pptp or ipsec user you first activate your account by making a payment.");
 
 
@@ -56,21 +59,21 @@ public abstract class PppBase
 
         sshNewServer.WriteLine("exit");
         // give server a chance to finish
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
         var output = sshNewServer.Read();
 
 
         SaveUserInfo();
     }
 
-    protected abstract void AddUserImplementation(Ssh.ISsh sshClient);
+    protected abstract void AddUserImplementation(ISsh sshClient);
 
     public void RevokeUser()
     {
         // we should only revoke if we have records indicating the user has an account on this server.
         using (var db = InitializeSettings.DbFactory)
         {
-            var certData = db.Query<Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
+            var certData = db.Query<UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
                 new { UserId = userData.Id });
             if (certData.Count() == 0) return;
         }
@@ -82,24 +85,24 @@ public abstract class PppBase
         sshRevokeServer.WriteLine("exit");
 
         // give server a chance to finish
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
         var output = sshRevokeServer.Read();
 
         // TODO: Update UserPptpInfo table
     }
 
-    protected abstract void RevokeUserImplementation(Ssh.ISsh sshClient);
+    protected abstract void RevokeUserImplementation(ISsh sshClient);
 
     protected void SaveUserInfo()
     {
         using (var db = InitializeSettings.DbFactory)
         {
-            var data = db.Query<Poco.UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
+            var data = db.Query<UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
                 new { UserId = userData.Id });
 
             if (data.Count() == 0)
             {
-                var newData = new Poco.UserPptpInfo(userData.Id, false, DateTime.UtcNow, vpnData.Id,
+                var newData = new UserPptpInfo(userData.Id, false, DateTime.UtcNow, vpnData.Id,
                     userRequestedPassword);
                 db.Insert(newData);
             }

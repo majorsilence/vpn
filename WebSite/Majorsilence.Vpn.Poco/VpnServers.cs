@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("VpnServers")]
+[Table("VpnServers")]
 public class VpnServers
 {
     public VpnServers()
@@ -21,7 +18,7 @@ public class VpnServers
         Active = active;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public string Address { get; set; }
 

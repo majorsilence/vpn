@@ -1,17 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Net;
+using System.Text;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.DTO;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.OpenVpn;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Newtonsoft.Json;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
 public class ApiV2Controller : Controller
 {
-    private ISessionVariables sessionVars;
+    private readonly ISessionVariables sessionVars;
 
     public ApiV2Controller(ISessionVariables sessionInstance)
     {
@@ -31,8 +37,8 @@ public class ApiV2Controller : Controller
 
         // Pull out the Credentials with are seperated by ':' and Base64 encoded
         var base64Credentials = authHeader.Substring(6);
-        var credentials = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(base64Credentials))
-            .Split(new char[] { ':' });
+        var credentials = Encoding.UTF8.GetString(Convert.FromBase64String(base64Credentials))
+            .Split(new[] { ':' });
 
         if (credentials.Length != 2 || string.IsNullOrEmpty(credentials[0]) || string.IsNullOrEmpty(credentials[0]))
             return null;
@@ -50,18 +56,18 @@ public class ApiV2Controller : Controller
         string token = context.Request.Headers["VpnAuthToken"];
         var uid = -1;
         int.TryParse(context.Request.Headers["VpnUserId"], out uid);
-        var api = new Logic.Accounts.UserApiTokens();
+        var api = new UserApiTokens();
         var data = api.Retrieve(uid);
 
         if (data.Token1 != token)
         {
-            Logic.Helpers.Logging.Log("data.Token1 != token", false);
+            Logging.Log("data.Token1 != token", false);
             return false;
         }
 
         if (data.Token1ExpireTime <= DateTime.UtcNow)
         {
-            Logic.Helpers.Logging.Log("data.Token1ExpireTime <= DateTime.UtcNow", false);
+            Logging.Log("data.Token1ExpireTime <= DateTime.UtcNow", false);
             return false;
         }
 
@@ -78,7 +84,7 @@ public class ApiV2Controller : Controller
         {
             if (!HttpContext.Request.Headers.Keys.Contains("Authorization", StringComparer.OrdinalIgnoreCase))
             {
-                HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return Content("Authorization not sent");
             }
 
@@ -86,24 +92,24 @@ public class ApiV2Controller : Controller
             var creds = ParseAuthHeader(authHeader);
 
 
-            var login = new Logic.Login(creds[0], creds[1]);
+            var login = new Login(creds[0], creds[1]);
 
 
             try
             {
                 login.Execute();
             }
-            catch (Logic.Exceptions.InvalidDataException ex)
+            catch (InvalidDataException ex)
             {
-                HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-                Logic.Helpers.Logging.Log(ex);
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Logging.Log(ex);
                 return Content("InternalServerError");
             }
 
 
             if (!login.LoggedIn)
             {
-                HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return Content("Unauthorized");
             }
 
@@ -113,10 +119,10 @@ public class ApiV2Controller : Controller
             sessionVars.Username = login.Username;
 
 
-            var toks = new Logic.Accounts.UserApiTokens();
+            var toks = new UserApiTokens();
             var tokData = toks.Retrieve(login.UserId);
 
-            var results = new Logic.DTO.ApiAuthResponse()
+            var results = new ApiAuthResponse
             {
                 Token1 = tokData.Token1,
                 Token2 = tokData.Token2,
@@ -125,15 +131,15 @@ public class ApiV2Controller : Controller
                 UserId = sessionVars.UserId
             };
 
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(results);
+            var json = JsonConvert.SerializeObject(results);
 
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
             return Content(json);
         }
         catch (Exception ex)
         {
-            Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-            Logic.Helpers.Logging.Log(ex);
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            Logging.Log(ex);
             return Content("InternalServerError");
         }
     }
@@ -146,30 +152,30 @@ public class ApiV2Controller : Controller
             var userid = -1;
             if (!IsAuthenticateUserWithToken(HttpContext, out userid))
             {
-                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
-                Logic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                Logging.Log("IsAuthenticateUserWithToken is false", false);
                 return Content("Unauthorized");
             }
         }
         catch (Exception ex)
         {
-            Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-            Logic.Helpers.Logging.Log(ex);
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            Logging.Log(ex);
             return Content("InternalServerError " + ex.Message + ex.StackTrace);
         }
 
         try
         {
-            var details = new Logic.Accounts.ServerDetails();
+            var details = new ServerDetails();
 
-            var data = Newtonsoft.Json.JsonConvert.SerializeObject(details.Info);
-            Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            var data = JsonConvert.SerializeObject(details.Info);
+            Response.StatusCode = (int)HttpStatusCode.OK;
             return Content(data);
         }
         catch (Exception ex)
         {
-            Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-            Logic.Helpers.Logging.Log(ex);
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            Logging.Log(ex);
             return Content("InternalServerError");
         }
     }
@@ -190,28 +196,28 @@ public class ApiV2Controller : Controller
         {
             if (!IsAuthenticateUserWithToken(HttpContext, out userid))
             {
-                Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
-                Logic.Helpers.Logging.Log("IsAuthenticateUserWithToken is false", false);
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                Logging.Log("IsAuthenticateUserWithToken is false", false);
                 return Content("Unauthorized");
             }
         }
         catch (Exception ex)
         {
-            Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-            Logic.Helpers.Logging.Log(ex);
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            Logging.Log(ex);
             return Content("InternalServerError " + ex.Message + ex.StackTrace);
         }
 
         try
         {
             var data = WriteZippedCertsToString(userid);
-            Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            Response.StatusCode = (int)HttpStatusCode.OK;
             return Content(data);
         }
         catch (Exception ex)
         {
-            Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-            Logic.Helpers.Logging.Log(ex);
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            Logging.Log(ex);
             return Content("InternalServerError");
         }
     }
@@ -219,7 +225,7 @@ public class ApiV2Controller : Controller
 
     private string WriteZippedCertsToString(int userid)
     {
-        var dl = new Logic.OpenVpn.CertsOpenVpnDownload();
+        var dl = new CertsOpenVpnDownload();
         var fileBytes = dl.UploadToClient(userid);
 
         return Convert.ToBase64String(fileBytes);

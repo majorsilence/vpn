@@ -1,31 +1,29 @@
 ﻿using System;
+using System.Linq;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Linq;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class UserApiTokens
 {
-    public UserApiTokens()
-    {
-    }
-
     private string GenerateToken()
     {
-        var codes = new Helpers.GenerateResetCode();
+        var codes = new GenerateResetCode();
         return codes.GeneratePasswordResetCode(DateTime.Now.ToLongTimeString(), 100);
     }
 
-    public Poco.UsersApiTokens Create(int userId)
+    public UsersApiTokens Create(int userId)
     {
         using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
 
-            var dataMany = cn.Query<Poco.UsersApiTokens>("SELECT * FROM UsersApiTokens WHERE UserId=@UserId",
+            var dataMany = cn.Query<UsersApiTokens>("SELECT * FROM UsersApiTokens WHERE UserId=@UserId",
                 new { UserId = userId });
-            Poco.UsersApiTokens data;
+            UsersApiTokens data;
             if (dataMany != null && dataMany.Any())
             {
                 data = dataMany.First();
@@ -45,7 +43,7 @@ public class UserApiTokens
             }
             else
             {
-                data = new Poco.UsersApiTokens()
+                data = new UsersApiTokens
                 {
                     UserId = userId,
                     Token1 = GenerateToken(),
@@ -61,13 +59,13 @@ public class UserApiTokens
         }
     }
 
-    public Poco.UsersApiTokens Retrieve(int userid)
+    public UsersApiTokens Retrieve(int userid)
     {
         using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
 
-            var data = cn.Query<Poco.UsersApiTokens>("SELECT * FROM UsersApiTokens WHERE UserId = @UserId",
+            var data = cn.Query<UsersApiTokens>("SELECT * FROM UsersApiTokens WHERE UserId = @UserId",
                 new { UserId = userid });
             if (data.Count() > 0)
             {

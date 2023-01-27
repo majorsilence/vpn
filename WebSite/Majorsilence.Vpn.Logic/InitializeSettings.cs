@@ -1,32 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Data;
-using System.Timers;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
+using System.Timers;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using FluentMigrator.Runner;
+using FluentMigrator.Runner.Announcers;
+using FluentMigrator.Runner.Initialization;
+using FluentMigrator.Runner.Processors;
+using FluentMigrator.Runner.Processors.MySql;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Poco;
+using MySql.Data.MySqlClient;
+using SiteInfo = Majorsilence.Vpn.Poco.SiteInfo;
 
 namespace Majorsilence.Vpn.Logic;
 
 public class InitializeSettings : ICommand
 {
+    private static string strConnectionVpn;
+    private static string strConnectionSessions;
     private Timer dailyProcessingTimer;
-    private bool isLiveSite;
+    private readonly bool isLiveSite;
 
     private InitializeSettings()
     {
     }
 
-    public InitializeSettings(string strVpnConnection, string sessionsConnection, Email.IEmail email, bool isLiveSite)
+    public InitializeSettings(string strVpnConnection, string sessionsConnection, IEmail email, bool isLiveSite)
     {
         strConnectionVpn = strVpnConnection;
         strConnectionSessions = sessionsConnection;
 
-        _email = email;
+        Email = email;
         this.isLiveSite = isLiveSite;
     }
+
+    public static IEmail Email { get; private set; }
+
+
+    public static IDbConnection DbFactory => new MySqlConnection(strConnectionVpn);
+
+    public static IDbConnection DbFactoryWithoutDatabase =>
+        // return new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Uid={1};Pwd={2};Port={3};CharSet=utf8mb4;",
+        //   server, username, password, port));
+        new MySqlConnection(strConnectionVpn);
 
     public void Execute()
     {
@@ -37,26 +60,11 @@ public class InitializeSettings : ICommand
         InitializeTimers();
     }
 
-    private static Email.IEmail _email;
-
-    public static Email.IEmail Email => _email;
-
-    private static string strConnectionVpn = null;
-    private static string strConnectionSessions = null;
-
-
-    public static IDbConnection DbFactory => new MySql.Data.MySqlClient.MySqlConnection(strConnectionVpn);
-
-    public static IDbConnection DbFactoryWithoutDatabase =>
-        // return new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Uid={1};Pwd={2};Port={3};CharSet=utf8mb4;",
-        //   server, username, password, port));
-        new MySql.Data.MySqlClient.MySqlConnection(strConnectionVpn);
-
     private void InitializeTimers()
     {
         const int dailyProcessInSeconds = 1000 * 60 * 60 * 2; // every 2 hours
         dailyProcessingTimer = new Timer(dailyProcessInSeconds);
-        dailyProcessingTimer.Elapsed += new ElapsedEventHandler(DailyProcessing);
+        dailyProcessingTimer.Elapsed += DailyProcessing;
         dailyProcessingTimer.Enabled = true;
     }
 
@@ -69,7 +77,7 @@ public class InitializeSettings : ICommand
         }
         catch (Exception ex)
         {
-            Helpers.Logging.Log(ex, true);
+            Logging.Log(ex, true);
         }
     }
 
@@ -85,11 +93,11 @@ public class InitializeSettings : ICommand
             db.Open();
 
 
-            var data = db.Query<Poco.SiteInfo>("SELECT * FROM SiteInfo").ToList();
+            var data = db.Query<SiteInfo>("SELECT * FROM SiteInfo").ToList();
             if (data.Count == 0)
-                throw new Exceptions.InvalidDataException("Invalid data in SiteInfo.  No data found.");
-            else if (data.Count > 1)
-                throw new Exceptions.InvalidDataException("Invalid data in SiteInfo.  Multiple rows found.");
+                throw new InvalidDataException("Invalid data in SiteInfo.  No data found.");
+            if (data.Count > 1)
+                throw new InvalidDataException("Invalid data in SiteInfo.  Multiple rows found.");
 
             data.First().LiveSite = isLiveSite;
             db.Update(data.First());
@@ -108,9 +116,9 @@ public class InitializeSettings : ICommand
         {
             db.Open();
 
-            var data = db.Query<Poco.LookupPaymentType>("SELECT * FROM LookupPaymentType");
+            var data = db.Query<LookupPaymentType>("SELECT * FROM LookupPaymentType");
             if (data.Count() == 0)
-                throw new Exceptions.InvalidDataException("Invalid data in LoadLookupPaymentTypes.  No data found.");
+                throw new InvalidDataException("Invalid data in LoadLookupPaymentTypes.  No data found.");
 
             var monthly = 1;
             var yearly = 2;
@@ -120,7 +128,7 @@ public class InitializeSettings : ICommand
                     monthly = x.Id;
                 else if (x.Code == "YEARLY") yearly = x.Id;
 
-            return Tuple.Create<int, int>(monthly, yearly);
+            return Tuple.Create(monthly, yearly);
         }
     }
 
@@ -130,11 +138,11 @@ public class InitializeSettings : ICommand
         {
             db.Open();
 
-            var data = db.Query<Poco.PaymentRates>("SELECT * FROM PaymentRates");
+            var data = db.Query<PaymentRates>("SELECT * FROM PaymentRates");
             if (data.Count() == 0 || data.Count() > 1)
-                throw new Exceptions.InvalidDataException("Invalid data in PaymentRates.  To many or to few rows");
+                throw new InvalidDataException("Invalid data in PaymentRates.  To many or to few rows");
 
-            return Tuple.Create<decimal, decimal>(data.First().CurrentMonthlyRate, data.First().CurrentYearlyRate);
+            return Tuple.Create(data.First().CurrentMonthlyRate, data.First().CurrentYearlyRate);
         }
     }
 
@@ -144,29 +152,29 @@ public class InitializeSettings : ICommand
 
         // var announcer = new NullAnnouncer();
         var announcer =
-            new FluentMigrator.Runner.Announcers.TextWriterAnnouncer(s => System.Diagnostics.Debug.WriteLine(s));
+            new TextWriterAnnouncer(s => Debug.WriteLine(s));
         var assembly = Assembly.GetExecutingAssembly();
 
-        var migrationContext = new FluentMigrator.Runner.Initialization.RunnerContext(announcer)
+        var migrationContext = new RunnerContext(announcer)
         {
             Namespace = "Majorsilence.Vpn.Logic.Migrations",
             TransactionPerSession = true
         };
 
-        var options = new FluentMigrator.Runner.Processors.ProcessorOptions()
+        var options = new ProcessorOptions
         {
             PreviewOnly = false, // set to true to see the SQL
             Timeout = TimeSpan.FromSeconds(60)
         };
 
-        var factory = new FluentMigrator.Runner.Processors.MySql.MySql5ProcessorFactory();
+        var factory = new MySql5ProcessorFactory();
         var processor = factory.Create(DbFactory.ConnectionString, announcer, options);
-        var runner = new FluentMigrator.Runner.MigrationRunner(assembly, migrationContext, processor);
+        var runner = new MigrationRunner(assembly, migrationContext, processor);
         runner.MigrateUp(true);
     }
 
     /// <summary>
-    /// Create the dabase if it does not exist.
+    ///     Create the dabase if it does not exist.
     /// </summary>
     /// <remarks>Mysql/mariadb specific</remarks>
     private void CreateIfNotExists()
@@ -174,10 +182,10 @@ public class InitializeSettings : ICommand
         // return new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Uid={1};Pwd={2};Port={3};CharSet=utf8mb4;",
         //   server, username, password, port));
 
-        var x = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder(strConnectionVpn);
+        var x = new MySqlConnectionStringBuilder(strConnectionVpn);
         var serverConnectionVpn = $"server={x.Server};user={x.UserID};pwd={x.Password};Port={x.Port};CharSet=utf8mb4;";
 
-        using (var cn = new MySql.Data.MySqlClient.MySqlConnection(serverConnectionVpn))
+        using (var cn = new MySqlConnection(serverConnectionVpn))
         {
             var cmd = cn.CreateCommand();
             cmd.CommandText =
@@ -195,12 +203,12 @@ public class InitializeSettings : ICommand
         // Provides better support for clustering, load balancing and restarting sites after updates
         // without users being logged out or loosing data
 
-        var y = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder(strConnectionSessions);
+        var y = new MySqlConnectionStringBuilder(strConnectionSessions);
         var serverConnectionSession =
             $"server={y.Server};user={y.UserID};pwd={y.Password};Port={y.Port};CharSet=utf8mb4;";
 
 
-        using (var cn2 = new MySql.Data.MySqlClient.MySqlConnection(serverConnectionSession))
+        using (var cn2 = new MySqlConnection(serverConnectionSession))
         {
             var cmd2 = cn2.CreateCommand();
             cmd2.CommandText =
@@ -220,12 +228,12 @@ public class InitializeSettings : ICommand
         using (var db = DbFactory)
         {
             db.Open();
-            var peter = db.Query<Poco.Users>("SELECT * FROM Users WHERE Email = @Email",
+            var peter = db.Query<Users>("SELECT * FROM Users WHERE Email = @Email",
                 new { Email = "atestuser@majorsilence.com" });
             if (peter.Count() == 0)
             {
-                var peterAccount = new Accounts.CreateAccount(
-                    new Accounts.CreateAccountInfo()
+                var peterAccount = new CreateAccount(
+                    new CreateAccountInfo
                     {
                         Email = "atestuser@majorsilence.com",
                         EmailConfirm = "atestuser@majorsilence.com",
@@ -235,7 +243,7 @@ public class InitializeSettings : ICommand
                         PasswordConfirm = "Password1",
                         BetaKey = "AbC56#"
                     }
-                    , true, _email);
+                    , true, Email);
                 peterAccount.Execute();
             }
         }

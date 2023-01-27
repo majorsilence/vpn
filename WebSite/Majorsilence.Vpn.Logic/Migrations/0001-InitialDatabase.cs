@@ -1,11 +1,9 @@
 ﻿using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
-
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(1, TransactionBehavior.Default)]
+[Migration(1)]
 public class InitialDatabase : Migration
 {
     public override void Up()

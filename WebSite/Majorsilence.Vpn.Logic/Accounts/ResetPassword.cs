@@ -1,26 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class ResetPassword
 {
+    private readonly IEmail email;
+    private readonly GenerateResetCode generateCode = new();
+
     private ResetPassword()
     {
     }
 
-    public ResetPassword(Email.IEmail email)
+    public ResetPassword(IEmail email)
     {
         this.email = email;
     }
-
-    private Email.IEmail email;
-    private Helpers.GenerateResetCode generateCode = new();
 
     public bool validateCode(string resetCode, string password)
     {
@@ -69,30 +71,30 @@ public class ResetPassword
 
         email.SendMail(string.Format(
                 "Your Email Reset Code is: <a href=\"https://majorsilencevpn.com/validatecode?resetcode={0}\">{1}</a>",
-                System.Web.HttpUtility.UrlEncode(ressetCode), ressetCode),
-            "Password Reset", username, true, null, Email.EmailTemplates.Generic);
+                HttpUtility.UrlEncode(ressetCode), ressetCode),
+            "Password Reset", username, true, null, EmailTemplates.Generic);
         return true;
     }
 
-    private Poco.Users RetrieveUser(string username, string code)
+    private Users RetrieveUser(string username, string code)
     {
-        var user = new Poco.Users();
+        var user = new Users();
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            IEnumerable<Poco.Users> x = null;
+            IEnumerable<Users> x = null;
             if (!string.IsNullOrEmpty(username))
-                x = db.Query<Poco.Users>("SELECT * FROM Users WHERE Email=@Email",
+                x = db.Query<Users>("SELECT * FROM Users WHERE Email=@Email",
                     new { Email = username });
             else if (!string.IsNullOrEmpty(code))
-                x = db.Query<Poco.Users>("SELECT * FROM Users WHERE PasswordResetCode = @PasswordResetCode",
+                x = db.Query<Users>("SELECT * FROM Users WHERE PasswordResetCode = @PasswordResetCode",
                     new { PasswordResetCode = code });
 
             if (x.Count() == 0)
-                throw new Exceptions.InvalidDataException("Invalid Reset Code or User");
-            else if (x.Count() > 1)
-                throw new Exceptions.InvalidDataException("Server Error Duplicate Codes");
-            else if (x.Count() == 1) user = x.First();
+                throw new InvalidDataException("Invalid Reset Code or User");
+            if (x.Count() > 1)
+                throw new InvalidDataException("Server Error Duplicate Codes");
+            if (x.Count() == 1) user = x.First();
         }
 
         return user;

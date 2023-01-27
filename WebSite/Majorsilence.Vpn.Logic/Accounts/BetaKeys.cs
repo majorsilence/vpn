@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Linq;
+using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Data;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Poco;
+using SiteInfo = Majorsilence.Vpn.Logic.Helpers.SiteInfo;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class BetaKeys
 {
-    private Email.IEmail email;
+    private readonly IEmail email;
 
-    public BetaKeys(Email.IEmail email)
+    public BetaKeys(IEmail email)
     {
         this.email = email;
     }
@@ -33,10 +36,10 @@ public class BetaKeys
             db.Open();
             using (var txn = db.BeginTransaction())
             {
-                var data = db.Query<Majorsilence.Vpn.Poco.BetaKeys>(
+                var data = db.Query<Poco.BetaKeys>(
                     "SELECT * FROM BetaKeys WHERE IsUsed=0 AND IsSent=0 LIMIT 1", null, txn);
                 data.First().IsSent = true;
-                db.Update(data.First(), txn, null);
+                db.Update(data.First(), txn);
 
                 txn.Commit();
 
@@ -46,26 +49,26 @@ public class BetaKeys
     }
 
     /// <summary>
-    /// Mails the invite.
+    ///     Mails the invite.
     /// </summary>
     /// <returns>The betakey code</returns>
     /// <param name="emailAddress">Email address.</param>
     public string MailInvite(string emailAddress)
     {
         var betakey = RetrieveAndMarkSendKey();
-        var subject = Helpers.SiteInfo.SiteName + " Invite";
+        var subject = SiteInfo.SiteName + " Invite";
 
         var signupLink = string.Format("{0}/?betaemail={1}&betacode={2}",
-            Helpers.SiteInfo.SiteUrl,
-            System.Web.HttpUtility.HtmlEncode(emailAddress),
-            System.Web.HttpUtility.HtmlEncode(betakey));
+            SiteInfo.SiteUrl,
+            HttpUtility.HtmlEncode(emailAddress),
+            HttpUtility.HtmlEncode(betakey));
 
         var message = string.Format("You have been invited to signup at <a href=\"{0}\">{1}</a>.",
-            signupLink, Helpers.SiteInfo.SiteName);
+            signupLink, SiteInfo.SiteName);
         message += " Your beta key is below. <br><br>";
         message += string.Format("<strong>{0}</strong>", betakey);
 
-        email.SendMail_BackgroundThread(message, subject, emailAddress, true, null, Email.EmailTemplates.BetaKey);
+        email.SendMail_BackgroundThread(message, subject, emailAddress, true, null, EmailTemplates.BetaKey);
 
         return betakey;
     }
@@ -77,7 +80,7 @@ public class BetaKeys
         {
             db.Open();
 
-            var data = new Majorsilence.Vpn.Poco.BetaKeys(betaKey, false, true);
+            var data = new Poco.BetaKeys(betaKey, false, true);
             db.Insert(data);
         }
 
@@ -93,7 +96,7 @@ public class BetaKeys
         {
             db.Open();
 
-            var data = db.Get<Poco.Users>(sentFromUserId);
+            var data = db.Get<Users>(sentFromUserId);
 
             sentFromFirstName = data.FirstName;
             sentFromLastName = data.LastName;
@@ -102,22 +105,22 @@ public class BetaKeys
 
 
         var betakey = GenerateKeyAndMarkSent();
-        var subject = Helpers.SiteInfo.SiteName + " Invite";
+        var subject = SiteInfo.SiteName + " Invite";
 
         var signupLink = string.Format("{0}/?betaemail={1}&betacode={2}",
-            Helpers.SiteInfo.SiteUrl,
-            System.Web.HttpUtility.HtmlEncode(emailAddressSendTo),
-            System.Web.HttpUtility.HtmlEncode(betakey));
+            SiteInfo.SiteUrl,
+            HttpUtility.HtmlEncode(emailAddressSendTo),
+            HttpUtility.HtmlEncode(betakey));
 
         var message = string.Format(
             "You have been invited to signup at <a href=\"{0}\">{1}</a> by {2} {3} ({4}).<br><br>",
-            signupLink, Helpers.SiteInfo.SiteName, sentFromFirstName, sentFromLastName,
-            System.Web.HttpUtility.HtmlEncode(sentFromEmailAddress));
+            signupLink, SiteInfo.SiteName, sentFromFirstName, sentFromLastName,
+            HttpUtility.HtmlEncode(sentFromEmailAddress));
 
         message += " Your beta key is below. <br><br>";
         message += string.Format("<strong>{0}</strong>", betakey);
 
-        email.SendMail_BackgroundThread(message, subject, emailAddressSendTo, true, null, Email.EmailTemplates.BetaKey);
+        email.SendMail_BackgroundThread(message, subject, emailAddressSendTo, true, null, EmailTemplates.BetaKey);
 
         return betakey;
     }

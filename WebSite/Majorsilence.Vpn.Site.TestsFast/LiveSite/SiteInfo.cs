@@ -1,50 +1,47 @@
-﻿using System;
-using System.Linq;
-using NUnit.Framework;
+﻿using System.Linq;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Poco;
+using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.LiveSite;
 
-[TestFixture()]
+[TestFixture]
 public class SiteInfo
 {
-    public SiteInfo()
-    {
-    }
-
-    private Majorsilence.Vpn.Poco.SiteInfo sinfo;
-    private Poco.PaymentRates prates;
-
-    [SetUp()]
+    [SetUp]
     public void Setup()
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
 
 
-            sinfo = cn.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo").First();
-            prates = cn.Query<Poco.PaymentRates>("SELECT * FROM PaymentRates").First();
+            sinfo = cn.Query<Poco.SiteInfo>("SELECT * FROM SiteInfo").First();
+            prates = cn.Query<PaymentRates>("SELECT * FROM PaymentRates").First();
         }
     }
 
-    [TearDown()]
+    [TearDown]
     public void Teardown()
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
 
-            cn.Update<Majorsilence.Vpn.Poco.SiteInfo>(sinfo);
-            cn.Update<Poco.PaymentRates>(prates);
+            cn.Update(sinfo);
+            cn.Update(prates);
         }
 
         Logic.Helpers.SiteInfo.InitializeSimple(sinfo, prates.CurrentMonthlyRate, prates.CurrentYearlyRate);
         Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
     }
 
-    [Test()]
+    private Poco.SiteInfo sinfo;
+    private PaymentRates prates;
+
+    [Test]
     public void EnsureSaveSavesTest()
     {
         var info = sinfo;
@@ -68,13 +65,13 @@ public class SiteInfo
         Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
 
 
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
 
 
-            var changedInfo = cn.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo").First();
-            var changedRates = cn.Query<Poco.PaymentRates>("SELECT * FROM PaymentRates").First();
+            var changedInfo = cn.Query<Poco.SiteInfo>("SELECT * FROM SiteInfo").First();
+            var changedRates = cn.Query<PaymentRates>("SELECT * FROM PaymentRates").First();
         }
     }
 }

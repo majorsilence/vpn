@@ -1,10 +1,12 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@inject IViewLocalizer Localizer
+﻿@inject IViewLocalizer Localizer
+@using System.Text
+@using Majorsilence.Vpn.Site.Models
+@using Microsoft.AspNetCore.Mvc.Localization
 @model Majorsilence.Vpn.Site.Models.CustomViewLayout
 <!DOCTYPE html>
 
 @{
-    var x = new Majorsilence.Vpn.Site.Models.Vpn();
+    var x = new Vpn();
 
     x.InitCultureByCookie();
     x.InitCultureByPram("");
@@ -75,7 +77,7 @@
         </div>
         <div class="navbar-collapse collapse">
             @{
-                var menu = new System.Text.StringBuilder();
+                var menu = new StringBuilder();
                 var pagename = ViewContext.HttpContext.Request.Path;
 
                 if (pagename == "/services")
@@ -116,7 +118,7 @@
                     }
                 }
 
-                var signinItem = new System.Text.StringBuilder();
+                var signinItem = new StringBuilder();
                 if (!Model.SessionVariables.LoggedIn)
                 {
                     // see http://www.bootply.com/93545 and http://www.bootply.com/render/93545

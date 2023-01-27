@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("SiteInfo")]
+[Table("SiteInfo")]
 public class SiteInfo
 {
     public SiteInfo()
@@ -30,7 +27,7 @@ public class SiteInfo
         Currency = currency;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public string VpnSshUser { get; set; }
 

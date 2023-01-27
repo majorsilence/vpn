@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("LookupPaymentType")]
+[Table("LookupPaymentType")]
 public class LookupPaymentType
 {
     public LookupPaymentType()
@@ -18,7 +15,7 @@ public class LookupPaymentType
         Description = description;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public string Code { get; set; }
 

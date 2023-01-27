@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Net;
 using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,21 +42,20 @@ public class SupportController : Controller
                              supportrequest;
 
             // TODO: inject the support address from appsettings.json
-            email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false, null,
-                EmailTemplates.None);
+            email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false);
 
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
             HttpContext.Response.Redirect("/support/thankyou", false);
         }
-        catch (Logic.Exceptions.InvalidDataException ide)
+        catch (InvalidDataException ide)
         {
-            Logic.Helpers.Logging.Log(ide);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+            Logging.Log(ide);
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+            Logging.Log(ex);
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         }
     }
 }

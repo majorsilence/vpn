@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.IO;
+using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +16,8 @@ public class KnowledgeBaseController : Controller
 
     public ActionResult Index(string code)
     {
-        var path = System.IO.Path.Combine(_env.ContentRootPath, "~/assets");
-        var model = new Models.KnowledgeBase(code, path);
+        var path = Path.Combine(_env.ContentRootPath, "~/assets");
+        var model = new KnowledgeBase(code, path);
         return View(model);
     }
 }

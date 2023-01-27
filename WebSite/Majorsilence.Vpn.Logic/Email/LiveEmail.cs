@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Web;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
 using System.Reflection;
+using Majorsilence.Vpn.Logic.Helpers;
 
 namespace Majorsilence.Vpn.Logic.Email;
 
 public class LiveEmail : IEmail
 {
     private readonly string fromAddress;
-    private readonly string username;
-    private readonly string password;
     private readonly string host;
+    private readonly string password;
     private readonly int port;
+    private readonly string username;
 
     public LiveEmail(string fromAddress, string username, string password, string host, int port)
     {
@@ -61,13 +57,17 @@ public class LiveEmail : IEmail
         // mozroots --import --ask-remove --machine
         // certmgr -ssl smtps://smtp.gmail.com:465
         // certmgr -ssl smtps://smtp.gmail.com:587
-        ServicePointManager.ServerCertificateValidationCallback = delegate(object s, X509Certificate certificate,
-            X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
-        };
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
         smcl.Send(mm);
+    }
+
+    public void SendMail_BackgroundThread(string message, string subject, string to, bool isHtml,
+        byte[] attachment = null, EmailTemplates template = EmailTemplates.None)
+    {
+        // TODO: stick it in a background queue task
+        var caller = new Action<string, string, string, bool, byte[], EmailTemplates>(SendMail);
+        caller.BeginInvoke(message, subject, to, isHtml, attachment, template, null, null);
     }
 
     private string ProcessMessage(EmailTemplates template, string message, string subject)
@@ -75,7 +75,7 @@ public class LiveEmail : IEmail
         var output = LoadTemplate(template);
 
         output = output.Replace("{footer}", string.Format("For more information please visit <a href=\"{0}\">{1}</a>",
-            Helpers.SiteInfo.SiteUrl, Helpers.SiteInfo.SiteName));
+            SiteInfo.SiteUrl, SiteInfo.SiteName));
 
         if (template == EmailTemplates.BetaKey || template == EmailTemplates.Generic)
         {
@@ -105,13 +105,5 @@ public class LiveEmail : IEmail
             var result = reader.ReadToEnd();
             return result;
         }
-    }
-
-    public void SendMail_BackgroundThread(string message, string subject, string to, bool isHtml,
-        byte[] attachment = null, EmailTemplates template = EmailTemplates.None)
-    {
-        // TODO: stick it in a background queue task
-        var caller = new Action<string, string, string, bool, byte[], EmailTemplates>(SendMail);
-        caller.BeginInvoke(message, subject, to, isHtml, attachment, template, null, null);
     }
 }

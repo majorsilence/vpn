@@ -1,4 +1,6 @@
-﻿@model Majorsilence.Vpn.Site.Models.Users
+﻿@using System.Text
+@using Majorsilence.Vpn.Site.Helpers
+@model Majorsilence.Vpn.Site.Models.Users
 @{
     ViewBag.Title = "Admin Users";
     Layout = "~/Views/AdminView.cshtml";
@@ -9,7 +11,7 @@
     if (status != null)
     {
         string msg;
-        msg = Majorsilence.Vpn.Site.Helpers.Message.CreateMessage(status, "Changes Saved", Majorsilence.Vpn.Site.Helpers.Message.MessageType.Information);
+        msg = Message.CreateMessage(status, "Changes Saved", Message.MessageType.Information);
 
         @Html.Raw(msg)
         ;
@@ -22,7 +24,7 @@
     <h2>Users</h2>
 
 
-    var html = new System.Text.StringBuilder();
+    var html = new StringBuilder();
     html.AppendLine("<table class=\"table\">");
     html.AppendLine("<tr>");
     html.Append("<th>ID</th>");
@@ -38,7 +40,7 @@
     html.AppendLine("</tr>");
 
 
-    foreach (var user in @Model.UserList)
+    foreach (var user in Model.UserList)
     {
         html.AppendLine("<tr>");
 
@@ -59,19 +61,19 @@
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.Email));
+        html.AppendLine(GlobalHelper.HtmlEncode(user.Email));
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.FirstName));
+        html.AppendLine(GlobalHelper.HtmlEncode(user.FirstName));
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.LastName));
+        html.AppendLine(GlobalHelper.HtmlEncode(user.LastName));
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.StripeCustomerAccount));
+        html.AppendLine(GlobalHelper.HtmlEncode(user.StripeCustomerAccount));
         if (user.StripeCustomerAccount.Trim() != "")
         {
             html.AppendLine(string.Format(" <button type=\"button\" onclick=\"removestripeaccount({0});\">Clear</button>", user.Id.ToString()));
@@ -79,7 +81,7 @@
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(user.StripeSubscriptionId));
+        html.AppendLine(GlobalHelper.HtmlEncode(user.StripeSubscriptionId));
         if (user.StripeSubscriptionId.Trim() != "")
         {
             html.AppendLine(string.Format(" <button type=\"button\" onclick=\"removesubscription({0});\">Clear</button>", user.Id.ToString()));

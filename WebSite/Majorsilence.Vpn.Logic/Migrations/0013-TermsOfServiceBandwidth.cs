@@ -1,16 +1,11 @@
 ﻿using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(13, TransactionBehavior.Default)]
+[Migration(13)]
 public class TermsOfServiceBandwidth : Migration
 {
-    public TermsOfServiceBandwidth()
-    {
-    }
-
     public override void Up()
     {
         var terms =

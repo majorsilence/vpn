@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
-using Dapper;
 using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Helpers;
 
@@ -15,7 +12,7 @@ public class Logging
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            db.Insert<Poco.Errors>(new Poco.Errors(
+            db.Insert(new Errors(
                 DateTime.UtcNow,
                 msg,
                 "",
@@ -26,7 +23,7 @@ public class Logging
         if (emailErrorToAdmin)
             InitializeSettings.Email.SendMail_BackgroundThread("Message: " + msg + Environment.NewLine,
                 "Msg somewhere in the system", SiteInfo.AdminEmail, true, null,
-                Email.EmailTemplates.Generic);
+                EmailTemplates.Generic);
     }
 
     public static void Log(Exception ex, bool emailErrorToAdmin)
@@ -35,7 +32,7 @@ public class Logging
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            db.Insert<Poco.Errors>(new Poco.Errors(
+            db.Insert(new Errors(
                 DateTime.UtcNow,
                 ex.Message,
                 ex.StackTrace == null ? "" : ex.StackTrace.SafeSubstring(0, 4000),
@@ -47,7 +44,7 @@ public class Logging
             InitializeSettings.Email.SendMail_BackgroundThread(
                 "Error: " + ex.Message + Environment.NewLine + innerException,
                 "Error somewhere in the system", SiteInfo.AdminEmail, true, null,
-                Email.EmailTemplates.Generic);
+                EmailTemplates.Generic);
     }
 
     public static void Log(Exception ex)

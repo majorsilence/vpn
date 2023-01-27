@@ -1,32 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Dapper;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Poco;
+using NUnit.Framework;
 using Stripe;
+using SiteInfo = Majorsilence.Vpn.Logic.Helpers.SiteInfo;
 
 namespace Majorsilence.Vpn.Site.TestsFast.BetaSite;
 
 public class StripePaymentsTest
 {
-    public StripePaymentsTest()
-    {
-    }
+    private readonly string betaKey = "abc1";
 
     private readonly string emailAddress = "teststripepayments@majorsilence.com";
-    private readonly string betaKey = "abc1";
-    private int userid;
     private string token;
+    private int userid;
 
-    [SetUp()]
+    [SetUp]
     public void Setup()
     {
-        StripeConfiguration.SetApiKey(Logic.Helpers.SiteInfo.StripeAPISecretKey);
+        StripeConfiguration.SetApiKey(SiteInfo.StripeAPISecretKey);
 
-        Logic.Helpers.SslSecurity.Callback();
+        SslSecurity.Callback();
 
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -36,7 +40,7 @@ public class StripePaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, Logic.InitializeSettings.Email);
+            , true, InitializeSettings.Email);
 
         userid = peterAccount.Execute();
 
@@ -46,9 +50,9 @@ public class StripePaymentsTest
 
     private void CreateToken()
     {
-        var myToken = new TokenCreateOptions()
+        var myToken = new TokenCreateOptions
         {
-            Card = new TokenCardOptions()
+            Card = new TokenCardOptions
             {
                 AddressCountry = "US",
                 AddressLine1 = "24 Portal St",
@@ -66,28 +70,28 @@ public class StripePaymentsTest
 
         // set these properties if using a card
 
-        var client = new StripeClient(Logic.Helpers.SiteInfo.StripeAPISecretKey);
+        var client = new StripeClient(SiteInfo.StripeAPISecretKey);
         var tokenService = new TokenService(client);
         var stripeToken = tokenService.Create(myToken);
         token = stripeToken.Id;
         Console.WriteLine("Token is: " + token);
     }
 
-    [TearDown()]
+    [TearDown]
     public void Cleanup()
     {
         token = "";
 
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UserPayments");
             var userData =
-                cn.Query<Poco.Users>("SELECT * FROM Users WHERE Email = @email", new { email = emailAddress });
+                cn.Query<Users>("SELECT * FROM Users WHERE Email = @email", new { email = emailAddress });
 
             if (userData.First().StripeCustomerAccount.Trim() != "")
             {
-                var client = new StripeClient(Logic.Helpers.SiteInfo.StripeAPISecretKey);
+                var client = new StripeClient(SiteInfo.StripeAPISecretKey);
                 var customerService = new CustomerService(client);
                 customerService.Delete(userData.First().StripeCustomerAccount);
             }
@@ -97,20 +101,20 @@ public class StripePaymentsTest
         }
     }
 
-    [Test()]
+    [Test]
     public void HappyPathNoCouponTest()
     {
-        Logic.Helpers.SslSecurity.Callback();
-        var pay = new Logic.Payments.StripePayment(userid, new Logic.Email.FakeEmail());
+        SslSecurity.Callback();
+        var pay = new StripePayment(userid, new FakeEmail());
         pay.MakePayment(token, "");
     }
 
-    [Test()]
+    [Test]
     public void MissingTokenTest()
     {
-        Logic.Helpers.SslSecurity.Callback();
-        var pay = new Logic.Payments.StripePayment(userid, new Logic.Email.FakeEmail());
+        SslSecurity.Callback();
+        var pay = new StripePayment(userid, new FakeEmail());
 
-        Assert.Throws<Logic.Exceptions.InvalidStripeTokenException>(() => pay.MakePayment("", ""));
+        Assert.Throws<InvalidStripeTokenException>(() => pay.MakePayment("", ""));
     }
 }

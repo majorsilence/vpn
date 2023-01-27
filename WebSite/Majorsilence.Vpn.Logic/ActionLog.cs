@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Dapper;
 using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Logic;
 
 public class ActionLog
 {
-    public ActionLog()
-    {
-    }
-
     public void Log(string action, int userid)
     {
         using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
 
-            var data = new Majorsilence.Vpn.Poco.ActionLog()
+            var data = new Poco.ActionLog
             {
                 Action = action,
                 ActionDate = DateTime.UtcNow,

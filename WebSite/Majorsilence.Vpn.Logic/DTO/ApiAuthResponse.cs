@@ -4,10 +4,6 @@ namespace Majorsilence.Vpn.Logic.DTO;
 
 public class ApiAuthResponse
 {
-    public ApiAuthResponse()
-    {
-    }
-
     public string Token1 { get; set; }
 
     public DateTime Token1ExpireUtc { get; set; }

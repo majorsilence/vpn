@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Majorsilence.Vpn.Site.Helpers;
+﻿using Majorsilence.Vpn.Site.Helpers;
+using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -21,7 +18,7 @@ public class AdminRegionsController : Controller
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
-        var model = new Models.AdminRegions()
+        var model = new AdminRegions
         {
             SessionVariables = sessionInstance
         };

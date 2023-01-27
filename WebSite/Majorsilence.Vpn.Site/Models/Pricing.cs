@@ -1,17 +1,13 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
+using Majorsilence.Vpn.Logic.Helpers;
 
 namespace Majorsilence.Vpn.Site.Models;
 
 public class Pricing
 {
-    public Pricing()
-    {
-    }
-
     public string MonthlyPrice => string.Format(new CultureInfo("en-US"), "{0:C} {1}",
-        Logic.Helpers.SiteInfo.CurrentMonthlyRate, Logic.Helpers.SiteInfo.Currency);
+        SiteInfo.CurrentMonthlyRate, SiteInfo.Currency);
 
     public string YearlyPrice => string.Format(new CultureInfo("en-US"), "{0:C} {1}",
-        Logic.Helpers.SiteInfo.CurrentYearlyRate, Logic.Helpers.SiteInfo.Currency);
+        SiteInfo.CurrentYearlyRate, SiteInfo.Currency);
 }

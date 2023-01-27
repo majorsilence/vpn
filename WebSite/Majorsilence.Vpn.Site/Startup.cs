@@ -1,18 +1,16 @@
+using System;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Majorsilence.Vpn.Logic.Payments;
 using VpnSite.Models;
 
 namespace Majorsilence.Vpn.Site;
@@ -28,17 +26,17 @@ public class Startup
 
         var s = Configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
         var email = new LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
-        var setup = new Logic.InitializeSettings(vpnConnectionString, sessionConnectionString, email, false);
+        var setup = new InitializeSettings(vpnConnectionString, sessionConnectionString, email, false);
 
         try
         {
-            Logic.Retry.Do(() => { setup.Execute(); }, TimeSpan.FromSeconds(2), 5);
+            Retry.Do(() => { setup.Execute(); }, TimeSpan.FromSeconds(2), 5);
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
             email.SendMail_BackgroundThread("It appears the server setup failed: " + ex.Message,
-                "MajorsilnceVPN setup failure on application_start", Logic.Helpers.SiteInfo.AdminEmail, false, null);
+                "MajorsilnceVPN setup failure on application_start", SiteInfo.AdminEmail, false);
         }
     }
 
@@ -62,7 +60,7 @@ public class Startup
 
         services.AddControllersWithViews();
 
-        services.AddTransient<MySqlConnection>(_ =>
+        services.AddTransient(_ =>
             new MySqlConnection(Configuration["ConnectionStrings:LocalMySqlServer"]));
 
         services.AddScoped<IEmail>(i =>

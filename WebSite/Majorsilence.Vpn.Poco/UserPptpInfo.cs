@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("UserPptpInfo")]
+[Table("UserPptpInfo")]
 public class UserPptpInfo
 {
     public UserPptpInfo()
@@ -21,7 +19,7 @@ public class UserPptpInfo
         Password = password;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public int UserId { get; set; }
 

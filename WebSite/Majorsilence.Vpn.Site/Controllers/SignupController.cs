@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Net;
+using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -27,8 +28,8 @@ public class SignupController : Controller
     {
         try
         {
-            var account = new Logic.Accounts.CreateAccount(
-                new Logic.Accounts.CreateAccountInfo()
+            var account = new CreateAccount(
+                new CreateAccountInfo
                 {
                     Email = email,
                     EmailConfirm = emailconfirm,
@@ -42,17 +43,17 @@ public class SignupController : Controller
             );
             account.Execute();
 
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
         }
-        catch (Logic.Exceptions.InvalidDataException ide)
+        catch (InvalidDataException ide)
         {
-            Logic.Helpers.Logging.Log(ide);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+            Logging.Log(ide);
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+            Logging.Log(ex);
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         }
     }
 }

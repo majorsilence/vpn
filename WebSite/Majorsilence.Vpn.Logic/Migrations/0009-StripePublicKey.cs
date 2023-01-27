@@ -1,16 +1,10 @@
-﻿using System;
-using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
+﻿using FluentMigrator;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(9, TransactionBehavior.Default)]
+[Migration(9)]
 public class StripePublicKey : Migration
 {
-    public StripePublicKey()
-    {
-    }
-
     public override void Up()
     {
         Alter.Table("SiteInfo").AddColumn("StripeAPIPublicKey").AsString().Nullable();

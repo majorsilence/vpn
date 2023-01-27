@@ -1,10 +1,18 @@
 ﻿using System;
-using System.IO;
 
 namespace Majorsilence.Vpn.Logic.Ssh;
 
 public class FakeSsh : ISsh
 {
+    public enum TestingScenerios
+    {
+        None = 0,
+        OpenVpnHappyPath = 1,
+        OpenVpnErrorNumber2 = 2
+    }
+
+    private readonly TestingScenerios scenerios = TestingScenerios.None;
+
     public FakeSsh()
     {
     }
@@ -13,15 +21,6 @@ public class FakeSsh : ISsh
     {
         this.scenerios = scenerios;
     }
-
-    public enum TestingScenerios
-    {
-        None = 0,
-        OpenVpnHappyPath = 1,
-        OpenVpnErrorNumber2 = 2
-    }
-
-    private TestingScenerios scenerios = TestingScenerios.None;
 
     public void Login(string host)
     {
@@ -33,11 +32,11 @@ public class FakeSsh : ISsh
 
     public string Read()
     {
-        Console.WriteLine("Scenerio: " + scenerios.ToString());
+        Console.WriteLine("Scenerio: " + scenerios);
 
         if (scenerios == TestingScenerios.OpenVpnHappyPath)
             return "certificate is to be certified until";
-        else if (scenerios == TestingScenerios.OpenVpnErrorNumber2) return "txt_db error number 2";
+        if (scenerios == TestingScenerios.OpenVpnErrorNumber2) return "txt_db error number 2";
 
         return "";
     }

@@ -22,19 +22,19 @@ public class ExampleTest
         Console.WriteLine("TearDown called");
     }
 
-    [Test()]
+    [Test]
     public void Test1()
     {
         Console.WriteLine("Test 1 called");
     }
 
-    [Test()]
+    [Test]
     public void Test2()
     {
         Console.WriteLine("Test 2 called");
     }
 
-    [Test()]
+    [Test]
     public void Test3()
     {
         Console.WriteLine("Test 3 called");

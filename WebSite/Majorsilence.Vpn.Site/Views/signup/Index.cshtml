@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Majorsilence.Vpn.Logic.Helpers
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @{
     ViewBag.Title = "Sign up";
@@ -29,7 +30,7 @@
 	    <text>
 	      $(function () {
 
-	         NewUser.Init(@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.LiveSite.ToString().ToLower()), false);
+	         NewUser.Init(@(SiteInfo.LiveSite.ToString().ToLower()), false);
 	     });
      </text>
 	}

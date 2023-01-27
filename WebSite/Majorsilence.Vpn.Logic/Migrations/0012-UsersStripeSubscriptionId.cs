@@ -1,16 +1,10 @@
-﻿using System;
-using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
+﻿using FluentMigrator;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(12, TransactionBehavior.Default)]
+[Migration(12)]
 public class UsersStripeSubscriptionId : Migration
 {
-    public UsersStripeSubscriptionId()
-    {
-    }
-
     public override void Up()
     {
         Alter.Table("Users").AddColumn("StripeSubscriptionId").AsString(255).Nullable();

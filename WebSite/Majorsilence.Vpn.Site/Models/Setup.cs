@@ -1,5 +1,6 @@
-using System;
 using System.Collections.Generic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Payments;
 
 namespace Majorsilence.Vpn.Site.Models;
 
@@ -7,14 +8,14 @@ public class Setup : CustomViewLayout
 {
     public Setup(int userid, string username)
     {
-        var details = new Logic.Accounts.ServerDetails();
+        var details = new ServerDetails();
         ServerInfo = details.Info;
 
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
         ActiveAccount = !pay.IsExpired();
 
 
-        var userServerDetails = new Logic.Accounts.UserServerDetails(userid);
+        var userServerDetails = new UserServerDetails(userid);
         if (userServerDetails.Info == null)
         {
             CurrentServer = "none";
@@ -39,7 +40,7 @@ public class Setup : CustomViewLayout
 
     public string Username { get; set; }
 
-    public IEnumerable<Logic.Accounts.UserServerDetailsInfo> ServerInfo { get; set; }
+    public IEnumerable<UserServerDetailsInfo> ServerInfo { get; set; }
 
     public bool ActiveAccount { get; set; }
 }

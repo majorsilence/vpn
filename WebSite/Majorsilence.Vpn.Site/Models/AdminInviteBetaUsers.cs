@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Mvc;
+﻿using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
 
 namespace Majorsilence.Vpn.Site.Models;
 
@@ -10,20 +7,18 @@ public class AdminInviteBetaUsers : CustomViewLayout
 {
     public AdminInviteBetaUsers()
     {
-        var keys = new Logic.Accounts.BetaKeys(Logic.InitializeSettings.Email);
-        _remainingBetaKeys = keys.UnsuedKeyCount();
+        var keys = new BetaKeys(InitializeSettings.Email);
+        RemainingBetaKeys = keys.UnsuedKeyCount();
     }
 
-    private int _remainingBetaKeys;
-    public int RemainingBetaKeys => _remainingBetaKeys;
+    public int RemainingBetaKeys { get; }
 
-    private bool _emailSent;
-    public bool EmailSent => _emailSent;
+    public bool EmailSent { get; private set; }
 
     public void SendMail(string emailAddress)
     {
-        var keys = new Logic.Accounts.BetaKeys(Logic.InitializeSettings.Email);
+        var keys = new BetaKeys(InitializeSettings.Email);
         keys.MailInvite(emailAddress);
-        _emailSent = true;
+        EmailSent = true;
     }
 }

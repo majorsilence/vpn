@@ -1,11 +1,14 @@
-﻿@{
+﻿@using System.Text
+@using Majorsilence.Vpn.Logic.Admin
+@using Majorsilence.Vpn.Site.Helpers
+@{
     ViewBag.Title = "Error Report";
     Layout = "~/Views/AdminView.cshtml";
 }
 
 <h2>Error Report</h2>
 @{
-    var html = new System.Text.StringBuilder();
+    var html = new StringBuilder();
     html.AppendLine("<table class=\"table\">");
     html.AppendLine("<tr>");
     html.Append("<th>ID</th>");
@@ -15,7 +18,7 @@
     html.Append("<th>Time Created</th>");
     html.AppendLine("</tr>");
 
-    var errors = new Majorsilence.Vpn.Logic.Admin.ErrorReports();
+    var errors = new ErrorReports();
     foreach (var err in errors.RetrieveAll())
     {
         html.AppendLine("<tr>");
@@ -25,19 +28,19 @@
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.Message));
+        html.AppendLine(GlobalHelper.HtmlEncode(err.Message));
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.RecursiveStackTrace));
+        html.AppendLine(GlobalHelper.HtmlEncode(err.RecursiveStackTrace));
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.StackTrace));
+        html.AppendLine(GlobalHelper.HtmlEncode(err.StackTrace));
         html.AppendLine("</td>");
 
         html.AppendLine("<td>");
-        html.AppendLine(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(err.TimeCreated.ToString()));
+        html.AppendLine(GlobalHelper.HtmlEncode(err.TimeCreated.ToString()));
         html.AppendLine("</td>");
 
 

@@ -1,28 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using Dapper;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Poco;
+using NUnit.Framework;
+using SiteInfo = Majorsilence.Vpn.Logic.Helpers.SiteInfo;
 
 namespace Majorsilence.Vpn.Site.TestsFast.BetaSite;
 
 public class PaymentsTest
 {
-    private readonly string emailAddress = "testpayments@majorsilence.com";
-    private readonly string nonAdminEmail = "sdfasdf@majorsilence.com";
-
-
     private readonly string betaKey = "abc1";
     private readonly string betaKey2 = "abc2";
-    private int userid;
+    private readonly string emailAddress = "testpayments@majorsilence.com";
+    private readonly string nonAdminEmail = "sdfasdf@majorsilence.com";
     private int nonAdminUserId;
+    private int userid;
 
-    [SetUp()]
+    [SetUp]
     public void Setup()
     {
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -32,12 +34,12 @@ public class PaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, Logic.InitializeSettings.Email);
+            , true, InitializeSettings.Email);
 
         userid = peterAccount.Execute();
 
-        var account2 = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var account2 = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = nonAdminEmail,
                 EmailConfirm = nonAdminEmail,
@@ -47,15 +49,15 @@ public class PaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey2
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         nonAdminUserId = account2.Execute();
     }
 
-    [TearDown()]
+    [TearDown]
     public void Cleanup()
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UserPayments");
@@ -68,20 +70,20 @@ public class PaymentsTest
     }
 
 
-    [Test()]
+    [Test]
     public void ValidPaymentTest()
     {
         var createDate = DateTime.UtcNow;
         const decimal payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.MonthlyPaymentId;
+        var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
         pay.SaveUserPayment(payment, createDate, paycode);
 
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
-            var data = cn.Query<Poco.UserPayments>(
+            var data = cn.Query<UserPayments>(
                 "SELECT * FROM UserPayments WHERE UserId = @UserId AND AmountPaid=@amount AND " +
                 "CreateTime=@CreateTime AND LookupPaymentTypeId=@payid",
                 new { UserId = userid, amount = payment, CreateTime = createDate, payid = paycode });
@@ -91,58 +93,58 @@ public class PaymentsTest
         }
     }
 
-    [Test()]
+    [Test]
     public void PaymentWithInvalidUserIdTest()
     {
         var createDate = DateTime.UtcNow;
         const decimal payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.MonthlyPaymentId;
+        var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(-1);
+        var pay = new Payment(-1);
 
-        Assert.Throws<Logic.Exceptions.InvalidUserIdException>(() => pay.SaveUserPayment(payment, createDate, paycode));
+        Assert.Throws<InvalidUserIdException>(() => pay.SaveUserPayment(payment, createDate, paycode));
     }
 
 
-    [Test()]
+    [Test]
     public void IsExpiredTest()
     {
         // Beta account should never be expired
-        var pay = new Logic.Payments.Payment(nonAdminUserId);
+        var pay = new Payment(nonAdminUserId);
         Assert.That(pay.IsExpired(), Is.True);
     }
 
-    [Test()]
+    [Test]
     public void IsAdminExpiredTest()
     {
         // Beta account should never be expired
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
         Assert.That(pay.IsExpired(), Is.False);
     }
 
 
-    [Test()]
+    [Test]
     public void IsExpiredOldPaymentsTest()
     {
         var createDate = DateTime.UtcNow.AddMonths(-3);
         const decimal payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.MonthlyPaymentId;
+        var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(nonAdminUserId);
+        var pay = new Payment(nonAdminUserId);
         pay.SaveUserPayment(payment, createDate, paycode);
 
 
         Assert.That(pay.IsExpired(), Is.True);
     }
 
-    [Test()]
+    [Test]
     public void IsAdminExpiredOldPaymentsTest()
     {
         var createDate = DateTime.UtcNow.AddMonths(-3);
         var payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.MonthlyPaymentId;
+        var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
         pay.SaveUserPayment(payment, createDate, paycode);
 
 
@@ -150,39 +152,39 @@ public class PaymentsTest
     }
 
 
-    [Test()]
+    [Test]
     public void IsExpiredNewPaymentsTest()
     {
         // Beta account should never be expired
         var createDate = DateTime.UtcNow;
         var payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.MonthlyPaymentId;
+        var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
         pay.SaveUserPayment(payment, createDate, paycode);
 
 
         Assert.That(pay.IsExpired(), Is.False);
     }
 
-    [Test()]
+    [Test]
     public void IsExpiredInvalidUserIdTest()
     {
         // Beta account should never be expired except for invalid user accounts
-        var pay = new Logic.Payments.Payment(-1);
+        var pay = new Payment(-1);
 
         Assert.That(pay.IsExpired(), Is.True);
     }
 
 
-    [Test()]
+    [Test]
     public void HistoryTest()
     {
         var createDate = DateTime.UtcNow;
         var payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.MonthlyPaymentId;
+        var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
 
 
         for (var i = 0; i < 1000; i++)
@@ -192,14 +194,14 @@ public class PaymentsTest
         }
     }
 
-    [Test()]
+    [Test]
     public void ExpireMonthlyPaymentTest()
     {
         var createDate = DateTime.UtcNow;
         var payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.MonthlyPaymentId;
+        var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
 
         pay.SaveUserPayment(payment, createDate, paycode);
         var expireDate = createDate.AddMonths(1).AddDays(1);
@@ -211,14 +213,14 @@ public class PaymentsTest
         Assert.That(pay.ExpireDate().Second, Is.EqualTo(expireDate.Second));
     }
 
-    [Test()]
+    [Test]
     public void ExpireYearlyPaymentTest()
     {
         var createDate = DateTime.UtcNow;
         var payment = 56.76m;
-        var paycode = Logic.Helpers.SiteInfo.YearlyPaymentId;
+        var paycode = SiteInfo.YearlyPaymentId;
 
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
 
         pay.SaveUserPayment(payment, createDate, paycode);
         var expireDate = createDate.AddYears(1).AddDays(1);

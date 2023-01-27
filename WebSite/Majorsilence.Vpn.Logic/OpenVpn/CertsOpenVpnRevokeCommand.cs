@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
+using System.Threading;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Data;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Ssh;
+using Majorsilence.Vpn.Poco;
+using InvalidDataException = System.IO.InvalidDataException;
 
 namespace Majorsilence.Vpn.Logic.OpenVpn;
 
 public class CertsOpenVpnRevokeCommand : ICommand
 {
-    private Poco.Users userData;
-    private Ssh.ISsh sshClient;
+    private readonly ISsh sshClient;
+    private readonly Users userData;
 
     private CertsOpenVpnRevokeCommand()
     {
     }
 
-    public CertsOpenVpnRevokeCommand(int userId, Ssh.ISsh sshClient)
+    public CertsOpenVpnRevokeCommand(int userId, ISsh sshClient)
     {
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            userData = db.Get<Poco.Users>(userId);
+            userData = db.Get<Users>(userId);
         }
 
         this.sshClient = sshClient;
@@ -32,16 +32,16 @@ public class CertsOpenVpnRevokeCommand : ICommand
     public void Execute()
     {
         var certName = "";
-        Poco.VpnServers vpnData = null;
+        VpnServers vpnData = null;
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            var certData = db.Query<Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
+            var certData = db.Query<UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
                 new { UserId = userData.Id });
             if (certData.Count() == 1)
             {
                 certName = certData.First().CertName;
-                vpnData = db.Get<Poco.VpnServers>(certData.First().VpnServersId);
+                vpnData = db.Get<VpnServers>(certData.First().VpnServersId);
             }
             else if (certData.Count() >= 1)
             {
@@ -59,8 +59,8 @@ public class CertsOpenVpnRevokeCommand : ICommand
     }
 
     /// <summary>
-    /// Revoke a users vpn certificate.  This is generally used when they close their account
-    /// or stop making payments.
+    ///     Revoke a users vpn certificate.  This is generally used when they close their account
+    ///     or stop making payments.
     /// </summary>
     /// <param name="certName"></param>
     private void RevokeUserCert(string host, string certName)
@@ -78,15 +78,15 @@ public class CertsOpenVpnRevokeCommand : ICommand
         var output = "";
         while (output.ToLower().Contains("error 23 at 0 depth lookup:certificate revoked") == false)
         {
-            if (count > 20) throw new Exceptions.SshException("Error revoking client cert on vpn server");
+            if (count > 20) throw new SshException("Error revoking client cert on vpn server");
 
             if (output.ToLower().Contains("no such file or directory"))
-                throw new Exceptions.SshException("Error revoking client cert on vpn server");
+                throw new SshException("Error revoking client cert on vpn server");
 
             if (output.ToLower().Contains("already revoked")) return;
 
             output += sshClient.Read();
-            System.Threading.Thread.Sleep(1000);
+            Thread.Sleep(1000);
             count++;
         }
 

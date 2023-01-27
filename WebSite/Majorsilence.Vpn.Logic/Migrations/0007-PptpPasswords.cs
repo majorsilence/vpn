@@ -1,16 +1,10 @@
-using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(7, TransactionBehavior.Default)]
+[Migration(7)]
 public class PptpPasswords : Migration
 {
-    public PptpPasswords()
-    {
-    }
-
     public override void Up()
     {
         Alter.Table("UserPptpInfo").AddColumn("Password").AsString().Nullable();

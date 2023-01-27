@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Data;
-using RestSharp;
-using RestSharp.Authenticators;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Poco;
+using SiteInfo = Majorsilence.Vpn.Logic.Helpers.SiteInfo;
 
 namespace Majorsilence.Vpn.Logic.Payments;
 
 public class Payment
 {
+    private readonly int userId;
+    private readonly Users userInfo;
+
     private Payment()
     {
     }
-
-    private int userId;
-    private Poco.Users userInfo;
 
     public Payment(int userId)
     {
@@ -26,32 +25,32 @@ public class Payment
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            userInfo = db.Get<Poco.Users>(userId);
+            userInfo = db.Get<Users>(userId);
         }
     }
 
-    public IEnumerable<Poco.UserPayments> History()
+    public IEnumerable<UserPayments> History()
     {
         using (var db = InitializeSettings.DbFactory)
         {
-            var x = db.Query<Poco.UserPayments>("SELECT * FROM UserPayments WHERE UserId=@UserId",
+            var x = db.Query<UserPayments>("SELECT * FROM UserPayments WHERE UserId=@UserId",
                 new { UserId = userId });
             return x;
         }
     }
 
     /// <summary>
-    /// Check if the current user account payment is expired.
+    ///     Check if the current user account payment is expired.
     /// </summary>
     /// <returns></returns>
     public bool IsExpired()
     {
         if (userInfo == null)
             return true;
-        else if (userInfo.Admin)
+        if (userInfo.Admin)
             // Admins now get free accounts forever
             return false;
-        else if (ExpireDate() <= DateTime.UtcNow) return true;
+        if (ExpireDate() <= DateTime.UtcNow) return true;
 
         return false;
     }
@@ -61,7 +60,7 @@ public class Payment
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            var x = db.Query<Poco.UserPayments>(
+            var x = db.Query<UserPayments>(
                 "SELECT * FROM UserPayments WHERE UserId=@uid ORDER BY CreateTime DESC LIMIT 1",
                 new { uid = userId });
 
@@ -72,12 +71,12 @@ public class Payment
             var payType = x.First().LookupPaymentTypeId;
 
             var expireDate = payDate;
-            if (payType == Helpers.SiteInfo.MonthlyPaymentId)
+            if (payType == SiteInfo.MonthlyPaymentId)
                 expireDate = expireDate.AddMonths(1);
-            else if (payType == Helpers.SiteInfo.YearlyPaymentId)
+            else if (payType == SiteInfo.YearlyPaymentId)
                 expireDate = expireDate.AddYears(1);
             else
-                throw new Exceptions.InvalidDataException("Neither a monthly or yearly payment id has been found.");
+                throw new InvalidDataException("Neither a monthly or yearly payment id has been found.");
 
 
             // Add 1 day grace to allow payment to take place
@@ -89,14 +88,14 @@ public class Payment
     public void SaveUserPayment(decimal amount, DateTime createTime, int paymentCodeId)
     {
         if (userInfo == null)
-            throw new Exceptions.InvalidUserIdException(
+            throw new InvalidUserIdException(
                 string.Format("The user attempting to make payments does not exist.", userId));
 
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
 
-            db.Insert(new Poco.UserPayments(
+            db.Insert(new UserPayments(
                 userId, amount, createTime, paymentCodeId)
             );
         }

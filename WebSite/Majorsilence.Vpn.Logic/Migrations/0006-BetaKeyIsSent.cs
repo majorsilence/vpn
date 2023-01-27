@@ -1,10 +1,8 @@
-using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(6, TransactionBehavior.Default)]
+[Migration(6)]
 public class BetaKeyIsSent : Migration
 {
     public override void Up()

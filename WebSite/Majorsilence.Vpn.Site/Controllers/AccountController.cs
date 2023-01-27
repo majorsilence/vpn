@@ -1,13 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Logic.OpenVpn;
-using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Logic.Ppp;
+using Majorsilence.Vpn.Logic.Ssh;
 using Majorsilence.Vpn.Site.Helpers;
+using Majorsilence.Vpn.Site.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -15,8 +21,8 @@ namespace Majorsilence.Vpn.Site.Controllers;
 public class AccountController : Controller
 {
     private readonly IEmail email;
-    private readonly ISessionVariables sessionInstance;
     private readonly IStringLocalizer<AccountController> localizer;
+    private readonly ISessionVariables sessionInstance;
 
     public AccountController(IEmail email, ISessionVariables sessionInstance,
         IStringLocalizer<AccountController> localizer)
@@ -28,7 +34,7 @@ public class AccountController : Controller
 
     public ActionResult Index()
     {
-        var acct = new Models.Account(sessionInstance.UserId)
+        var acct = new Account(sessionInstance.UserId)
         {
             SessionVariables = sessionInstance
         };
@@ -39,7 +45,7 @@ public class AccountController : Controller
     public ActionResult Settings()
     {
         ViewData["IsAdmin"] = sessionInstance.IsAdmin;
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 
     [HttpPost]
@@ -50,16 +56,16 @@ public class AccountController : Controller
         HttpContext.Response.ContentType = "text/html";
         try
         {
-            var pay = new Logic.Payments.StripePayment(sessionInstance.UserId, email);
+            var pay = new StripePayment(sessionInstance.UserId, email);
             pay.CancelSubscription();
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
-            Logic.ActionLog.Log_BackgroundThread("Subscription Cancelled", sessionInstance.UserId);
+            ActionLog.Log_BackgroundThread("Subscription Cancelled", sessionInstance.UserId);
         }
         catch (Exception ex)
         {
             Logging.Log(ex);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         }
     }
 
@@ -74,11 +80,11 @@ public class AccountController : Controller
         var message = "";
         try
         {
-            var pay = new Logic.Payments.StripePayment(sessionInstance.UserId,
+            var pay = new StripePayment(sessionInstance.UserId,
                 email);
             pay.MakePayment(stripeToken, discount);
 
-            Logic.ActionLog.Log_BackgroundThread("Payment made", sessionInstance.UserId);
+            ActionLog.Log_BackgroundThread("Payment made", sessionInstance.UserId);
 
 
             Task.Run(() => SetDefaultVpnServer());
@@ -95,17 +101,17 @@ public class AccountController : Controller
 
     private void SetDefaultVpnServer()
     {
-        Logic.ActionLog.Log_BackgroundThread("Attempt to set default vpn server after payment made",
+        ActionLog.Log_BackgroundThread("Attempt to set default vpn server after payment made",
             sessionInstance.UserId);
         try
         {
-            var details = new Logic.Accounts.ServerDetails();
+            var details = new ServerDetails();
 
             using (var sshNewServer =
-                   new Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                   new LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             using (var sshRevokeServer =
-                   new Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
-            using (var sftp = new Logic.Ssh.LiveSftp(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                   new LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+            using (var sftp = new LiveSftp(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             {
                 var cert = new CertsOpenVpnGenerateCommand(sessionInstance.UserId,
                     details.Info.First().VpnServerId, sshNewServer, sshRevokeServer, sftp);
@@ -113,11 +119,11 @@ public class AccountController : Controller
             }
 
             using (var sshNewServer =
-                   new Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                   new LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             using (var sshRevokeServer =
-                   new Logic.Ssh.LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+                   new LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             {
-                var pptp = new Logic.Ppp.ManagePPTP(sessionInstance.UserId,
+                var pptp = new ManagePPTP(sessionInstance.UserId,
                     details.Info.First().VpnServerId, sshNewServer, sshRevokeServer);
                 pptp.AddUser();
             }
@@ -125,7 +131,7 @@ public class AccountController : Controller
         catch (Exception ex)
         {
             Logging.Log(ex);
-            Logic.ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made",
+            ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made",
                 sessionInstance.UserId);
         }
     }
@@ -137,31 +143,31 @@ public class AccountController : Controller
         HttpContext.Response.ContentType = "text/html";
         if (sessionInstance.LoggedIn == false)
         {
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return;
         }
 
-        var update = new Logic.Accounts.UserInfo(sessionInstance.UserId);
+        var update = new UserInfo(sessionInstance.UserId);
         try
         {
             update.UpdateProfile(email, firstname, lastname);
 
-            Logic.ActionLog.Log_BackgroundThread(string.Format(
+            ActionLog.Log_BackgroundThread(string.Format(
                     "Profile Update - Email -> {0} - First Name -> {1} - Last Name -> {2}",
                     email, firstname, lastname),
                 sessionInstance.UserId);
 
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
         }
-        catch (Logic.Exceptions.InvalidDataException ide)
+        catch (InvalidDataException ide)
         {
             Logging.Log(ide);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
-        catch (Logic.Exceptions.EmailAddressAlreadyUsedException eaaue)
+        catch (EmailAddressAlreadyUsedException eaaue)
         {
             Logging.Log(eaaue);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
     }
 
@@ -171,21 +177,21 @@ public class AccountController : Controller
         HttpContext.Response.ContentType = "text/html";
         if (sessionInstance.LoggedIn == false)
         {
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             return;
         }
 
-        var update = new Logic.Accounts.UserInfo(sessionInstance.UserId);
+        var update = new UserInfo(sessionInstance.UserId);
         try
         {
             update.UpdatePassword(oldpassword, newpassword, confirmnewpassword);
-            Logic.ActionLog.Log_BackgroundThread("Password Changed",
+            ActionLog.Log_BackgroundThread("Password Changed",
                 sessionInstance.UserId);
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
         }
-        catch (Logic.Exceptions.InvalidDataException ide)
+        catch (InvalidDataException ide)
         {
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
     }
 }

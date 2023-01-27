@@ -1,11 +1,8 @@
-﻿using Ionic.Zip;
-using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using Dapper;
-using Dapper.Contrib.Extensions;
+using Ionic.Zip;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.OpenVpn;
 
@@ -21,7 +18,7 @@ public class CertsOpenVpnDownload
             {
                 db.Open();
 
-                var userCerts = db.Query<Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
+                var userCerts = db.Query<UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
                     new { UserId = userid });
 
                 if (userCerts.Count() > 0)
@@ -55,7 +52,7 @@ public class CertsOpenVpnDownload
 
 
             byte[] ba;
-            using (var ms = new System.IO.MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 zip.Save(ms);
                 ba = ms.ToArray();

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.IO;
+using Renci.SshNet;
 
 namespace Majorsilence.Vpn.Logic.Ssh;
 
 public class LiveSsh : ISsh
 {
-    private Renci.SshNet.SshClient client = null;
-    private Renci.SshNet.ShellStream stream = null;
+    private SshClient client;
+    private bool disposed;
+    private bool isLoggedIn;
+    private readonly string password;
+    private readonly int port;
     private StreamReader reader;
+    private ShellStream stream;
+    private readonly string username;
     private StreamWriter writer;
-    private int port;
-    private string username;
-    private string password;
-    private bool isLoggedIn = false;
-    private bool disposed = false;
 
     public LiveSsh(int port, string username, string password)
     {
@@ -26,7 +27,7 @@ public class LiveSsh : ISsh
     {
         if (isLoggedIn) return;
 
-        client = new Renci.SshNet.SshClient(host, port, username, password);
+        client = new SshClient(host, port, username, password);
         client.Connect();
 
         stream = client.CreateShellStream("xterm", 80, 24, 800, 600, 1024);

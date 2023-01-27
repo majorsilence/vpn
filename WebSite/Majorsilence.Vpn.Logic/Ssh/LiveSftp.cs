@@ -1,15 +1,17 @@
 ﻿using System;
+using System.IO;
+using Renci.SshNet;
 
 namespace Majorsilence.Vpn.Logic.Ssh;
 
 public class LiveSftp : ISftp
 {
-    private int port;
-    private string username;
-    private string password;
-    private bool isLoggedIn = false;
-    private Renci.SshNet.SftpClient client;
-    private bool disposed = false;
+    private SftpClient client;
+    private bool disposed;
+    private bool isLoggedIn;
+    private readonly string password;
+    private readonly int port;
+    private readonly string username;
 
     public LiveSftp(int port, string username, string password)
     {
@@ -22,13 +24,13 @@ public class LiveSftp : ISftp
     {
         if (isLoggedIn) return;
 
-        client = new Renci.SshNet.SftpClient(host, port, username, password);
+        client = new SftpClient(host, port, username, password);
         client.Connect();
 
         isLoggedIn = true;
     }
 
-    public void DownloadFile(string path, System.IO.Stream output)
+    public void DownloadFile(string path, Stream output)
     {
         client.DownloadFile(path, output);
     }

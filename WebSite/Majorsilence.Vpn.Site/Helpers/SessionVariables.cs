@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 
 namespace Majorsilence.Vpn.Site.Helpers;
 
 public class SessionVariables : ISessionVariables
 {
-    private HttpContext context;
+    private readonly HttpContext context;
 
     public SessionVariables(IHttpContextAccessor context)
     {
@@ -50,7 +47,7 @@ public class SessionVariables : ISessionVariables
     }
 
     /// <summary>
-    /// Check if the logged in user is an admin
+    ///     Check if the logged in user is an admin
     /// </summary>
     public bool IsAdmin
     {

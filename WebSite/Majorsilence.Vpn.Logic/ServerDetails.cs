@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using System.Text;
 using Dapper;
-using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
 /// <summary>
-/// Retrieve active server details including region
+///     Retrieve active server details including region
 /// </summary>
 public class ServerDetails
 {
-    private IEnumerable<UserServerDetailsInfo> details = null;
-
     public ServerDetails()
     {
         //  this._userId = userId;
 
-        var sql = new System.Text.StringBuilder();
+        var sql = new StringBuilder();
         sql.Append(
             "select a.Id as 'VpnServerId', b.Id as 'RegionId', a.Description as 'VpnServerName', b.Description as 'RegionName', a.Address ");
         sql.Append("from VpnServers a ");
@@ -28,9 +22,9 @@ public class ServerDetails
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            details = db.Query<UserServerDetailsInfo>(sql.ToString());
+            Info = db.Query<UserServerDetailsInfo>(sql.ToString());
         }
     }
 
-    public IEnumerable<UserServerDetailsInfo> Info => details;
+    public IEnumerable<UserServerDetailsInfo> Info { get; }
 }

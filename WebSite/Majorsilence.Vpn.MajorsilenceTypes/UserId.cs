@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MajorsilenceTypes;
+﻿namespace MajorsilenceTypes;
 
 public class UserId
 {

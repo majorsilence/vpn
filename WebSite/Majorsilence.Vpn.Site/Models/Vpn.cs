@@ -1,15 +1,10 @@
-﻿using System;
+﻿using System.Globalization;
 using System.Threading;
-using System.Globalization;
 
 namespace Majorsilence.Vpn.Site.Models;
 
 public class Vpn
 {
-    public Vpn()
-    {
-    }
-
     public void InitCultureByPram(string lang)
     {
         var culture = lang;

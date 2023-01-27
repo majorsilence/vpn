@@ -1,18 +1,15 @@
 ﻿using System;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("UsersApiTokens")]
+[Table("UsersApiTokens")]
 public class UsersApiTokens
 {
-    public UsersApiTokens()
-    {
-    }
-
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     /// <summary>
-    /// Foreign key to users table
+    ///     Foreign key to users table
     /// </summary>
     /// <value>The user identifier.</value>
     public int UserId { get; set; }

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("Users")]
+[Table("Users")]
 public class Users
 {
     public Users()
@@ -30,7 +28,7 @@ public class Users
         IsBetaUser = isBetaUser;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public string Email { get; set; }
 

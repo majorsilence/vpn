@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Data;
 
 namespace Majorsilence.Vpn.Logic.Admin;
 
 public class Regions
 {
-    public IEnumerable<Majorsilence.Vpn.Poco.Regions> Select()
+    public IEnumerable<Poco.Regions> Select()
     {
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            var regions = db.Query<Majorsilence.Vpn.Poco.Regions>("SELECT * FROM Regions");
+            var regions = db.Query<Poco.Regions>("SELECT * FROM Regions");
             return regions;
         }
     }
@@ -25,7 +21,7 @@ public class Regions
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            var region = new Majorsilence.Vpn.Poco.Regions(description, active);
+            var region = new Poco.Regions(description, active);
             return (int)db.Insert(region);
         }
     }
@@ -36,7 +32,7 @@ public class Regions
         {
             db.Open();
             // update existing
-            var region = db.Get<Majorsilence.Vpn.Poco.Regions>(id);
+            var region = db.Get<Poco.Regions>(id);
             region.Description = description;
             region.Active = active;
             db.Update(region);

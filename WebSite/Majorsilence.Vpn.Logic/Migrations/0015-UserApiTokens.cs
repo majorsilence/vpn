@@ -1,16 +1,10 @@
-﻿using System;
-using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
+﻿using FluentMigrator;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(15, TransactionBehavior.Default)]
+[Migration(15)]
 public class UserApiTokens : Migration
 {
-    public UserApiTokens()
-    {
-    }
-
     public override void Up()
     {
         Create.Table("UsersApiTokens")

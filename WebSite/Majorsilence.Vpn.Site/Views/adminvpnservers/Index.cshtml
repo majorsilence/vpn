@@ -1,4 +1,6 @@
-﻿@model Majorsilence.Vpn.Site.Models.AdminVpnServers
+﻿@using System.Text
+@using Majorsilence.Vpn.Site.Helpers
+@model Majorsilence.Vpn.Site.Models.AdminVpnServers
 @{
     ViewBag.Title = "Admin VPN Servers";
     Layout = "~/Views/AdminView.cshtml";
@@ -9,7 +11,7 @@
     <a href="/adminvpnserversedit?id=new&address=&port=&desc=&region=&active=">Add New VPN Server</a>
     <br/>
     <br/>
-    var html = new System.Text.StringBuilder();
+    var html = new StringBuilder();
     html.Append("<table class=\"table\">");
     html.Append("<tr>");
     html.Append("<th>ID</th>");
@@ -21,19 +23,19 @@
     html.Append("</tr>");
 
 
-    foreach (var vpn in @Model.VpnServersList)
+    foreach (var vpn in Model.VpnServersList)
     {
         html.Append("<tr>");
 
         html.Append("<td>");
         html.Append(string.Format("<a href=\"/adminvpnserversedit?id={0}&address={1}&port={2}&desc={3}&region={4}&active={5}\">{0}</a>",
-            vpn.Id, Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(vpn.Address),
-            vpn.VpnPort, Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(vpn.Description),
+            vpn.Id, GlobalHelper.HtmlEncode(vpn.Address),
+            vpn.VpnPort, GlobalHelper.HtmlEncode(vpn.Description),
             vpn.RegionId, vpn.Active ? "checked" : ""));
         html.Append("</td>");
 
         html.Append("<td>");
-        html.Append(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(vpn.Address));
+        html.Append(GlobalHelper.HtmlEncode(vpn.Address));
         html.Append("</td>");
 
         html.Append("<td>");
@@ -41,7 +43,7 @@
         html.Append("</td>");
 
         html.Append("<td>");
-        html.Append(Majorsilence.Vpn.Site.Helpers.GlobalHelper.HtmlEncode(vpn.Description));
+        html.Append(GlobalHelper.HtmlEncode(vpn.Description));
         html.Append("</td>");
 
         html.Append("<td>");

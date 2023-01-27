@@ -1,21 +1,17 @@
-﻿using System;
-using Dapper.Contrib.Extensions;
+﻿using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class ModifyAccount
 {
-    public ModifyAccount()
-    {
-    }
-
     public void ToggleIsAdmin(int userid)
     {
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
 
-            var data = db.Get<Poco.Users>(userid);
+            var data = db.Get<Users>(userid);
 
             data.Admin = !data.Admin;
 

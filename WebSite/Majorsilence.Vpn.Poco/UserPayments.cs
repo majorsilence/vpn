@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("UserPayments")]
+[Table("UserPayments")]
 public class UserPayments
 {
     public UserPayments()
@@ -20,7 +18,7 @@ public class UserPayments
         LookupPaymentTypeId = lookupPaymentTypeId;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public int UserId { get; set; }
 
@@ -29,8 +27,8 @@ public class UserPayments
     public DateTime CreateTime { get; set; }
 
     /// <summary>
-    /// The type of payment.  Monthly, Yearly, etc...
-    /// Used to calculate when the account should expire if a new payment is not found.
+    ///     The type of payment.  Monthly, Yearly, etc...
+    ///     Used to calculate when the account should expire if a new payment is not found.
     /// </summary>
     public int LookupPaymentTypeId { get; set; }
 }

@@ -1,22 +1,26 @@
 ﻿using System;
-using NUnit.Framework;
-using Dapper;
 using System.Linq;
+using Dapper;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Poco;
+using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.BetaSite;
 
 public class LoginNormalTest
 {
-    private readonly string emailAddress = "testloginsnotadmin@majorsilence.com";
     private readonly string betaKey = "abc1";
+    private readonly string emailAddress = "testloginsnotadmin@majorsilence.com";
     private readonly string password = "Password4";
     private int userid;
 
-    [SetUp()]
+    [SetUp]
     public void Setup()
     {
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -26,26 +30,26 @@ public class LoginNormalTest
                 PasswordConfirm = password,
                 BetaKey = betaKey
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         peterAccount.Execute();
         Console.WriteLine("Created account");
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
-            var users = cn.Query<Poco.Users>("SELECT * FROM Users WHERE Email = @Email", new { Email = emailAddress });
+            var users = cn.Query<Users>("SELECT * FROM Users WHERE Email = @Email", new { Email = emailAddress });
             Console.WriteLine("user count " + users.Count());
             if (users.Count() == 1)
                 userid = users.First().Id;
             else
-                throw new Logic.Exceptions.InvalidDataException("User for test not created");
+                throw new InvalidDataException("User for test not created");
         }
     }
 
-    [TearDown()]
+    [TearDown]
     public void Cleanup()
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });
@@ -54,10 +58,10 @@ public class LoginNormalTest
     }
 
 
-    [Test()]
+    [Test]
     public void CanLogin()
     {
-        var login = new Logic.Login(emailAddress, password);
+        var login = new Login(emailAddress, password);
         login.Execute();
 
         Console.WriteLine(login.LoggedIn);
@@ -73,10 +77,10 @@ public class LoginNormalTest
         Assert.That(login.UserId, Is.EqualTo(userid));
     }
 
-    [Test()]
+    [Test]
     public void InvalidUsernameLogin()
     {
-        var login = new Logic.Login("hithere", password);
+        var login = new Login("hithere", password);
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);
@@ -85,10 +89,10 @@ public class LoginNormalTest
         Assert.That(login.UserId, Is.EqualTo(-1));
     }
 
-    [Test()]
+    [Test]
     public void InvalidPasswordLogin()
     {
-        var login = new Logic.Login(emailAddress, "wrong password");
+        var login = new Login(emailAddress, "wrong password");
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);
@@ -97,10 +101,10 @@ public class LoginNormalTest
         Assert.That(login.UserId, Is.EqualTo(-1));
     }
 
-    [Test()]
+    [Test]
     public void InvalidUsernameAndPasswordLogin()
     {
-        var login = new Logic.Login("hi there", "wrong password");
+        var login = new Login("hi there", "wrong password");
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);

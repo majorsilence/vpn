@@ -1,16 +1,11 @@
 ﻿using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(4, TransactionBehavior.Default)]
+[Migration(4)]
 public class TermsOfService : Migration
 {
-    public TermsOfService()
-    {
-    }
-
     public override void Up()
     {
         Create.Table("TermsOfService")

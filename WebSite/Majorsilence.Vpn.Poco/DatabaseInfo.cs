@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("DatabaseInfo")]
+[Table("DatabaseInfo")]
 public class DatabaseInfo
 {
     public DatabaseInfo()
@@ -19,7 +17,7 @@ public class DatabaseInfo
         LastDailyProcess = lastDailyProcess;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public string VersionId { get; set; }
 

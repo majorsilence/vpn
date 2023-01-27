@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Majorsilence.Vpn.Logic.Email;
+﻿namespace Majorsilence.Vpn.Logic.Email;
 
 public enum EmailTemplates
 {

@@ -19,7 +19,7 @@
             <select id="SelectVpnServer" class="form-control">
 
                 @{
-                    foreach (var server in @Model.ServerInfo)
+                    foreach (var server in Model.ServerInfo)
                     {
                         <option value="@server.VpnServerId.ToString()">@(server.VpnServerName + " - " + server.RegionName)</option>
                     }

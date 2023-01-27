@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Majorsilence.Vpn.Site.Helpers;
+﻿namespace Majorsilence.Vpn.Site.Helpers;
 
 public interface ISessionVariables
 {
@@ -12,7 +10,7 @@ public interface ISessionVariables
     int UserId { get; set; }
 
     /// <summary>
-    /// Check if the logged in user is an admin
+    ///     Check if the logged in user is an admin
     /// </summary>
     bool IsAdmin { get; set; }
 }

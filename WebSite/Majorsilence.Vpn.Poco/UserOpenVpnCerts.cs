@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("UserOpenVpnCerts")]
+[Table("UserOpenVpnCerts")]
 public class UserOpenVpnCerts
 {
     public UserOpenVpnCerts()
@@ -25,7 +23,7 @@ public class UserOpenVpnCerts
         VpnServersId = vpnServersId;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public int UserId { get; set; }
 

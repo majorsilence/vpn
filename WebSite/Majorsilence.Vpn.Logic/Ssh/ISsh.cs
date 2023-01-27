@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Majorsilence.Vpn.Logic.Ssh;
 

@@ -1,6 +1,5 @@
-using System;
+using System.IO;
 using MarkdownDeep;
-using Microsoft.AspNetCore.Http;
 
 namespace Majorsilence.Vpn.Site.Models;
 
@@ -13,39 +12,39 @@ public class KnowledgeBase
 
         if (code == "pptpwindows")
         {
-            readFilePath = System.IO.Path.Combine(appDataPath,
+            readFilePath = Path.Combine(appDataPath,
                 "knowledgebase", "pptp", "windows.md");
-            input = System.IO.File.ReadAllText(readFilePath);
+            input = File.ReadAllText(readFilePath);
         }
         else if (code == "pptpandroid")
         {
-            readFilePath = System.IO.Path.Combine(appDataPath,
+            readFilePath = Path.Combine(appDataPath,
                 "knowledgebase", "pptp", "android.md");
-            input = System.IO.File.ReadAllText(readFilePath);
+            input = File.ReadAllText(readFilePath);
         }
         else if (code == "pptpubuntu")
         {
-            readFilePath = System.IO.Path.Combine(appDataPath,
+            readFilePath = Path.Combine(appDataPath,
                 "knowledgebase", "pptp", "ubuntu.md");
-            input = System.IO.File.ReadAllText(readFilePath);
+            input = File.ReadAllText(readFilePath);
         }
         else if (code == "openvpnubuntu")
         {
-            readFilePath = System.IO.Path.Combine(appDataPath,
+            readFilePath = Path.Combine(appDataPath,
                 "knowledgebase", "openvpn", "ubuntu.md");
-            input = System.IO.File.ReadAllText(readFilePath);
+            input = File.ReadAllText(readFilePath);
         }
         else if (code == "openvpnwindows")
         {
-            readFilePath = System.IO.Path.Combine(appDataPath,
+            readFilePath = Path.Combine(appDataPath,
                 "knowledgebase", "openvpn", "windows.md");
-            input = System.IO.File.ReadAllText(readFilePath);
+            input = File.ReadAllText(readFilePath);
         }
         else if (code == "openvpnandroid")
         {
-            readFilePath = System.IO.Path.Combine(appDataPath,
+            readFilePath = Path.Combine(appDataPath,
                 "knowledgebase", "openvpn", "android.md");
-            input = System.IO.File.ReadAllText(readFilePath);
+            input = File.ReadAllText(readFilePath);
         }
 
         var md = new Markdown();
@@ -53,10 +52,8 @@ public class KnowledgeBase
         md.SafeMode = false;
 
 
-        _output = md.Transform(input);
+        Output = md.Transform(input);
     }
 
-    private string _output;
-
-    public string Output => _output;
+    public string Output { get; }
 }

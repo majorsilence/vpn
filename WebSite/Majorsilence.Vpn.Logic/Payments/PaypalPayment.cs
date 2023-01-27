@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using System.Data;
+using System.Net;
+using Majorsilence.Vpn.Logic.DTO;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
+using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -12,11 +12,11 @@ namespace Majorsilence.Vpn.Logic.Payments;
 
 public class PaypalPayment
 {
-    private string url;
     private static string accessToken = "";
     private static string paymentid = "";
-    private int userId;
-    private IPaypalSettings _paypalSettings;
+    private readonly IPaypalSettings _paypalSettings;
+    private string url;
+    private readonly int userId;
 
     private PaypalPayment()
     {
@@ -29,20 +29,22 @@ public class PaypalPayment
     }
 
     /// <summary>
-    /// Initialize process with paypal.  Will direct users to paypal site.
+    ///     Initialize process with paypal.  Will direct users to paypal site.
     /// </summary>
     /// <param name="url"></param>
     /// <param name="amount"></param>
-    /// <param name="isRecurring">Is a recurring payment subscription.  
-    /// Classic API must be used until rest api supports this</param>
+    /// <param name="isRecurring">
+    ///     Is a recurring payment subscription.
+    ///     Classic API must be used until rest api supports this
+    /// </param>
     /// <returns></returns>
     /// <remarks>Do finalize a payment ExecutePayment is called.</remarks>
     public string InitializePayment(string url, decimal amount, bool isRecurring)
     {
         //Validate
-        if (string.IsNullOrEmpty(url)) throw new Exceptions.InvalidDataException("Invalid");
+        if (string.IsNullOrEmpty(url)) throw new InvalidDataException("Invalid");
 
-        if (amount == 0) throw new Exceptions.InvalidDataException("Invalid");
+        if (amount == 0) throw new InvalidDataException("Invalid");
 
         this.url = url;
         // Get the access token to do payments 
@@ -51,8 +53,7 @@ public class PaypalPayment
         var approveURL = DoPayment(token, amount);
         if (!string.IsNullOrEmpty(approveURL))
             return approveURL;
-        else
-            throw new Exceptions.InvalidDataException("Invalid");
+        throw new InvalidDataException("Invalid");
     }
 
     private string GetAccessToken()
@@ -68,27 +69,24 @@ public class PaypalPayment
         try
         {
             var response = client.Execute(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = response.Content;
-                var token = Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.AccessTokenResponse>(content);
+                var token = JsonConvert.DeserializeObject<AccessTokenResponse>(content);
                 var atoken = "Bearer " + token.access_token.Trim();
                 accessToken = atoken;
                 return atoken;
             }
-            else
-            {
-                throw new Exceptions.InvalidDataException(response.StatusDescription);
-            }
+
+            throw new InvalidDataException(response.StatusDescription);
         }
         catch (Exception ex)
         {
-            throw new Exceptions.InvalidDataException(ex.Message);
+            throw new InvalidDataException(ex.Message);
         }
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="token"></param>
     /// <param name="amount"></param>
@@ -101,20 +99,20 @@ public class PaypalPayment
         request.RequestFormat = DataFormat.Json;
         request.AddHeader("Authorization", token);
 
-        var preq = new DTO.PaypalPaymentRequest();
+        var preq = new PaypalPaymentRequest();
         preq.intent = "sale";
         //To Do:Change Reurn Url and Cancel URL
-        preq.redirect_urls = new DTO.PayPalRedirect_urls
+        preq.redirect_urls = new PayPalRedirect_urls
         {
             return_url = url + "/setup/paypal/paymentsmade.aspx",
             cancel_url = url + "/setup/paypal/paymentscancel.aspx"
         };
-        preq.payer = new DTO.PayPalPayer { payment_method = "paypal" };
-        preq.transactions = new List<DTO.PayPalTransactions>
+        preq.payer = new PayPalPayer { payment_method = "paypal" };
+        preq.transactions = new List<PayPalTransactions>
         {
             new()
             {
-                amount = new DTO.PayPalAmount { total = amount.ToString("0.00"), currency = "USD" },
+                amount = new PayPalAmount { total = amount.ToString("0.00"), currency = "USD" },
                 description = "test"
             }
         };
@@ -123,12 +121,12 @@ public class PaypalPayment
         try
         {
             var response = client.Execute(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.Created)
+            if (response.StatusCode == HttpStatusCode.Created)
             {
                 var content = response.Content;
 
                 var payPalResponse =
-                    Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.PaypalPaymentResponse>(content);
+                    JsonConvert.DeserializeObject<PaypalPaymentResponse>(content);
 
                 // Send back the approval URL
                 foreach (var link in payPalResponse.links)
@@ -140,30 +138,28 @@ public class PaypalPayment
 
                 return "";
             }
-            else
-            {
-                throw new Exceptions.InvalidDataException(response.StatusDescription);
-            }
+
+            throw new InvalidDataException(response.StatusDescription);
         }
         catch (Exception ex)
         {
-            throw new Exceptions.InvalidDataException(ex.Message);
+            throw new InvalidDataException(ex.Message);
         }
     }
 
     /// <summary>
-    /// Finialize payments
+    ///     Finialize payments
     /// </summary>
     /// <param name="payid"></param>
     /// <param name="tokenn"></param>
     public void ExecutePayment(string payid, string tokenn)
     {
         //validate
-        if (string.IsNullOrEmpty(payid)) throw new Exceptions.InvalidDataException("Invalid Request");
+        if (string.IsNullOrEmpty(payid)) throw new InvalidDataException("Invalid Request");
 
-        if (string.IsNullOrEmpty(paymentid)) throw new Exceptions.InvalidDataException("Invalid Request");
+        if (string.IsNullOrEmpty(paymentid)) throw new InvalidDataException("Invalid Request");
 
-        if (string.IsNullOrEmpty(accessToken)) throw new Exceptions.InvalidDataException("Invalid Request");
+        if (string.IsNullOrEmpty(accessToken)) throw new InvalidDataException("Invalid Request");
 
         var options = new RestClientOptions(_paypalSettings.Url);
         using var client = new RestClient(options);
@@ -176,30 +172,30 @@ public class PaypalPayment
         try
         {
             var response = client.Execute(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 var content = response.Content;
                 accessToken = null;
                 paymentid = null;
                 var payPalResponse =
-                    Newtonsoft.Json.JsonConvert.DeserializeObject<DTO.PaypalPayExecuteResponse>(content);
+                    JsonConvert.DeserializeObject<PaypalPayExecuteResponse>(content);
 
                 var pay = new Payment(userId);
                 foreach (var transaction in payPalResponse.transactions)
                 {
                     var amount = transaction.amount.total;
                     var createtime = payPalResponse.update_time;
-                    pay.SaveUserPayment(Convert.ToDecimal(amount), createtime, Helpers.SiteInfo.MonthlyPaymentId);
+                    pay.SaveUserPayment(Convert.ToDecimal(amount), createtime, SiteInfo.MonthlyPaymentId);
                 }
             }
             else
             {
-                throw new Exceptions.InvalidDataException(response.StatusDescription);
+                throw new InvalidDataException(response.StatusDescription);
             }
         }
         catch (Exception ex)
         {
-            throw new Exceptions.InvalidDataException(ex.Message);
+            throw new InvalidDataException(ex.Message);
         }
     }
 }

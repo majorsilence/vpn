@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Dapper.Contrib.Extensions;
 
 namespace Majorsilence.Vpn.Poco;
 
-[Dapper.Contrib.Extensions.Table("Errors")]
+[Table("Errors")]
 public class Errors
 {
     public Errors()
@@ -20,7 +18,7 @@ public class Errors
         RecursiveStackTrace = recursiveStackTrace;
     }
 
-    [Dapper.Contrib.Extensions.Key()] public int Id { get; set; }
+    [Key] public int Id { get; set; }
 
     public DateTime TimeCreated { get; set; }
 

@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Site.Helpers;
+using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
+using SiteInfo = Majorsilence.Vpn.Poco.SiteInfo;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
@@ -22,13 +25,13 @@ public class AdminController : Controller
 
     public ActionResult Index()
     {
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 
     public ActionResult SiteInfo(string status)
     {
         ViewData["status"] = status;
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 
     public ActionResult Users(string status)
@@ -37,7 +40,7 @@ public class AdminController : Controller
 
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
-        var model = new Models.Users()
+        var model = new Users
         {
             SessionVariables = sessionInstance
         };
@@ -46,7 +49,7 @@ public class AdminController : Controller
 
     public ActionResult ErrorReport()
     {
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 
     public void RemoveStripeAccount(int id, string removeaccount)
@@ -57,7 +60,7 @@ public class AdminController : Controller
         {
             if (removeaccount != null && removeaccount == "yes")
             {
-                var payments = new Logic.Payments.StripePayment(id, email);
+                var payments = new StripePayment(id, email);
                 payments.CancelSubscription();
                 payments.CancelAccount();
 
@@ -68,7 +71,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -82,7 +85,7 @@ public class AdminController : Controller
         {
             if (removeaccount != null && removeaccount == "yes")
             {
-                var payments = new Logic.Payments.StripePayment(id, email);
+                var payments = new StripePayment(id, email);
                 payments.CancelSubscription();
 
 
@@ -92,7 +95,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -106,7 +109,7 @@ public class AdminController : Controller
         {
             if (removeaccount != null && removeaccount == "yes")
             {
-                var user = new Logic.Accounts.UserInfo(id);
+                var user = new UserInfo(id);
                 user.RemoveAccount();
 
 
@@ -116,7 +119,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -128,7 +131,7 @@ public class AdminController : Controller
 
         try
         {
-            var modify = new Logic.Accounts.ModifyAccount();
+            var modify = new ModifyAccount();
             modify.ToggleIsAdmin(id);
 
             Response.Redirect(
@@ -136,7 +139,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -157,7 +160,7 @@ public class AdminController : Controller
                 // means no beta key required
                 islivesite = true;
 
-            var info = new Poco.SiteInfo()
+            var info = new SiteInfo
             {
                 Id = siteid,
                 AdminEmail = adminemail,
@@ -180,7 +183,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
             Response.Redirect("/admin/siteinfo?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }

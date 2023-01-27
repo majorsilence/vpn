@@ -1,8 +1,10 @@
-﻿using System;
-using System.Linq;
-using NUnit.Framework;
+﻿using System.Linq;
 using Dapper;
-using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Poco;
+using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.LiveSite;
 
@@ -12,10 +14,10 @@ public class UserInfoTest
     private readonly string unicodeEmailAddress = "ಠ_ಠabc@majorsilence.com";
 
 
-    [TearDown()]
+    [TearDown]
     public void Cleanup()
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });
@@ -25,21 +27,21 @@ public class UserInfoTest
 
     private bool AccountExists(string email)
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
-            var users = cn.Query<Poco.Users>("SELECT * FROM Users WHERE Email = @Email", new { Email = email });
+            var users = cn.Query<Users>("SELECT * FROM Users WHERE Email = @Email", new { Email = email });
             return users.Count() == 1;
         }
     }
 
-    [Test()]
+    [Test]
     public void RetreiveUserInfoTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -49,14 +51,14 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         var userid = peterAccount.Execute();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
 
-        var info = new Logic.Accounts.UserInfo(userid);
+        var info = new UserInfo(userid);
         var profile = info.GetProfile();
 
         Assert.That("Peter", Is.EqualTo(profile.FirstName));
@@ -66,13 +68,13 @@ public class UserInfoTest
         Assert.That(false, Is.EqualTo(profile.IsBetaUser));
     }
 
-    [Test()]
+    [Test]
     public void UpdateUserInfoTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -82,14 +84,14 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         var userid = peterAccount.Execute();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
 
-        var info = new Logic.Accounts.UserInfo(userid);
+        var info = new UserInfo(userid);
         var profile = info.GetProfile();
 
         Assert.That("Peter", Is.EqualTo(profile.FirstName));
@@ -105,7 +107,7 @@ public class UserInfoTest
         Assert.That(unicodeEmailAddress, Is.EqualTo(profile.Email));
 
 
-        var info2 = new Logic.Accounts.UserInfo(userid);
+        var info2 = new UserInfo(userid);
         var profile2 = info2.GetProfile();
         Assert.That("Happy", Is.EqualTo(profile2.FirstName));
         Assert.That("Dude", Is.EqualTo(profile2.LastName));
@@ -113,13 +115,13 @@ public class UserInfoTest
     }
 
 
-    [Test()]
+    [Test]
     public void UpdateUserInfoInvalidFirstNameTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -129,26 +131,26 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         var userid = peterAccount.Execute();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
 
-        var info = new Logic.Accounts.UserInfo(userid);
+        var info = new UserInfo(userid);
         // var profile = info.GetProfile();
 
-        Assert.Throws<Logic.Exceptions.InvalidDataException>(() => info.UpdateProfile(unicodeEmailAddress, "", "Dude"));
+        Assert.Throws<InvalidDataException>(() => info.UpdateProfile(unicodeEmailAddress, "", "Dude"));
     }
 
-    [Test()]
+    [Test]
     public void UpdateUserInfoInvalidLastNameTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -158,27 +160,27 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         var userid = peterAccount.Execute();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
 
-        var info = new Logic.Accounts.UserInfo(userid);
+        var info = new UserInfo(userid);
         var profile = info.GetProfile();
 
-        Assert.Throws<Logic.Exceptions.InvalidDataException>(() =>
+        Assert.Throws<InvalidDataException>(() =>
             info.UpdateProfile(unicodeEmailAddress, "Happy", ""));
     }
 
-    [Test()]
+    [Test]
     public void UpdateUserInfoInvalidEmailTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -188,26 +190,26 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         var userid = peterAccount.Execute();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
 
-        var info = new Logic.Accounts.UserInfo(userid);
+        var info = new UserInfo(userid);
         var profile = info.GetProfile();
 
-        Assert.Throws<Logic.Exceptions.InvalidDataException>(() => info.UpdateProfile("", "Happy", "Dude"));
+        Assert.Throws<InvalidDataException>(() => info.UpdateProfile("", "Happy", "Dude"));
     }
 
-    [Test()]
+    [Test]
     public void UpdateUserInfoEmailAddressAlreadyUsedTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -217,12 +219,12 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         var userid = peterAccount.Execute();
 
-        var peterAccount2 = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount2 = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = unicodeEmailAddress,
                 EmailConfirm = unicodeEmailAddress,
@@ -232,7 +234,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password2",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         peterAccount2.Execute();
 
@@ -240,10 +242,10 @@ public class UserInfoTest
         Assert.That(AccountExists(emailAddress), Is.True);
 
 
-        var info = new Logic.Accounts.UserInfo(userid);
+        var info = new UserInfo(userid);
         var profile = info.GetProfile();
 
-        Assert.Throws<Logic.Exceptions.EmailAddressAlreadyUsedException>(() =>
+        Assert.Throws<EmailAddressAlreadyUsedException>(() =>
             info.UpdateProfile(unicodeEmailAddress, "Happy", "Dude"));
     }
 }

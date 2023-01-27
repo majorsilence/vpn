@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Majorsilence.Vpn.Site.Models;
+﻿namespace Majorsilence.Vpn.Site.Models;
 
 public class Server
 {

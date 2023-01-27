@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Site.Models;
 
@@ -7,10 +7,8 @@ public class AdminRegions : CustomViewLayout
 {
     public AdminRegions()
     {
-        _regionList = new Logic.Admin.Regions().Select();
+        RegionList = new Logic.Admin.Regions().Select();
     }
 
-    private readonly IEnumerable<Poco.Regions> _regionList;
-
-    public IEnumerable<Poco.Regions> RegionList => _regionList;
+    public IEnumerable<Regions> RegionList { get; }
 }

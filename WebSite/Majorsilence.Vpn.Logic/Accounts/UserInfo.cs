@@ -1,27 +1,18 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class UserInfo
 {
-    private Poco.Users details;
+    private readonly Users details;
 
     private UserInfo()
     {
-    }
-
-    public static IEnumerable<Poco.Users> RetrieveUserList()
-    {
-        using (var cn = InitializeSettings.DbFactory)
-        {
-            cn.Open();
-
-            return cn.Query<Poco.Users>("SELECT * FROM Users;");
-        }
     }
 
     public UserInfo(int userid)
@@ -30,7 +21,17 @@ public class UserInfo
         {
             cn.Open();
 
-            details = cn.Get<Poco.Users>(userid);
+            details = cn.Get<Users>(userid);
+        }
+    }
+
+    public static IEnumerable<Users> RetrieveUserList()
+    {
+        using (var cn = InitializeSettings.DbFactory)
+        {
+            cn.Open();
+
+            return cn.Query<Users>("SELECT * FROM Users;");
         }
     }
 
@@ -46,7 +47,7 @@ public class UserInfo
                 cn.Execute("DELETE FROM UserPayments WHERE UserId=@UserId", new { UserId = details.Id }, txn);
                 cn.Execute("DELETE FROM UserPptpInfo WHERE UserId=@UserId", new { UserId = details.Id }, txn);
 
-                cn.Delete(details, txn, null);
+                cn.Delete(details, txn);
                 txn.Commit();
             }
         }
@@ -55,13 +56,13 @@ public class UserInfo
     public void UpdatePassword(string oldPassword, string newPassword, string confirmNewPassword)
     {
         if (newPassword != confirmNewPassword)
-            throw new Exceptions.InvalidDataException("New password and confirm new password do not match.");
+            throw new InvalidDataException("New password and confirm new password do not match.");
 
         var login = new Login(details.Email, oldPassword);
 
         login.Execute();
 
-        if (!login.LoggedIn) throw new Exceptions.InvalidDataException("Invalid old password");
+        if (!login.LoggedIn) throw new InvalidDataException("Invalid old password");
 
 
         var pwd = new CreatePasswords(newPassword, details.FirstName + details.LastName);
@@ -79,10 +80,10 @@ public class UserInfo
     public void UpdateProfile(string email, string firstName, string lastName)
     {
         if (email.Trim() == "")
-            throw new Exceptions.InvalidDataException("An email address must be entered.");
-        else if (firstName.Trim() == "")
-            throw new Exceptions.InvalidDataException("A first name must be entered.");
-        else if (lastName.Trim() == "") throw new Exceptions.InvalidDataException("A last name must be entered.");
+            throw new InvalidDataException("An email address must be entered.");
+        if (firstName.Trim() == "")
+            throw new InvalidDataException("A first name must be entered.");
+        if (lastName.Trim() == "") throw new InvalidDataException("A last name must be entered.");
 
         using (var cn = InitializeSettings.DbFactory)
         {
@@ -90,10 +91,10 @@ public class UserInfo
 
             if (email.Trim().ToLower() != details.Email.Trim().ToLower())
             {
-                var userExists = cn.Query<Poco.Users>("SELECT * FROM Users WHERE Email=@Email", new { Email = email });
+                var userExists = cn.Query<Users>("SELECT * FROM Users WHERE Email=@Email", new { Email = email });
 
                 if (userExists.Count() > 0)
-                    throw new Exceptions.EmailAddressAlreadyUsedException(
+                    throw new EmailAddressAlreadyUsedException(
                         "The email address requested is already used by another user.");
             }
 
@@ -105,7 +106,7 @@ public class UserInfo
         }
     }
 
-    public Poco.Users GetProfile()
+    public Users GetProfile()
     {
         return details;
     }

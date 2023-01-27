@@ -1,26 +1,28 @@
 ﻿using System;
-using System.Linq;
-using NUnit.Framework;
 using Dapper;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Admin;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.OpenVpn;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Logic.Ssh;
+using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.LiveSite;
 
 public class GenerateCertsTest
 {
-    public GenerateCertsTest()
-    {
-    }
-
     private readonly string emailAddress = "testgeneratecerts@majorsilence.com";
-    private int userid;
     private int regionid;
+    private int userid;
     private int vpnseverid;
 
-    [SetUp()]
+    [SetUp]
     public void Setup()
     {
-        var peterAccount = new Logic.Accounts.CreateAccount(
-            new Logic.Accounts.CreateAccountInfo()
+        var peterAccount = new CreateAccount(
+            new CreateAccountInfo
             {
                 Email = emailAddress,
                 EmailConfirm = emailAddress,
@@ -30,21 +32,21 @@ public class GenerateCertsTest
                 PasswordConfirm = "Password54",
                 BetaKey = ""
             }
-            , false, Logic.InitializeSettings.Email);
+            , false, InitializeSettings.Email);
 
         userid = peterAccount.Execute();
 
-        var region = new Logic.Admin.Regions();
+        var region = new Regions();
         regionid = region.Insert("Test region", true);
 
-        var vpnserver = new Logic.Admin.VpnServers();
+        var vpnserver = new VpnServers();
         vpnseverid = vpnserver.Insert("localhost", 5678, "a fake vpnserver for testing", regionid, true);
     }
 
-    [TearDown()]
+    [TearDown]
     public void Cleanup()
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM ActionLog WHERE UserId=@UserId", new { UserId = userid });
@@ -57,34 +59,34 @@ public class GenerateCertsTest
     }
 
 
-    [Test()]
+    [Test]
     public void GenerateCertHappyPath()
     {
-        var pay = new Logic.Payments.Payment(userid);
+        var pay = new Payment(userid);
         pay.SaveUserPayment(5, DateTime.UtcNow, Logic.Helpers.SiteInfo.MonthlyPaymentId);
 
-        using (var sshClient = new Logic.Ssh.FakeSsh(Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-        using (var sshRevokeClient = new Logic.Ssh.FakeSsh(Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-        using (var sftpClient = new Logic.Ssh.FakeSftp())
+        using (var sshClient = new FakeSsh(FakeSsh.TestingScenerios.OpenVpnHappyPath))
+        using (var sshRevokeClient = new FakeSsh(FakeSsh.TestingScenerios.OpenVpnHappyPath))
+        using (var sftpClient = new FakeSftp())
         {
-            var vpn = new Logic.OpenVpn.CertsOpenVpnGenerateCommand(userid, vpnseverid,
+            var vpn = new CertsOpenVpnGenerateCommand(userid, vpnseverid,
                 sshClient, sshRevokeClient, sftpClient);
 
             vpn.Execute();
         }
     }
 
-    [Test()]
+    [Test]
     public void InactiveAccount()
     {
-        using (var sshClient = new Logic.Ssh.FakeSsh(Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-        using (var sshRevokeClient = new Logic.Ssh.FakeSsh(Logic.Ssh.FakeSsh.TestingScenerios.OpenVpnHappyPath))
-        using (var sftpClient = new Logic.Ssh.FakeSftp())
+        using (var sshClient = new FakeSsh(FakeSsh.TestingScenerios.OpenVpnHappyPath))
+        using (var sshRevokeClient = new FakeSsh(FakeSsh.TestingScenerios.OpenVpnHappyPath))
+        using (var sftpClient = new FakeSftp())
         {
-            var vpn = new Logic.OpenVpn.CertsOpenVpnGenerateCommand(userid, vpnseverid,
+            var vpn = new CertsOpenVpnGenerateCommand(userid, vpnseverid,
                 sshClient, sshRevokeClient, sftpClient);
 
-            Assert.Throws<Logic.Exceptions.AccountNotActiveException>(() => vpn.Execute());
+            Assert.Throws<AccountNotActiveException>(() => vpn.Execute());
         }
     }
 }

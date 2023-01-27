@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Dapper;
+using Majorsilence.Vpn.Logic;
 using NUnit.Framework;
-using Dapper;
 
 namespace Majorsilence.Vpn.Site.TestsFast.LiveSite;
 
 public class CreateAccountTest
 {
-    private readonly string emailAddress = "test@majorsilence.com";
     private readonly string betaKey = "abc1";
+    private readonly string emailAddress = "test@majorsilence.com";
 
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = Logic.InitializeSettings.DbFactory)
+        using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM users WHERE email = @email", new { email = emailAddress });

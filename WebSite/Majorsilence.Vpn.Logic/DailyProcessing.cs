@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using System.Data;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Poco;
 using Stripe;
-using System.Net;
-using System.Security.Cryptography.X509Certificates;
-using System.Net.Security;
+using SiteInfo = Majorsilence.Vpn.Logic.Helpers.SiteInfo;
 
 namespace Majorsilence.Vpn.Logic;
 
@@ -20,7 +21,7 @@ public class DailyProcessing : ICommand
     }
 
     /// <summary>
-    /// As long as payments continue the users account will not expire
+    ///     As long as payments continue the users account will not expire
     /// </summary>
     private void CheckForNewPayments()
     {
@@ -29,21 +30,21 @@ public class DailyProcessing : ICommand
 
         using (var db = InitializeSettings.DbFactory)
         {
-            var data = db.Query<Poco.DatabaseInfo>("SELECT * FROM DatabaseInfo");
+            var data = db.Query<DatabaseInfo>("SELECT * FROM DatabaseInfo");
 
             if (data.Count() != 1)
-                throw new Exceptions.InvalidDataException(
+                throw new InvalidDataException(
                     "Incorrect data in DatabaseInfo table.  To many or too few rows.");
 
 
-            Helpers.SslSecurity.Callback();
+            SslSecurity.Callback();
 
-            var client = new StripeClient(Helpers.SiteInfo.StripeAPISecretKey);
+            var client = new StripeClient(SiteInfo.StripeAPISecretKey);
             var eventService = new ChargeService(client);
-            var options = new ChargeListOptions()
+            var options = new ChargeListOptions
             {
                 Limit = 1000,
-                Created = new AnyOf<DateTime?, DateRangeOptions>(new DateRangeOptions()
+                Created = new AnyOf<DateTime?, DateRangeOptions>(new DateRangeOptions
                 {
                     GreaterThanOrEqual = data.First().LastDailyProcess
                 })
@@ -65,29 +66,29 @@ public class DailyProcessing : ICommand
 
 
                 //var users = db.Select<Majorsilence.Vpn.Poco.Users>(q => q.PaymentExpired == false);
-                var user = db.Query<Poco.Users>(
+                var user = db.Query<Users>(
                     "SELECT * FROM Users WHERE StripeCustomerAccount=@StripeCustomerAccount",
                     new { StripeCustomerAccount = stripeCustomerId });
 
                 if (user == null || user.Count() != 1)
                 {
-                    var ex = new Exceptions.InvalidDataException(
+                    var ex = new InvalidDataException(
                         "Cannot find stripe customer data in users table.  Stripe Customer Account: " +
                         stripeCustomerId);
 
-                    Helpers.Logging.Log(ex);
+                    Logging.Log(ex);
                     InitializeSettings.Email.SendMail_BackgroundThread("Error running DailyProcessing: " + ex.Message,
-                        "Error running DailyProcessing", Helpers.SiteInfo.AdminEmail, true, null,
-                        Email.EmailTemplates.Generic);
+                        "Error running DailyProcessing", SiteInfo.AdminEmail, true, null,
+                        EmailTemplates.Generic);
 
                     continue;
                 }
 
                 var userid = user.First().Id;
-                var pay = new Payments.Payment(userid);
+                var pay = new Payment(userid);
 
                 // amount in cents
-                pay.SaveUserPayment((decimal)(evt.Amount / 100.0m), evt.Created, Helpers.SiteInfo.MonthlyPaymentId);
+                pay.SaveUserPayment(evt.Amount / 100.0m, evt.Created, SiteInfo.MonthlyPaymentId);
 
                 ActionLog.Log_BackgroundThread("Payment made", userid);
             }

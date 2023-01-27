@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Mvc;
+﻿using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Site.Models;
 
@@ -10,10 +6,9 @@ public class Terms
 {
     public Terms()
     {
-        var t = new Majorsilence.Vpn.Logic.Site.TermsOfService();
-        _terms = t.CurrentTermsOfService();
+        var t = new Logic.Site.TermsOfService();
+        TOS = t.CurrentTermsOfService();
     }
 
-    private Poco.TermsOfService _terms;
-    public Poco.TermsOfService TOS => _terms;
+    public TermsOfService TOS { get; }
 }

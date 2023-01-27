@@ -1,51 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using System.Data;
+using System.Diagnostics;
+using System.Linq;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Poco;
+using MySql.Data.MySqlClient;
+using NUnit.Framework;
 
 namespace SiteTests;
 
 /// <summary>
-/// This class is called once for each namespace that has unit tests in it.
+///     This class is called once for each namespace that has unit tests in it.
 /// </summary>
-[SetUpFixture()]
+[SetUpFixture]
 public class Setup
 {
-    private static string testingdb = Guid.NewGuid().ToString().Replace("-", "");
+    private static readonly string testingdb = Guid.NewGuid().ToString().Replace("-", "");
 
     /// <summary>
-    /// Called once before unit tests in a namespace are tested.  Only called once for all tests.
+    ///     Called once before unit tests in a namespace are tested.  Only called once for all tests.
     /// </summary>
-    [SetUp()]
+    [SetUp]
     public void BringUp()
     {
         UpVpnTestServer();
 
         // setup database and shit
-        var email = new Majorsilence.Vpn.Logic.Email.FakeEmail();
-        var setup = new Majorsilence.Vpn.Logic.InitializeSettings("localhost", testingdb, email, false);
+        var email = new FakeEmail();
+        var setup = new InitializeSettings("localhost", testingdb, email, false);
         setup.Execute();
 
         // set test server ssh port
-        using (var db = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
+        using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            var siteInfo = db.Query<Majorsilence.Vpn.Poco.SiteInfo>("SELECT * FROM SiteInfo");
+            var siteInfo = db.Query<SiteInfo>("SELECT * FROM SiteInfo");
 
             // See Vagrantfile vpnauthoritytest for ssh port number
             siteInfo.First().SshPort = 8023;
 
-            db.Update<Majorsilence.Vpn.Poco.SiteInfo>(siteInfo.First());
+            db.Update(siteInfo.First());
         }
     }
 
     private void UpVpnTestServer()
     {
-        var p = new System.Diagnostics.Process();
+        var p = new Process();
         p.StartInfo.FileName = "vagrant";
         p.StartInfo.Arguments = "up vpnauthoritytest";
         p.Start();
@@ -53,13 +56,13 @@ public class Setup
     }
 
     /// <summary>
-    /// Called once after unit tests in a namespace are tested.  Only called once for all tests.
+    ///     Called once after unit tests in a namespace are tested.  Only called once for all tests.
     /// </summary>
     [TearDown]
     public void TearDown()
     {
-        var connStrDrop = Majorsilence.Vpn.Logic.InitializeSettings.DbFactoryWithoutDatabase.ConnectionString;
-        var cnDrop = new MySql.Data.MySqlClient.MySqlConnection(connStrDrop);
+        var connStrDrop = InitializeSettings.DbFactoryWithoutDatabase.ConnectionString;
+        var cnDrop = new MySqlConnection(connStrDrop);
         var cmdDrop = cnDrop.CreateCommand();
         cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);
         cmdDrop.CommandType = CommandType.Text;
@@ -74,7 +77,7 @@ public class Setup
 
     private void DestroyVpnTestServer()
     {
-        var p = new System.Diagnostics.Process();
+        var p = new Process();
         p.StartInfo.FileName = "vagrant";
         p.StartInfo.Arguments = "destroy vpnauthoritytest -f";
         p.Start();

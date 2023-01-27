@@ -5,7 +5,6 @@ namespace MajorsilenceTypes;
 public class MajorsilenceTypeException : Exception
 {
     /// <summary>
-    ///
     /// </summary>
     /// <param name="msg"></param>
     public MajorsilenceTypeException(string msg)
@@ -14,7 +13,6 @@ public class MajorsilenceTypeException : Exception
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="msg"></param>
     /// <param name="ex"></param>

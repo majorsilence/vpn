@@ -1,34 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Web;
+using System.Threading;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Majorsilence.Vpn.Logic.Exceptions;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Logic.Ssh;
+using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.OpenVpn;
 
 public class CertsOpenVpnGenerateCommand : ICommand
 {
-    private readonly Poco.Users userData;
-    private readonly Poco.VpnServers vpnData;
-    private Ssh.ISsh sshClientNewServer;
-    private Ssh.ISsh sshClientRevokeServer;
-    private Ssh.ISftp sftpClient;
+    private readonly Users userData;
+    private readonly VpnServers vpnData;
+    private readonly ISftp sftpClient;
+    private readonly ISsh sshClientNewServer;
+    private readonly ISsh sshClientRevokeServer;
 
     private CertsOpenVpnGenerateCommand()
     {
     }
 
-    public CertsOpenVpnGenerateCommand(int userId, int vpnServerId, Ssh.ISsh sshClientNewServer,
-        Ssh.ISsh sshClientRevokeServer, Ssh.ISftp sftpClient)
+    public CertsOpenVpnGenerateCommand(int userId, int vpnServerId, ISsh sshClientNewServer,
+        ISsh sshClientRevokeServer, ISftp sftpClient)
     {
         using (var db = InitializeSettings.DbFactory)
         {
             db.Open();
-            userData = db.Get<Poco.Users>(userId);
-            vpnData = db.Get<Poco.VpnServers>(vpnServerId);
+            userData = db.Get<Users>(userId);
+            vpnData = db.Get<VpnServers>(vpnServerId);
         }
 
         this.sshClientNewServer = sshClientNewServer;
@@ -36,16 +38,10 @@ public class CertsOpenVpnGenerateCommand : ICommand
         this.sftpClient = sftpClient;
     }
 
-    private bool IsActiveAccount()
-    {
-        var pay = new Payments.Payment(userData.Id);
-        return !pay.IsExpired();
-    }
-
     public void Execute()
     {
         if (IsActiveAccount() == false)
-            throw new Exceptions.AccountNotActiveException(
+            throw new AccountNotActiveException(
                 "To generate a new open vpn cert you first activate your account by making a payment.");
 
         ActionLog.Log_BackgroundThread(string.Format("OpenVpn Generate Command Start - {0}", vpnData.Description),
@@ -75,9 +71,15 @@ public class CertsOpenVpnGenerateCommand : ICommand
         ActionLog.Log_BackgroundThread("OpenVpn Generate Command Finished", userData.Id);
     }
 
+    private bool IsActiveAccount()
+    {
+        var pay = new Payment(userData.Id);
+        return !pay.IsExpired();
+    }
+
 
     /// <summary>
-    /// Create new vpn certificates for users once they have made their payments
+    ///     Create new vpn certificates for users once they have made their payments
     /// </summary>
     /// <param name="certName"></param>
     private void CreateUserCerts(string certName)
@@ -110,17 +112,17 @@ public class CertsOpenVpnGenerateCommand : ICommand
 
         while (output.ToLower().Contains("certificate is to be certified until") == false)
         {
-            if (count > 20) throw new Exceptions.SshException("Error creating client cert on vpn server");
+            if (count > 20) throw new SshException("Error creating client cert on vpn server");
 
             output += sshClientNewServer.Read();
             Console.WriteLine("ssh output: " + output);
-            System.Threading.Thread.Sleep(1000);
+            Thread.Sleep(1000);
             count++;
         }
 
         if (output.ToLower().Contains("txt_db error number 2"))
             // see http://blog.kenyap.com.au/2012/07/txtdb-error-number-2-when-generating.html
-            throw new Exceptions.SshException("TXT_DB error number 2");
+            throw new SshException("TXT_DB error number 2");
         sshClientNewServer.WriteLine(string.Format("cp {0} /etc/openvpn/downloadclientcerts/", crt_str_orig));
         sshClientNewServer.WriteLine(string.Format("cp {0} /etc/openvpn/downloadclientcerts/", key_str_orig));
         sshClientNewServer.WriteLine(string.Format("cp {0} /etc/openvpn/downloadclientcerts/", csr_str_orig));
@@ -129,7 +131,7 @@ public class CertsOpenVpnGenerateCommand : ICommand
         sshClientNewServer.WriteLine(string.Format("chmod 644 {0}", csr_str_moved));
         sshClientNewServer.WriteLine("exit");
         // give server a chance to move files
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
     }
 
     private void DownloadCerts(string certName, string crt_str_moved, string key_str_moved)
@@ -156,7 +158,7 @@ public class CertsOpenVpnGenerateCommand : ICommand
         sshClientNewServer.WriteLine(string.Format("rm -rf {0}", key_str_moved));
         sshClientNewServer.WriteLine(string.Format("rm -rf {0}", csr_str_moved));
         sshClientNewServer.WriteLine("exit");
-        System.Threading.Thread.Sleep(2000);
+        Thread.Sleep(2000);
         var output = sshClientNewServer.Read();
     }
 
@@ -167,12 +169,12 @@ public class CertsOpenVpnGenerateCommand : ICommand
         {
             db.Open();
             // TODO: how does this work, id is user id not UserOpenVpnCerts id
-            var certData = db.Query<Poco.UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
+            var certData = db.Query<UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
                 new { UserId = userData.Id });
 
             if (!certData.Any())
             {
-                var certDataNew = new Poco.UserOpenVpnCerts(userData.Id, certName, certCa, certCrt, certKey, expired,
+                var certDataNew = new UserOpenVpnCerts(userData.Id, certName, certCa, certCrt, certKey, expired,
                     DateTime.UtcNow, vpnData.Id);
                 db.Insert(certDataNew);
             }

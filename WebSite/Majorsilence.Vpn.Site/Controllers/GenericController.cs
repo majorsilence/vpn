@@ -1,12 +1,18 @@
-﻿using Majorsilence.Vpn.Logic.Email;
-using Majorsilence.Vpn.Site.Helpers;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.OpenVpn;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Logic.Ppp;
+using Majorsilence.Vpn.Logic.Ssh;
+using Majorsilence.Vpn.Site.Helpers;
+using Majorsilence.Vpn.Site.Models;
+using Microsoft.AspNetCore.Mvc;
+using InvalidDataException = Majorsilence.Vpn.Logic.Exceptions.InvalidDataException;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
@@ -31,7 +37,7 @@ public class GenericController : Controller
     {
         if (sessionInstance.LoggedIn == false) return null;
 
-        var dl = new Logic.OpenVpn.CertsOpenVpnDownload();
+        var dl = new CertsOpenVpnDownload();
         var fileBytes = dl.UploadToClient(sessionInstance.UserId);
 
         return File(fileBytes, "application/zip", "Certs.zip");
@@ -49,9 +55,9 @@ public class GenericController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
 
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return null;
         }
 
@@ -62,24 +68,24 @@ public class GenericController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
 
 
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            using (var ssh = new Logic.Ssh.LiveSsh(Logic.Helpers.SiteInfo.SshPort,
-                       Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
+            using (var ssh = new LiveSsh(SiteInfo.SshPort,
+                       SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             {
-                var revokeOVPN = new Logic.OpenVpn.CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh);
+                var revokeOVPN = new CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh);
                 revokeOVPN.Execute();
             }
 
             return null;
         }
 
-        var model = new Models.Setup(sessionInstance.UserId, sessionInstance.Username);
+        var model = new Setup(sessionInstance.UserId, sessionInstance.Username);
 
-        HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+        HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
 
         return Json(model);
@@ -87,14 +93,14 @@ public class GenericController : Controller
 
     private void VpnServer(int vpnServerId)
     {
-        using (var sshNewServer = new Logic.Ssh.LiveSsh(Logic.Helpers.SiteInfo.SshPort,
-                   Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
-        using (var sshRevokeServer = new Logic.Ssh.LiveSsh(Logic.Helpers.SiteInfo.SshPort,
-                   Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
-        using (var sftp = new Logic.Ssh.LiveSftp(Logic.Helpers.SiteInfo.SshPort,
-                   Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
+        using (var sshNewServer = new LiveSsh(SiteInfo.SshPort,
+                   SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+        using (var sshRevokeServer = new LiveSsh(SiteInfo.SshPort,
+                   SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+        using (var sftp = new LiveSftp(SiteInfo.SshPort,
+                   SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
         {
-            var cert = new Logic.OpenVpn.CertsOpenVpnGenerateCommand(sessionInstance.UserId,
+            var cert = new CertsOpenVpnGenerateCommand(sessionInstance.UserId,
                 vpnServerId, sshNewServer, sshRevokeServer, sftp);
             cert.Execute();
         }
@@ -102,12 +108,12 @@ public class GenericController : Controller
 
     private void PptpServer(int vpnServerId)
     {
-        using (var sshNewServer = new Logic.Ssh.LiveSsh(Logic.Helpers.SiteInfo.SshPort,
-                   Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
-        using (var sshRevokeServer = new Logic.Ssh.LiveSsh(Logic.Helpers.SiteInfo.SshPort,
-                   Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
+        using (var sshNewServer = new LiveSsh(SiteInfo.SshPort,
+                   SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+        using (var sshRevokeServer = new LiveSsh(SiteInfo.SshPort,
+                   SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
         {
-            var pptp = new Logic.Ppp.ManagePPTP(sessionInstance.UserId, vpnServerId,
+            var pptp = new ManagePPTP(sessionInstance.UserId, vpnServerId,
                 sshNewServer, sshRevokeServer);
             pptp.AddUser();
         }
@@ -115,12 +121,12 @@ public class GenericController : Controller
 
     private void IpsecServer(int vpnServerId)
     {
-        using (var sshNewServer = new Logic.Ssh.LiveSsh(Logic.Helpers.SiteInfo.SshPort,
-                   Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
-        using (var sshRevokeServer = new Logic.Ssh.LiveSsh(Logic.Helpers.SiteInfo.SshPort,
-                   Logic.Helpers.SiteInfo.VpnSshUser, Logic.Helpers.SiteInfo.VpnSshPassword))
+        using (var sshNewServer = new LiveSsh(SiteInfo.SshPort,
+                   SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
+        using (var sshRevokeServer = new LiveSsh(SiteInfo.SshPort,
+                   SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
         {
-            var ipsec = new Logic.Ppp.IpSec(sessionInstance.UserId, vpnServerId, sshNewServer,
+            var ipsec = new IpSec(sessionInstance.UserId, vpnServerId, sshNewServer,
                 sshRevokeServer);
             ipsec.AddUser();
         }
@@ -129,15 +135,15 @@ public class GenericController : Controller
     [HttpPost]
     public void LoginValidation(string username, string password)
     {
-        var login = new Logic.Login(username, password);
+        var login = new Login(username, password);
 
         try
         {
             login.Execute();
         }
-        catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException)
+        catch (InvalidDataException)
         {
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return;
         }
 
@@ -150,15 +156,15 @@ public class GenericController : Controller
         {
             // if payments have expired or were never setup prompt the user
             // to setup payments
-            var paymets = new Logic.Payments.Payment(sessionInstance.UserId);
+            var paymets = new Payment(sessionInstance.UserId);
             if (paymets.IsExpired())
                 HttpContext.Response.StatusCode = 250;
             else
-                HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
         }
         else
         {
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
         }
     }
 
@@ -167,16 +173,16 @@ public class GenericController : Controller
     {
         try
         {
-            var resetPSW = new Logic.Accounts.ResetPassword(email);
+            var resetPSW = new ResetPassword(email);
             resetPSW.sendPasswordLink(username);
         }
-        catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ide)
+        catch (InvalidDataException ide)
         {
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.Forbidden;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
         }
         catch (Exception ex)
         {
-            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
     }
 
@@ -191,14 +197,13 @@ public class GenericController : Controller
                 return;
             }
 
-            var resetPSW = new Logic.Accounts.ResetPassword(email);
+            var resetPSW = new ResetPassword(email);
             resetPSW.validateCode(code, newpsw);
             HttpContext.Response.StatusCode = 250;
         }
         else
         {
             HttpContext.Response.StatusCode = 400;
-            return;
         }
     }
 
@@ -211,7 +216,7 @@ public class GenericController : Controller
             using (var stream = new StreamReader(HttpContext.Request.Body))
             {
                 var json = stream.ReadToEnd();
-                var hook = new Logic.Payments.StripWebHook(json);
+                var hook = new StripWebHook(json);
                 hook.Execute();
             }
 
@@ -219,7 +224,7 @@ public class GenericController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex, true);
+            Logging.Log(ex, true);
             HttpContext.Response.StatusCode = 500;
         }
     }

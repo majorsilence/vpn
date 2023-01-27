@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Majorsilence.Vpn.Logic.OpenVpn;
+using Majorsilence.Vpn.Logic.Ssh;
 using NUnit.Framework;
 
 namespace SiteTests.Tests;
@@ -21,16 +19,16 @@ public class GenerateCertsTest
     }
 
     /// <summary>
-    /// Test creating a cert and downloading from vpn server to web site
+    ///     Test creating a cert and downloading from vpn server to web site
     /// </summary>
-    [Test()]
+    [Test]
     public void CreateCert()
     {
-        using (var sshNewServer = new Majorsilence.Vpn.Logic.Ssh.FakeSsh())
-        using (var sshRevokeServer = new Majorsilence.Vpn.Logic.Ssh.FakeSsh())
-        using (var sftp = new Majorsilence.Vpn.Logic.Ssh.FakeSftp())
+        using (var sshNewServer = new FakeSsh())
+        using (var sshRevokeServer = new FakeSsh())
+        using (var sftp = new FakeSftp())
         {
-            var certs = new Majorsilence.Vpn.Logic.OpenVpn.CertsOpenVpnGenerateCommand(2, 1, sshNewServer,
+            var certs = new CertsOpenVpnGenerateCommand(2, 1, sshNewServer,
                 sshRevokeServer, sftp);
             certs.Execute();
         }

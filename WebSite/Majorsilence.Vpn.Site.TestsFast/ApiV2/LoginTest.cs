@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
-using System.Net.Http;
-using Dapper;
-using System.Collections.Specialized;
-using Moq;
+﻿using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.ApiV2;
 // See http://stephenwalther.com/archive/2008/07/01/asp-net-mvc-tip-12-faking-the-controller-context
@@ -12,16 +6,12 @@ namespace Majorsilence.Vpn.Site.TestsFast.ApiV2;
 [TestFixture]
 public class LoginTest
 {
-    public LoginTest()
-    {
-    }
-
-    [SetUp()]
+    [SetUp]
     public void Setup()
     {
     }
 
-    [TearDown()]
+    [TearDown]
     public void Cleanup()
     {
     }

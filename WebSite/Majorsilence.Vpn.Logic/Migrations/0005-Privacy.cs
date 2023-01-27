@@ -1,16 +1,11 @@
 ﻿using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(5, TransactionBehavior.Default)]
+[Migration(5)]
 public class Privacy : Migration
 {
-    public Privacy()
-    {
-    }
-
     public override void Up()
     {
         Create.Table("Privacy")

@@ -1,16 +1,11 @@
 using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(2, TransactionBehavior.Default)]
+[Migration(2)]
 public class BetaAccounts : Migration
 {
-    public BetaAccounts()
-    {
-    }
-
     public override void Up()
     {
         Alter.Table("Users").AddColumn("IsBetaUser").AsBoolean().Nullable();

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using Majorsilence.Vpn.Logic.Admin;
+using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Site.Helpers;
+using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -25,7 +25,7 @@ public class AdminVpnServersEditController : Controller
         ViewData["desc"] = desc;
         ViewData["region"] = region;
         ViewData["active"] = active;
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 
     public ActionResult EditServers(int? id, string address, int port,
@@ -39,7 +39,7 @@ public class AdminVpnServersEditController : Controller
             var activeYes = false;
             if (active != null) activeYes = true;
 
-            var vpns = new Logic.Admin.VpnServers();
+            var vpns = new VpnServers();
             if (id.HasValue)
                 vpns.Update(id.Value, address,
                     port,
@@ -55,9 +55,9 @@ public class AdminVpnServersEditController : Controller
         }
         catch (Exception ex)
         {
-            Logic.Helpers.Logging.Log(ex);
+            Logging.Log(ex);
         }
 
-        return View(new Models.CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance));
     }
 }

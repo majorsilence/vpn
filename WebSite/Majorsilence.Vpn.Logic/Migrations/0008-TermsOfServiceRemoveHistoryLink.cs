@@ -1,16 +1,11 @@
 using System;
 using FluentMigrator;
-using FluentMigrator.Runner.Extensions;
 
 namespace Majorsilence.Vpn.Logic.Migrations;
 
-[Migration(8, TransactionBehavior.Default)]
+[Migration(8)]
 public class TermsOfServiceRemoveHistoryLink : Migration
 {
-    public TermsOfServiceRemoveHistoryLink()
-    {
-    }
-
     public override void Up()
     {
         var terms =

@@ -4,7 +4,7 @@ namespace Majorsilence.Vpn.Logic.Exceptions;
 
 public class AccountNotActiveException : Exception
 {
-    public AccountNotActiveException() : base()
+    public AccountNotActiveException()
     {
     }
 

@@ -1,11 +1,12 @@
-﻿@{
+﻿@using Majorsilence.Vpn.Logic.Helpers
+@{
     ViewBag.Title = "protect your data";
     Layout = "~/Views/Vpn.cshtml";
 }
 
 @{
-    var betaemail = @ViewData["betaemail"]?.ToString();
-    var betacode = @ViewData["betacode"]?.ToString();
+    var betaemail = ViewData["betaemail"]?.ToString();
+    var betacode = ViewData["betacode"]?.ToString();
     if (betaemail == null)
     {
         betaemail = "";
@@ -68,7 +69,7 @@
     @{
         <text>   
 		     $(document).ready(function () {
-		         NewUser.Init(@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.LiveSite.ToString().ToLower()), true);
+		         NewUser.Init(@(SiteInfo.LiveSite.ToString().ToLower()), true);
 		         $('#vpntooltip').tooltip({
 		         trigger: 'hover'
 		         });
