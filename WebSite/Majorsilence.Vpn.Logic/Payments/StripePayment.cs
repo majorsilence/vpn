@@ -16,7 +16,7 @@ namespace Majorsilence.Vpn.Logic.Payments
         }
 
         private int _userId;
-        private  Majorsilence.Vpn.Logic.Email.IEmail email;
+        private Majorsilence.Vpn.Logic.Email.IEmail email;
 
         /// <summary>
         /// 
@@ -43,44 +43,42 @@ namespace Majorsilence.Vpn.Logic.Payments
             {
                 CreateStripeCustomer(stripeToken, coupon);
             }
-            else if (customerDetails.Item2.Trim() == "")
+            else if (string.IsNullOrWhiteSpace(customerDetails.Value.StripeSubscriptionId))
             {
                 CreateStripeSubscription(stripeToken, coupon);
             }
-                
+
             var pay = new Payment(this._userId);
-            pay.SaveUserPayment(Helpers.SiteInfo.CurrentMonthlyRate, DateTime.UtcNow, Helpers.SiteInfo.MonthlyPaymentId);
-            
+            pay.SaveUserPayment(Helpers.SiteInfo.CurrentMonthlyRate, DateTime.UtcNow,
+                Helpers.SiteInfo.MonthlyPaymentId);
         }
 
         public void CancelAccount()
         {
-
             Helpers.SslSecurity.Callback();
 
             var customerDetails = GetSavedCustomerStripeDetails();
             if (customerDetails == null)
             {
-                throw new Exceptions.InvalidDataException("Attempting to cancel an account but the customer does not have any stripe details");
+                throw new Exceptions.InvalidDataException(
+                    "Attempting to cancel an account but the customer does not have any stripe details");
             }
+
             var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
             var custService = new Stripe.CustomerService(client);
-            custService.Delete(customerDetails.Item1);    
+            custService.Delete(customerDetails.Value.StripeCustId);
 
             using (var db = InitializeSettings.DbFactory)
             {
-
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
                 data.StripeCustomerAccount = "";
                 db.Update(data);
 
                 this.email.SendMail_BackgroundThread("Your vpn credit card account has been deleted.  " +
-                "You will not be billed again.  You will continue to have access until your current payment expires.", 
-                    "VPN Credit Card Account Deleted", data.Email, true, null, Majorsilence.Vpn.Logic.Email.EmailTemplates.Generic);
-
+                                                     "You will not be billed again.  You will continue to have access until your current payment expires.",
+                    "VPN Credit Card Account Deleted", data.Email, true, null,
+                    Majorsilence.Vpn.Logic.Email.EmailTemplates.Generic);
             }
-
-
         }
 
         public void CancelSubscription()
@@ -88,83 +86,84 @@ namespace Majorsilence.Vpn.Logic.Payments
             Helpers.SslSecurity.Callback();
 
             var customerDetails = GetSavedCustomerStripeDetails();
-            if (customerDetails != null)
+            if (customerDetails.HasValue)
             {
                 var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
                 var subscriptionService = new Stripe.SubscriptionService(client);
-                subscriptionService.Cancel(customerDetails.Item1, customerDetails.Item2);    
+                subscriptionService.Cancel(customerDetails.Value.StripeSubscriptionId);
             }
 
             using (var db = InitializeSettings.DbFactory)
             {
-
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
                 data.StripeSubscriptionId = "";
                 db.Update(data);
 
                 this.email.SendMail_BackgroundThread("Your vpn account subscription has been cancelled.  " +
-                "You will not be billed again.  You will continue to have access until your current payment expires.", 
-                    "VPN Account Subscription Cancelled", data.Email, true, null, Majorsilence.Vpn.Logic.Email.EmailTemplates.Generic);
-
+                                                     "You will not be billed again.  You will continue to have access until your current payment expires.",
+                    "VPN Account Subscription Cancelled", data.Email, true, null,
+                    Majorsilence.Vpn.Logic.Email.EmailTemplates.Generic);
             }
 
             if (customerDetails == null)
             {
-                throw new Exceptions.InvalidDataException("Attempting to cancel an account but the customer does not have any stripe details.  Only removed from database.  Nothing removed from stripe.");
+                throw new Exceptions.InvalidDataException(
+                    "Attempting to cancel an account but the customer does not have any stripe details.  Only removed from database.  Nothing removed from stripe.");
             }
-
         }
 
         private void CreateStripeSubscription(string stripeToken, string coupon)
         {
- 
             using (var db = InitializeSettings.DbFactory)
             {
-
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
 
-
-                var options = new Stripe.SubscriptionCreateOptions();
-                options.TokenId = stripeToken;
-                if (coupon.Trim() != "")
-                {
-                    options.CouponId = coupon;
-                }
-
                 var subscriptionService = new Stripe.SubscriptionService();
-                Stripe.Subscription stripeSubscription = subscriptionService.Create(data.StripeCustomerAccount, 
-                                                            Helpers.SiteInfo.StripePlanId, options);
+                Stripe.Subscription stripeSubscription = subscriptionService.Create(new SubscriptionCreateOptions()
+                {
+                    Customer = data.StripeCustomerAccount,
+                    Items = new List<SubscriptionItemOptions>
+                    {
+                        new SubscriptionItemOptions
+                        {
+                            Price = Helpers.SiteInfo.StripePlanId,
+                        },
+                    },
+                    Coupon = String.IsNullOrWhiteSpace(coupon) ? null : coupon
+                });
 
                 var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
                 var subscriptionInfo = new Stripe.SubscriptionService(client);
-                var subscriptionList = subscriptionInfo.List(data.StripeCustomerAccount).ToList();
+
+                var options = new SubscriptionListOptions
+                {
+                    Limit = 3,
+                };
+                var subscriptionList = subscriptionInfo.List(new SubscriptionListOptions()
+                {
+                    Customer = data.StripeCustomerAccount,
+                }).ToList();
 
                 if (subscriptionList.Count() > 1)
                 {
                     throw new Exceptions.StripeSubscriptionException(
-                        string.Format("More then one subscription detected for vpn customer: {0}, stripe customer: {1}", 
+                        string.Format("More then one subscription detected for vpn customer: {0}, stripe customer: {1}",
                             _userId, data.StripeCustomerAccount)
                     );
                 }
 
-        
-          
-               
-                data.StripeSubscriptionId = subscriptionList.First().Id;
-               
-                db.Update(data);
 
+                data.StripeSubscriptionId = subscriptionList.First().Id;
+
+                db.Update(data);
             }
-                
         }
 
         private void CreateStripeCustomer(string stripeToken, string coupon)
         {
-
             var customer = new Stripe.CustomerCreateOptions();
             using (var db = InitializeSettings.DbFactory)
             {
-
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
 
 
@@ -172,24 +171,26 @@ namespace Majorsilence.Vpn.Logic.Payments
                 // so do it now.
                 customer.Email = data.Email;
                 customer.Description = string.Format("{0} {1} ({2})", data.FirstName, data.LastName, data.Email);
-                customer.TokenId = stripeToken;
-                customer.PlanId = Helpers.SiteInfo.StripePlanId;
+                customer.Plan = Helpers.SiteInfo.StripePlanId;
                 //customer.TrialEnd = DateTime.Now.AddDays(30);
                 if (coupon.Trim() != "")
                 {
-                    customer.CouponId = coupon;
+                    customer.Coupon = coupon;
                 }
+
                 var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
                 var customerService = new Stripe.CustomerService(client);
                 var cust = customerService.Create(customer);
 
                 var subscriptionInfo = new Stripe.SubscriptionService(client);
-                var subscriptionList = subscriptionInfo.List(cust.Id).ToList();
+                var subscriptionList = subscriptionInfo.List(new SubscriptionListOptions() { Customer = cust.Id })
+                    .ToList();
 
                 if (subscriptionList.Count() > 1)
                 {
                     throw new Exceptions.StripeSubscriptionException(
-                        string.Format("More then one subscription detected for vpn customer: {0}, stripe customer: {1}", _userId, cust.Id)
+                        string.Format("More then one subscription detected for vpn customer: {0}, stripe customer: {1}",
+                            _userId, cust.Id)
                     );
                 }
 
@@ -197,13 +198,8 @@ namespace Majorsilence.Vpn.Logic.Payments
                 data.StripeSubscriptionId = subscriptionList.First().Id;
 
 
-
                 db.Update(data);
-
-
             }
-                
-
         }
 
 
@@ -216,21 +212,17 @@ namespace Majorsilence.Vpn.Logic.Payments
         /// <param name="stripeToken"></param>
         /// <param name="coupon"></param>
         /// <returns></returns>
-        private Tuple<string, string> GetSavedCustomerStripeDetails()
+        private (string StripeCustId, string StripeSubscriptionId)? GetSavedCustomerStripeDetails()
         {
-
             string stripeCustId = "";
             string stripeSubscriptionId = "";
-    
+
             using (var db = InitializeSettings.DbFactory)
             {
-
                 var data = db.Get<Majorsilence.Vpn.Poco.Users>(_userId);
 
                 stripeCustId = data.StripeCustomerAccount;
                 stripeSubscriptionId = data.StripeSubscriptionId;
-
-
             }
 
 
@@ -239,12 +231,7 @@ namespace Majorsilence.Vpn.Logic.Payments
                 return null;
             }
 
-            return Tuple.Create<string, string>(stripeCustId, stripeSubscriptionId);
-
+            return (stripeCustId, stripeSubscriptionId);
         }
-
-       
-
-
     }
 }

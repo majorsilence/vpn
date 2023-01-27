@@ -47,23 +47,29 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 
         private void CreateToken()
         {
-            var myToken = new StripeTokenCreateOptions();
+            var myToken = new Stripe.TokenCreateOptions()
+            {
+                Card = new TokenCardOptions()
+                {
+                    AddressCountry = "US",
+                    AddressLine1 = "24 Portal St",
+                    AddressLine2 = "Unit B",
+                    AddressCity = "Biggie Smalls",
+                    AddressState = "NC",
+                    AddressZip = "27617",
+                    Cvc = "1223",
+                    ExpMonth = "10",
+                    ExpYear = "2030",
+                    Name = "Test Name",
+                    Number = "4242424242424242" 
+                }
+            };
 
             // set these properties if using a card
-            myToken.CardAddressCountry = "US";
-            myToken.CardAddressLine1 = "24 Portal St";
-            myToken.CardAddressLine2 = "Unit B";
-            myToken.CardAddressCity = "Biggie Smalls";
-            myToken.CardAddressState = "NC";
-            myToken.CardAddressZip = "27617";
-            myToken.CardCvc = "1223";
-            myToken.CardExpirationMonth = "10";
-            myToken.CardExpirationYear = "2030";
-            myToken.CardName = "Test Name";
-            myToken.CardNumber = "4242424242424242";
-
-            var tokenService = new StripeTokenService(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
-            StripeToken stripeToken = tokenService.Create(myToken);
+           
+            var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+            var tokenService = new Stripe.TokenService(client);
+            Stripe.Token stripeToken = tokenService.Create(myToken);
             this.token = stripeToken.Id;
             System.Console.WriteLine("Token is: " + token);
         }
@@ -81,7 +87,8 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite
 
                 if (userData.First().StripeCustomerAccount.Trim() != "")
                 {
-                    var customerService = new StripeCustomerService(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+                    var client = new StripeClient(Majorsilence.Vpn.Logic.Helpers.SiteInfo.StripeAPISecretKey);
+                    var customerService = new Stripe.CustomerService(client);
                     customerService.Delete(userData.First().StripeCustomerAccount);
                 }
 
