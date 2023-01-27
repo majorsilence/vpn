@@ -6,35 +6,35 @@
 }
 
 <h2>News Feed</h2>
-    <div class="panel panel-default">
+<div class="panel panel-default">
     @{
+        var url = "http://www.majorsilence.com/rss.xml";
+        SyndicationFeed feed;
+        using (var reader = XmlReader.Create(url))
+        {
+            feed = SyndicationFeed.Load(reader);
+        }
 
-           string url = "http://www.majorsilence.com/rss.xml";
-            SyndicationFeed feed;
-            using (XmlReader reader = XmlReader.Create(url))
+        var tag = "<a href=\"/taxonomy/term/55\">MajorsilenceVPN</a>";
+
+
+        foreach (var item in feed.Items)
+        {
+            var subject = item.Title.Text;
+            var summary = item.Summary.Text;
+
+            if (summary.Contains(tag))
             {
-                feed = SyndicationFeed.Load(reader);
-
+                @Html.Raw("<div class=\"panel-heading\"><h3>" + subject + "</h3></div>")
+                ;
+                @Html.Raw("<div class=\"panel-body\">")
+                ;
+                @Html.Raw(summary.Replace("Tags:", "").Replace(tag, ""))
+                ;
+                @Html.Raw("</div>")
+                ;
             }
-                
-            string tag = "<a href=\"/taxonomy/term/55\">MajorsilenceVPN</a>";
-
-
-            foreach (SyndicationItem item in feed.Items)
-            {
-
-            	string subject = item.Title.Text;    
-                string summary = item.Summary.Text;
-
-             	if(summary.Contains(tag))
-               	{
-                   	@Html.Raw("<div class=\"panel-heading\"><h3>" + subject + "</h3></div>");
-                	@Html.Raw("<div class=\"panel-body\">");
-					@Html.Raw(summary.Replace("Tags:", "").Replace(tag, ""));
-                	@Html.Raw("</div>");
-              	}
-                          
-            }
+        }
     }
 
-    </div>
+</div>

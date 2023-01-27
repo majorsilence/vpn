@@ -1,5 +1,4 @@
-﻿
-var Account;
+﻿var Account;
 (function (Account) {
     function Init(isLoggedIn, isPaymentExpired) {
         $("input[type=submit][name='cancelsubscription']").button().click(function (event) {
@@ -21,47 +20,40 @@ var Account;
         });
 
 
-		if(!isLoggedIn)
-		{
-			HidePanelIsLoggedIn();
-		}
-		else
-		{
-			DisplayPaymentInfo(isPaymentExpired);
-		}
+        if (!isLoggedIn) {
+            HidePanelIsLoggedIn();
+        } else {
+            DisplayPaymentInfo(isPaymentExpired);
+        }
 
-		Helpers.TabPillsLoad("accounttabs");
+        Helpers.TabPillsLoad("accounttabs");
 
-	
+
     }
+
     Account.Init = Init;
 
-   	function HidePanelIsLoggedIn()
-	{
-		$("#PanelIsLoggedIn").hide();
-	}
-	
-	function DisplayPaymentInfo(isPaymentExpired)
-	{
-	
-		if (isPaymentExpired)
-        {
-        	$("#PanelCancelPayments").hide();
-        }
-        else
-        {
+    function HidePanelIsLoggedIn() {
+        $("#PanelIsLoggedIn").hide();
+    }
+
+    function DisplayPaymentInfo(isPaymentExpired) {
+
+        if (isPaymentExpired) {
+            $("#PanelCancelPayments").hide();
+        } else {
             $("#PanelMakePayment").hide();
         }
-	}
+    }
 
 
-	function UpdatePassword() {
-		
-		var oldpassword_val = $("#oldpassword").val();
-		var newpassword_val = $("#newpassword").val();
-		var confirmnewpassword_val = $("#confirmnewpassword").val();
+    function UpdatePassword() {
 
-		Helpers.ShowLoading();
+        var oldpassword_val = $("#oldpassword").val();
+        var newpassword_val = $("#newpassword").val();
+        var confirmnewpassword_val = $("#confirmnewpassword").val();
+
+        Helpers.ShowLoading();
         $.ajax({
             type: "POST",
             url: "/account/updatepassword",
@@ -71,27 +63,27 @@ var Account;
                 confirmnewpassword: confirmnewpassword_val
             },
             success: function (result) {
-            	Helpers.HideLoading();
-             	Helpers.ShowMessage(result, "Updated", Helpers.MessageType.Information /* Information */);
+                Helpers.HideLoading();
+                Helpers.ShowMessage(result, "Updated", Helpers.MessageType.Information /* Information */);
             },
             error: function (result) {
-            	Helpers.HideLoading();
-               	Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
-      
+                Helpers.HideLoading();
+                Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
+
             },
             dataType: "html"
         });
 
 
-       
     }
-	function UpdateProfile() {
-		
-		var firstname_val = $("#firstname").val();
-		var lastname_val = $("#lastname").val();
-		var email_val = $("#email").val();
 
-		Helpers.ShowLoading();
+    function UpdateProfile() {
+
+        var firstname_val = $("#firstname").val();
+        var lastname_val = $("#lastname").val();
+        var email_val = $("#email").val();
+
+        Helpers.ShowLoading();
         $.ajax({
             type: "POST",
             url: "/account/updateprofile",
@@ -101,35 +93,34 @@ var Account;
                 lastname: lastname_val
             },
             success: function (result) {
-            	Helpers.HideLoading();
-             	Helpers.ShowMessage(result, "Updated", Helpers.MessageType.Information /* Information */);
+                Helpers.HideLoading();
+                Helpers.ShowMessage(result, "Updated", Helpers.MessageType.Information /* Information */);
             },
             error: function (result) {
-            	Helpers.HideLoading();
-               	Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
-      
+                Helpers.HideLoading();
+                Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
+
             },
             dataType: "html"
         });
 
 
-       
     }
 
     function CancelSubscription() {
-    	Helpers.ShowLoading();
+        Helpers.ShowLoading();
         $.ajax({
             type: "POST",
             url: "/account/cancelsubscription",
             success: function (result) {
-            	Helpers.HideLoading();
-             	Helpers.ShowMessage("Your subscription has been cancelled.  You will still have access until the end of your current payment.", 
-             	"Updated", Helpers.MessageType.Information /* Information */);
+                Helpers.HideLoading();
+                Helpers.ShowMessage("Your subscription has been cancelled.  You will still have access until the end of your current payment.",
+                    "Updated", Helpers.MessageType.Information /* Information */);
             },
             error: function (result) {
-            	Helpers.HideLoading();
-               	Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
-      
+                Helpers.HideLoading();
+                Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
+
             },
             dataType: "html"
         });

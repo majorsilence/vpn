@@ -4,13 +4,12 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Majorsilence.Vpn.Site.Controllers
+namespace Majorsilence.Vpn.Site.Controllers;
+
+public class SecurityController : Controller
 {
-    public class SecurityController : Controller
+    public ActionResult Index()
     {
-        public ActionResult Index()
-        {
-            return View ();
-        }
+        return View();
     }
 }

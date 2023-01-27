@@ -4,19 +4,13 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace SiteTests.Tests
+namespace SiteTests.Tests;
+
+public class PaymentsTest
 {
-	public class PaymentsTest
+    [Test()]
+    public void DoPaymentTest()
     {
-
-		[Test()]
-		public void DoPaymentTest()
-		{
-
-			throw new NotImplementedException ();
-
-		}
-
-
+        throw new NotImplementedException();
     }
 }

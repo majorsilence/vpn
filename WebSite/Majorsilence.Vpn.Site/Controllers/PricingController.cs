@@ -4,14 +4,13 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Majorsilence.Vpn.Site.Controllers
+namespace Majorsilence.Vpn.Site.Controllers;
+
+public class PricingController : Controller
 {
-    public class PricingController : Controller
+    public ActionResult Index()
     {
-        public ActionResult Index()
-        {
-            var model = new Models.Pricing();
-            return View (model);
-        }
+        var model = new Models.Pricing();
+        return View(model);
     }
 }

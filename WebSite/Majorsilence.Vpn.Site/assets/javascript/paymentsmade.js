@@ -9,7 +9,7 @@
         $.ajax({
             type: "POST",
             url: "/setup/makepayments.ashx",
-            data: { PayerID: Helpers.EncodeURIC(payid), Token: Helpers.EncodeURIC(token) },
+            data: {PayerID: Helpers.EncodeURIC(payid), Token: Helpers.EncodeURIC(token)},
             success: function (result) {
                 if (result) {
                     $("#PaymentSatus").html("Payment Success...");
@@ -24,5 +24,6 @@
         });
 
     }
+
     PaymentsMade.Init = Init;
 })(PaymentsMade || (PaymentsMade = {}));

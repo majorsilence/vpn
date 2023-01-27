@@ -15,7 +15,6 @@ You are now ready to connect to the vpn.
 2. In the list of available connections find the VPN connection you created above
 3. Connect to it
 
-
 # Screenshot tutorial
 
 ![Control Panel](/assets/knowledgebase/pptp/windows-networking/001-control-panel.png)

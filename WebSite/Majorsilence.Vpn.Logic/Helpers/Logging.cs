@@ -6,89 +6,68 @@ using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace Majorsilence.Vpn.Logic.Helpers
+namespace Majorsilence.Vpn.Logic.Helpers;
+
+public class Logging
 {
-    public class Logging
+    public static void Log(string msg, bool emailErrorToAdmin)
     {
-    
-
-        public static void Log(string msg, bool emailErrorToAdmin)
+        using (var db = InitializeSettings.DbFactory)
         {
-        
-            using (IDbConnection db = InitializeSettings.DbFactory)
-            {
-                db.Open();
-                db.Insert<Majorsilence.Vpn.Poco.Errors>(new Majorsilence.Vpn.Poco.Errors(
-                    DateTime.UtcNow,
-                    msg,
-                    "",
-                    "")
-                );
-
-            }
-
-            if (emailErrorToAdmin)
-            {
-
-                InitializeSettings.Email.SendMail_BackgroundThread("Message: " + msg + System.Environment.NewLine,
-                    "Msg somewhere in the system", Helpers.SiteInfo.AdminEmail, true, null,
-                    Email.EmailTemplates.Generic);
-            }
-
+            db.Open();
+            db.Insert<Poco.Errors>(new Poco.Errors(
+                DateTime.UtcNow,
+                msg,
+                "",
+                "")
+            );
         }
 
-        public static void Log(Exception ex, bool emailErrorToAdmin)
+        if (emailErrorToAdmin)
+            InitializeSettings.Email.SendMail_BackgroundThread("Message: " + msg + Environment.NewLine,
+                "Msg somewhere in the system", SiteInfo.AdminEmail, true, null,
+                Email.EmailTemplates.Generic);
+    }
+
+    public static void Log(Exception ex, bool emailErrorToAdmin)
+    {
+        var innerException = GetInnerException(ex);
+        using (var db = InitializeSettings.DbFactory)
         {
-			
-            string innerException = GetInnerException(ex);
-            using (var db = InitializeSettings.DbFactory)
-            {
-                db.Open();
-                db.Insert<Majorsilence.Vpn.Poco.Errors>(new Majorsilence.Vpn.Poco.Errors(
-                    DateTime.UtcNow,
-                    ex.Message,
-                    ex.StackTrace == null ? "" : ex.StackTrace.SafeSubstring(0, 4000),
-                    innerException == null ? "" : innerException.SafeSubstring(0, 8000))
-                );
-
-            }
-
-            if (emailErrorToAdmin)
-            {
-
-                InitializeSettings.Email.SendMail_BackgroundThread("Error: " + ex.Message + System.Environment.NewLine + innerException,
-                    "Error somewhere in the system", Helpers.SiteInfo.AdminEmail, true, null,
-                    Email.EmailTemplates.Generic);
-            }
-
+            db.Open();
+            db.Insert<Poco.Errors>(new Poco.Errors(
+                DateTime.UtcNow,
+                ex.Message,
+                ex.StackTrace == null ? "" : ex.StackTrace.SafeSubstring(0, 4000),
+                innerException == null ? "" : innerException.SafeSubstring(0, 8000))
+            );
         }
 
-        public static void Log(Exception ex)
+        if (emailErrorToAdmin)
+            InitializeSettings.Email.SendMail_BackgroundThread(
+                "Error: " + ex.Message + Environment.NewLine + innerException,
+                "Error somewhere in the system", SiteInfo.AdminEmail, true, null,
+                Email.EmailTemplates.Generic);
+    }
+
+    public static void Log(Exception ex)
+    {
+        Log(ex, false);
+    }
+
+    private static string GetInnerException(Exception ex)
+    {
+        var msg = string.Empty;
+
+
+        if (null != ex)
         {
+            msg = ex.Message + Environment.NewLine + ex.Source + Environment.NewLine + ex.StackTrace +
+                  Environment.NewLine + Environment.NewLine;
 
-            Log(ex, false);
-
+            if (null != ex.InnerException) msg = msg + GetInnerException(ex.InnerException);
         }
 
-        private static string GetInnerException(Exception ex)
-        {
-
-            string msg = string.Empty;
-
-
-            if ((null != ex))
-            {
-                msg = ex.Message + System.Environment.NewLine + ex.Source + System.Environment.NewLine + ex.StackTrace + System.Environment.NewLine + System.Environment.NewLine;
-
-                if ((null != ex.InnerException))
-                {
-                    msg = msg + GetInnerException(ex.InnerException);
-                }
-
-            }
-
-            return msg;
-
-        }
+        return msg;
     }
 }

@@ -3,28 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Majorsilence.Vpn.Logic.Helpers
+namespace Majorsilence.Vpn.Logic.Helpers;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static string SafeSubstring(this string input, int startIndex, int length)
     {
-        public static string SafeSubstring(this string input, int startIndex, int length)
+        // Todo: Check that startIndex + length does not cause an arithmetic overflow
+        if (input.Length >= startIndex + length)
         {
-            // Todo: Check that startIndex + length does not cause an arithmetic overflow
-            if (input.Length >= (startIndex + length))
-            {
-                return input.Substring(startIndex, length);
-            }
+            return input.Substring(startIndex, length);
+        }
+        else
+        {
+            if (input.Length > startIndex)
+                return input.Substring(startIndex);
             else
-            {
-                if (input.Length > startIndex)
-                {
-                    return input.Substring(startIndex);
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
+                return string.Empty;
         }
     }
 }

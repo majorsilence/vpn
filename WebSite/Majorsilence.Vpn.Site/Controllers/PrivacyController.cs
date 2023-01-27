@@ -4,14 +4,13 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Majorsilence.Vpn.Site.Controllers
+namespace Majorsilence.Vpn.Site.Controllers;
+
+public class PrivacyController : Controller
 {
-    public class PrivacyController : Controller
+    public ActionResult Index()
     {
-        public ActionResult Index()
-        {
-            var model = new Models.Privacy();
-            return View (model);
-        }
+        var model = new Models.Privacy();
+        return View(model);
     }
 }

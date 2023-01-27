@@ -6,36 +6,28 @@ using System.Data;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace Majorsilence.Vpn.Logic
+namespace Majorsilence.Vpn.Logic;
+
+public static class Counters
 {
-    public static class Counters
+    /// <summary>
+    /// Return the next number for unique vpn cert names.
+    /// </summary>
+    /// <param name="txn"></param>
+    /// <param name="cn"></param>
+    /// <returns></returns>
+    public static ulong GetSetVpnNum(IDbTransaction txn, IDbConnection cn)
     {
+        var count = cn.Query<Majorsilence.Vpn.Poco.Counters>("SELECT * FROM Counters WHERE Code = @Code",
+            new { Code = "VPNCERT" });
 
-        /// <summary>
-        /// Return the next number for unique vpn cert names.
-        /// </summary>
-        /// <param name="txn"></param>
-        /// <param name="cn"></param>
-        /// <returns></returns>
-        public static ulong GetSetVpnNum(IDbTransaction txn, IDbConnection cn)
-        {
+        if (count.Count() != 1) throw new Exceptions.InvalidDataException("Invalid counters data for VPNCERT");
 
-            var count = cn.Query<Majorsilence.Vpn.Poco.Counters>("SELECT * FROM Counters WHERE Code = @Code",
-                new {Code = "VPNCERT"});
+        var current = count.First().Num;
 
-            if (count.Count() != 1)
-            {
-                throw new Exceptions.InvalidDataException("Invalid counters data for VPNCERT");
-            }
+        count.First().Num = count.First().Num += 1;
+        cn.Update(count.First());
 
-            var current = count.First().Num;
-
-            count.First().Num = count.First().Num += 1;
-            cn.Update(count.First());
-
-            return current;
-
-        }
-
+        return current;
     }
 }

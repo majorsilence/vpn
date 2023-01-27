@@ -1,15 +1,28 @@
 ﻿@model Majorsilence.Vpn.Site.Models.Account
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@{ ViewBag.Title = "Account Payments";
-                Layout = "~/Views/LoggedInView.cshtml"; }
+@{
+    ViewBag.Title = "Account Payments";
+    Layout = "~/Views/LoggedInView.cshtml";
+}
 
 <ul class="list-group">
-    @{ if (((bool)ViewData["IsAdmin"]))
+    @{
+        if ((bool)ViewData["IsAdmin"])
         {
-<li class="list-group-item"><a href="/admin">Admin</a></li> } }
+            <li class="list-group-item">
+                <a href="/admin">Admin</a>
+            </li>
+        }
+    }
 
-    <li class="list-group-item"><a href="/account">@Localizer["MenuAccount"]</a></li>
-    <li class="list-group-item"><a href="/invite">Invite Friends</a></li>
-    <li class="list-group-item"><a href="/logout"> @Localizer["MenuLogout"]</a></li>
+    <li class="list-group-item">
+        <a href="/account">@Localizer["MenuAccount"]</a>
+    </li>
+    <li class="list-group-item">
+        <a href="/invite">Invite Friends</a>
+    </li>
+    <li class="list-group-item">
+        <a href="/logout"> @Localizer["MenuLogout"]</a>
+    </li>
 </ul>

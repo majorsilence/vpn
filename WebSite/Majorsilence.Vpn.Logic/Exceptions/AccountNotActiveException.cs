@@ -1,20 +1,18 @@
 using System;
 
-namespace Majorsilence.Vpn.Logic.Exceptions
+namespace Majorsilence.Vpn.Logic.Exceptions;
+
+public class AccountNotActiveException : Exception
 {
-    public class AccountNotActiveException : Exception
+    public AccountNotActiveException() : base()
     {
-        public AccountNotActiveException() : base ()
-        {
-        }
+    }
 
-        public AccountNotActiveException(string msg) : base(msg)
-        {
-        }
+    public AccountNotActiveException(string msg) : base(msg)
+    {
+    }
 
-        public AccountNotActiveException(string msg, Exception ex) : base(msg, ex)
-        {
-        }
+    public AccountNotActiveException(string msg, Exception ex) : base(msg, ex)
+    {
     }
 }
-

@@ -6,6 +6,7 @@
             PasswordReset.ResetPassword();
         });
     }
+
     PasswordReset.Init = Init;
 
     function ResetPassword() {
@@ -19,12 +20,11 @@
         $.ajax({
             type: "POST",
             url: "/Generic/ResetPasswordSend",
-            data: { username: email},
+            data: {username: email},
             success: function (result) {
                 if (result.status = 250) {
                     document.location.href = "/validatecode";
-                }
-                else {
+                } else {
                     document.location.href = "/";
                 }
                 Helpers.HideLoading();
@@ -40,6 +40,7 @@
             dataType: "html"
         });
     }
+
     PasswordReset.ResetPassword = ResetPassword;
 })(PasswordReset || (PasswordReset = {}));
 //# sourceMappingURL=login.js.map

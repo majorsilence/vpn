@@ -6,34 +6,31 @@
 }
 
 
-<br />
+<br/>
 <h1>@Localizer["MenuSignUp"]</h1>
 
 
 <form name="input" method="post">
     <div class="form-group">
-        <b>Beta Key:</b> <input type="text" name="fname" class="form-control" id="betaKeyText" placeholder="Beta Key" /><br />
-        <b>@Localizer["FirstName"]:</b> <input type="text" name="fname" class="form-control" id="fname" placeholder="First Name" /><br />
-        <b>@Localizer["LastName"]:</b> <input type="text" name="lname" class="form-control" id="lname" placeholder="Last Name" /><br />
-        <b>@Localizer["Email"]:</b> <input type="email" name="email" class="form-control" id="email" placeholder="Email Address" autocorrect="off" autocapitalize="off" /><br />
-        <b>@Localizer["ConfirmEmail"]:</b> <input type="email" name="cemail" class="form-control" id="cemail" placeholder="Confirm Email Address" autocorrect="off" autocapitalize="off" /><br />
-        <b>@Localizer["Password"]:</b> <input type="password" name="password" class="form-control" id="password" placeholder="Password" autocorrect="off" autocapitalize="off" /><br />
-        <b>@Localizer["ConfirmPassword"]:</b> <input type="password" name="cpassword" class="form-control" id="cpassword" placeholder="Confirm Password" autocorrect="off" autocapitalize="off" /><br />
-        <input type="submit" value="Submit" id="createuser" class="btn btn-primary btn-lg" />
+        <b>Beta Key:</b> <input type="text" name="fname" class="form-control" id="betaKeyText" placeholder="Beta Key"/><br/>
+        <b>@Localizer["FirstName"]:</b> <input type="text" name="fname" class="form-control" id="fname" placeholder="First Name"/><br/>
+        <b>@Localizer["LastName"]:</b> <input type="text" name="lname" class="form-control" id="lname" placeholder="Last Name"/><br/>
+        <b>@Localizer["Email"]:</b> <input type="email" name="email" class="form-control" id="email" placeholder="Email Address" autocorrect="off" autocapitalize="off"/><br/>
+        <b>@Localizer["ConfirmEmail"]:</b> <input type="email" name="cemail" class="form-control" id="cemail" placeholder="Confirm Email Address" autocorrect="off" autocapitalize="off"/><br/>
+        <b>@Localizer["Password"]:</b> <input type="password" name="password" class="form-control" id="password" placeholder="Password" autocorrect="off" autocapitalize="off"/><br/>
+        <b>@Localizer["ConfirmPassword"]:</b> <input type="password" name="cpassword" class="form-control" id="cpassword" placeholder="Confirm Password" autocorrect="off" autocapitalize="off"/><br/>
+        <input type="submit" value="Submit" id="createuser" class="btn btn-primary btn-lg"/>
     </div>
 </form>
 
 <script src="/assets/javascript/newuser.js" type="text/javascript"></script>
 <script type="text/javascript">
 	@{
-     <text>
+	    <text>
 	      $(function () {
 
 	         NewUser.Init(@(Majorsilence.Vpn.Logic.Helpers.SiteInfo.LiveSite.ToString().ToLower()), false);
 	     });
      </text>
-     }
+	}
 </script>
-
-
-

@@ -3,44 +3,37 @@ using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace Majorsilence.Vpn.Logic
+namespace Majorsilence.Vpn.Logic;
+
+public class ActionLog
 {
-    public class ActionLog
+    public ActionLog()
     {
-        public ActionLog()
-        {
-        }
+    }
 
-        public void Log(string action, int userid)
+    public void Log(string action, int userid)
+    {
+        using (var cn = InitializeSettings.DbFactory)
         {
-            using (var cn = Majorsilence.Vpn.Logic.InitializeSettings.DbFactory)
+            cn.Open();
+
+            var data = new Majorsilence.Vpn.Poco.ActionLog()
             {
-                cn.Open();
+                Action = action,
+                ActionDate = DateTime.UtcNow,
+                UserId = userid
+            };
 
-                var data = new Majorsilence.Vpn.Poco.ActionLog()
-                {
-                    Action = action,
-                    ActionDate = DateTime.UtcNow,
-                    UserId = userid
-                };
-
-                cn.Insert(data);
-
-            }
-
+            cn.Insert(data);
         }
+    }
 
-        public static void Log_BackgroundThread(string action, int userid)
+    public static void Log_BackgroundThread(string action, int userid)
+    {
+        Task.Run(() =>
         {
-        
-            Task.Run(() =>
-            {
-                var act = new ActionLog();
-                act.Log(action, userid);
-            });
-
-        }
-
+            var act = new ActionLog();
+            act.Log(action, userid);
+        });
     }
 }
-

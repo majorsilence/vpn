@@ -1,38 +1,36 @@
 ﻿using System;
 
-namespace Majorsilence.Vpn.Site.TestsFastDebugger
+namespace Majorsilence.Vpn.Site.TestsFastDebugger;
+
+internal class MainClass
 {
-    class MainClass
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var x = new TestsFast.ApiV2.Setup();
+        try
         {
-            var x = new Majorsilence.Vpn.Site.TestsFast.ApiV2.Setup();
-            try
-            {
-                x.BringUp();
+            x.BringUp();
 
-                var y = new Majorsilence.Vpn.Site.TestsFast.ApiV2.LoginTest();
-                y.Setup();
+            var y = new TestsFast.ApiV2.LoginTest();
+            y.Setup();
 
-                y.TestLoginHappyPath();
+            y.TestLoginHappyPath();
 
-                y.Cleanup();
+            y.Cleanup();
 
-                var zz = new Majorsilence.Vpn.Site.TestsFast.ApiV2.ServerListTest();
-                zz.TestServerListHappyPath();
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
-            finally
-            {
-                x.TearDown();
-            }
-
-            Console.WriteLine("Hello World!");
+            var zz = new TestsFast.ApiV2.ServerListTest();
+            zz.TestServerListHappyPath();
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Console.WriteLine(ex.StackTrace);
+        }
+        finally
+        {
+            x.TearDown();
+        }
+
+        Console.WriteLine("Hello World!");
     }
 }

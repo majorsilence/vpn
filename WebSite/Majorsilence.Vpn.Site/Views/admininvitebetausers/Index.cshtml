@@ -4,15 +4,16 @@
     Layout = "~/Views/AdminView.cshtml";
 }
 
-Current unused key count: @Model.RemainingBetaKeys <br />
+Current unused key count: @Model.RemainingBetaKeys <br/>
 
-<form method="post" action="/admininvitebetausers/sendmail" role="form">    
+<form method="post" action="/admininvitebetausers/sendmail" role="form">
 
     <p>
-        Email address to invite: <input id="emailAddress" 
-        name="emailladdress" type="text" class="form-control" />
+        Email address to invite:
+        <input id="emailAddress"
+               name="emailladdress" type="text" class="form-control"/>
     </p>
-<p>
- <input type="submit" value="Send" class="form-control" />
-</p>
+    <p>
+        <input type="submit" value="Send" class="form-control"/>
+    </p>
 </form>

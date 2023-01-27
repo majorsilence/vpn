@@ -6,6 +6,7 @@
             ValidateResetCode.ValidateCode();
         });
     }
+
     ValidateResetCode.Init = Init;
 
     function ValidateCode() {
@@ -57,6 +58,7 @@
             dataType: "html"
         });
     }
+
     ValidateResetCode.ValidateCode = ValidateCode;
 })(ValidateResetCode || (ValidateResetCode = {}));
 //# sourceMappingURL=login.js.map

@@ -1,16 +1,12 @@
 ﻿using System;
 
-namespace Majorsilence.Vpn.Site.Models
+namespace Majorsilence.Vpn.Site.Models;
+
+public class Server
 {
-    public class Server
-    {
+    public string Description { get; set; }
 
-        public string Description { get; set; }
+    public int ServerId { get; set; }
 
-        public int ServerId { get; set; }
-
-        public int RegionId { get; set; }
-
-    }
+    public int RegionId { get; set; }
 }
-

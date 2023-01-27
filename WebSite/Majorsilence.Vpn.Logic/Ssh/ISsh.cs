@@ -1,17 +1,13 @@
 ﻿using System;
 using System.IO;
 
-namespace Majorsilence.Vpn.Logic.Ssh
+namespace Majorsilence.Vpn.Logic.Ssh;
+
+public interface ISsh : IDisposable
 {
-    public interface ISsh : IDisposable
-    {
+    void Login(string host);
 
-        void Login(string host);
+    void WriteLine(string value);
 
-        void WriteLine(string value);
-
-        string Read();
-
-    }
+    string Read();
 }
-

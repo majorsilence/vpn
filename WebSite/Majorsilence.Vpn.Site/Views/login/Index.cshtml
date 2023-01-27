@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
-@{ ViewBag.Title = "Login";
-    Layout = "~/Views/GeneralLayout.cshtml"; }
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/GeneralLayout.cshtml";
+}
 
 <h1>Login</h1>
 
@@ -10,18 +12,19 @@
         <b>
             @Localizer["Email"]:
         </b>
-        <input type="email" id="email_login2" class="form-control" placeholder="Email Address" autocorrect="off" autocapitalize="off" /><br />
+        <input type="email" id="email_login2" class="form-control" placeholder="Email Address" autocorrect="off" autocapitalize="off"/><br/>
         <b>
             @Localizer["Password"]:
         </b>
-        <input type="password" id="password_login2" class="form-control" placeholder="Password" autocorrect="off" autocapitalize="off" /><br />
-        <input type="submit" id="logmein2" value="Submit" class="btn btn-primary btn-lg" />
+        <input type="password" id="password_login2" class="form-control" placeholder="Password" autocorrect="off" autocapitalize="off"/><br/>
+        <input type="submit" id="logmein2" value="Submit" class="btn btn-primary btn-lg"/>
     </div>
 </form>
 
 <a href="/resetpassword">
     @Localizer["ForgotPassword"]
-</a> | <a href=" / signup">
+</a> |
+<a href=" / signup">
     @Localizer["CreateAccount"]
 </a>
 
@@ -32,4 +35,3 @@
         Login.Init();
     });
 </script>
-

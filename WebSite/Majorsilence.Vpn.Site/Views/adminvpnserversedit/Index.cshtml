@@ -4,36 +4,38 @@
 }
 
 <form method="post" action="/adminvpnserversedit/editservers" role="form">
-	<p>
-	    ID: <input id="id" name="id" readonly="readonly" type="text" 
-	    value="@ViewData["id"]?.ToString()?.Trim()?.ToLower()" class="form-control" />
-	    </p>
-	<p>
-	    Address:
-	    <input id="address" name="address" type="text" 
-	    value="@ViewData["address"]?.ToString()?.Trim()" class="form-control" />
-	</p>
-	<p>
-	    Vpn Port:
-	    <input id="port" name="port" type="text" 
-	    value="@ViewData["port"]?.ToString()?.Trim()?.ToLower()" class="form-control" />
-	</p>
-	<p>
-	    Description:
-	    <input id="desc" name="desc" type="text" 
-	    value="@ViewData["desc"]?.ToString()?.Trim()" class="form-control"/>
-	</p>
-	<p>
-	    <a href="/adminregions" target="_blank">RegionId</a>:
-	    <input id="region" name="region" type="text" 
-	    value="@ViewData["region"]?.ToString()?.Trim()" class="form-control" />
-	    </p>
-	    <p>
-	    Active: <input @ViewData["active"] id = "active" 
-	    name="active" name="CheckBoxActive" type="checkbox" class="form-control" />
-	        
-	</p>
-	<p>
-	     <input type="submit" value="Save" class="form-control" />
-	</p>
+    <p>
+        ID:
+        <input id="id" name="id" readonly="readonly" type="text"
+               value="@ViewData["id"]?.ToString()?.Trim()?.ToLower()" class="form-control"/>
+    </p>
+    <p>
+        Address:
+        <input id="address" name="address" type="text"
+               value="@ViewData["address"]?.ToString()?.Trim()" class="form-control"/>
+    </p>
+    <p>
+        Vpn Port:
+        <input id="port" name="port" type="text"
+               value="@ViewData["port"]?.ToString()?.Trim()?.ToLower()" class="form-control"/>
+    </p>
+    <p>
+        Description:
+        <input id="desc" name="desc" type="text"
+               value="@ViewData["desc"]?.ToString()?.Trim()" class="form-control"/>
+    </p>
+    <p>
+        <a href="/adminregions" target="_blank">RegionId</a>:
+        <input id="region" name="region" type="text"
+               value="@ViewData["region"]?.ToString()?.Trim()" class="form-control"/>
+    </p>
+    <p>
+        Active:
+        <input @ViewData["active"] id="active"
+                                   name="active" name="CheckBoxActive" type="checkbox" class="form-control"/>
+
+    </p>
+    <p>
+        <input type="submit" value="Save" class="form-control"/>
+    </p>
 </form>

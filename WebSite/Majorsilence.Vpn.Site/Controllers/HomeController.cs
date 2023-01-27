@@ -5,22 +5,21 @@ using System.Web;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Majorsilence.Vpn.Site.Controllers
+namespace Majorsilence.Vpn.Site.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ISessionVariables sessionInstance;
+
+    public HomeController(ISessionVariables sessionInstance)
     {
+        this.sessionInstance = sessionInstance;
+    }
 
-        readonly ISessionVariables sessionInstance;
-        public HomeController(ISessionVariables sessionInstance)
-        {
-            this.sessionInstance = sessionInstance;
-        }
-
-        public ActionResult Index(string betaemail, string betacode)
-        {
-            ViewData["betaemail"] = betaemail;
-            ViewData["betacode"] = betacode;
-            return View(new Models.CustomViewLayout(sessionInstance));
-        }
+    public ActionResult Index(string betaemail, string betacode)
+    {
+        ViewData["betaemail"] = betaemail;
+        ViewData["betacode"] = betacode;
+        return View(new Models.CustomViewLayout(sessionInstance));
     }
 }

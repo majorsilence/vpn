@@ -6,7 +6,7 @@
 }
 
 @{
-    string attemptedemail = ViewData["email"]?.ToString();
+    var attemptedemail = ViewData["email"]?.ToString();
     if (attemptedemail == null)
     {
         attemptedemail = "";
@@ -17,23 +17,24 @@
 <form name="input" method="post" class="form">
     <b>@Localizer["Email"]:</b>
     @{
-
         if (attemptedemail != "")
         {
-            <input type="email" name="email" id="email" class="form-control" value="@(attemptedemail)" /><br />
+            <input type="email" name="email" id="email" class="form-control" value="@(attemptedemail)"/>
+            <br/>
         }
         else
         {
-            <input type="email" name="email" id="email" placeholder="Email Address" class="form-control" /><br />
+            <input type="email" name="email" id="email" placeholder="Email Address" class="form-control"/>
+            <br/>
         }
     }
-    <input type="submit" value="Submit" id="resetmypassword" class="btn btn-success" />
+    <input type="submit" value="Submit" id="resetmypassword" class="btn btn-success"/>
 </form>
 
 <script src="/assets/javascript/passwordreset.js" type="text/javascript"></script>
 <script>
 	@{
-		<text>
+	    <text>
 			$(document).ready(function () {
 				PasswordReset.Init();
 			});
@@ -42,4 +43,3 @@
 	}
 
 </script>
-

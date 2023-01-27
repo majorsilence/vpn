@@ -2,29 +2,24 @@
 using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
-namespace Majorsilence.Vpn.Logic.Migrations
+namespace Majorsilence.Vpn.Logic.Migrations;
+
+[Migration(9, TransactionBehavior.Default)]
+public class StripePublicKey : Migration
 {
-    [Migration(9, TransactionBehavior.Default)]
-    public class StripePublicKey : Migration
+    public StripePublicKey()
     {
-        public StripePublicKey()
-        {
-        }
+    }
 
-        public override void Up()
-        {
+    public override void Up()
+    {
+        Alter.Table("SiteInfo").AddColumn("StripeAPIPublicKey").AsString().Nullable();
+        Update.Table("SiteInfo").Set(new { StripeAPIPublicKey = "" }).AllRows();
+        Alter.Table("SiteInfo").AlterColumn("StripeAPIPublicKey").AsString().NotNullable();
+    }
 
-            Alter.Table("SiteInfo").AddColumn("StripeAPIPublicKey").AsString().Nullable();
-            Update.Table("SiteInfo").Set(new { StripeAPIPublicKey = ""}).AllRows();
-            Alter.Table("SiteInfo").AlterColumn("StripeAPIPublicKey").AsString().NotNullable();
-
-        }
-
-        public override void Down()
-        {
-            Delete.Column("StripeAPIPublicKey").FromTable("SiteInfo");
-        }
-
+    public override void Down()
+    {
+        Delete.Column("StripeAPIPublicKey").FromTable("SiteInfo");
     }
 }
-

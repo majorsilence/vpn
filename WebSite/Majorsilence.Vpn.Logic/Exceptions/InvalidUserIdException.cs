@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Majorsilence.Vpn.Logic.Exceptions
+namespace Majorsilence.Vpn.Logic.Exceptions;
+
+public class InvalidUserIdException : InvalidDataException
 {
-    public class InvalidUserIdException : InvalidDataException
+    public InvalidUserIdException(string msg) : base(msg)
     {
+    }
 
-        public InvalidUserIdException(string msg) : base(msg) { }
-
-        public InvalidUserIdException(string msg, Exception ex) : base(msg, ex) { }
-
+    public InvalidUserIdException(string msg, Exception ex) : base(msg, ex)
+    {
     }
 }
-

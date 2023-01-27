@@ -4,31 +4,27 @@
 }
 
 
-
-
-<form method="post" action="/adminregionsedit/editregions" role="form">    
+<form method="post" action="/adminregionsedit/editregions" role="form">
     <p>
-        ID: <input id="id" name="id" readonly="readonly" type="text" 
-        value="@ViewData["id"]?.ToString()?.Trim()?.ToLower()" class="form-control" />
+        ID:
+        <input id="id" name="id" readonly="readonly" type="text"
+               value="@ViewData["id"]?.ToString()?.Trim()?.ToLower()" class="form-control"/>
 
     </p>
     <p>
-        Description: <input id="desc" name="desc" type="text" 
-        value="@ViewData["desc"]?.ToString()" class="form-control" />
+        Description:
+        <input id="desc" name="desc" type="text"
+               value="@ViewData["desc"]?.ToString()" class="form-control"/>
     </p>
     <p>
 
 
-     Active: <input @ViewData["active"] id = "active" 
-     name="active" name="CheckBoxActive" type="checkbox" class="form-control" />
-    
-</p>
-<p>
- <input type="submit" value="Save" class="form-control" />
-</p>
+        Active:
+        <input @ViewData["active"] id="active"
+                                   name="active" name="CheckBoxActive" type="checkbox" class="form-control"/>
+
+    </p>
+    <p>
+        <input type="submit" value="Save" class="form-control"/>
+    </p>
 </form>
-
-
-
-    
-   

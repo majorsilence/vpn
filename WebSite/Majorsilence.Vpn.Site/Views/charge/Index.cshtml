@@ -3,19 +3,18 @@
     Layout = "~/Views/GeneralLayout.cshtml";
 }
 
-<br />
+<br/>
 @{
-    string status = ViewData["status"]?.ToString();
+    var status = ViewData["status"]?.ToString();
 
-    if(status=="ok")
+    if (status == "ok")
     {
-     @Html.Raw("Your payment has been processed.  You can now <a href=\"/setup\">download your vpn certificates</a> and connect.");
+        @Html.Raw("Your payment has been processed.  You can now <a href=\"/setup\">download your vpn certificates</a> and connect.")
+        ;
     }
     else
     {
-     @Html.Raw("There was an error processing your payment.  Please try again later.");
+        @Html.Raw("There was an error processing your payment.  Please try again later.")
+        ;
     }
 }
-
-
-

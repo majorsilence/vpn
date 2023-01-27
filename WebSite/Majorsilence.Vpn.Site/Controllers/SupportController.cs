@@ -6,63 +6,57 @@ using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Majorsilence.Vpn.Site.Controllers
+namespace Majorsilence.Vpn.Site.Controllers;
+
+public class SupportController : Controller
 {
-    public class SupportController : Controller
+    private readonly IEmail email;
+    private readonly ISessionVariables sessionInstance;
+
+    public SupportController(IEmail email, ISessionVariables sessionInstance)
     {
-        readonly IEmail email;
-        readonly ISessionVariables sessionInstance;
-        public SupportController(IEmail email, ISessionVariables sessionInstance)
+        this.email = email;
+        this.sessionInstance = sessionInstance;
+    }
+
+    public ActionResult Index()
+    {
+        return View();
+    }
+
+    public ActionResult ThankYou()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public void Submit(string subject, string supportrequest)
+    {
+        if (sessionInstance.LoggedIn == false) return;
+
+
+        try
         {
-            this.email = email;
-            this.sessionInstance = sessionInstance;
-        }
+            supportrequest = "User Id: " + sessionInstance.UserId + Environment.NewLine +
+                             "Email: " + sessionInstance.Username + Environment.NewLine + Environment.NewLine +
+                             supportrequest;
 
-        public ActionResult Index()
+            // TODO: inject the support address from appsettings.json
+            email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false, null,
+                EmailTemplates.None);
+
+            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+            HttpContext.Response.Redirect("/support/thankyou", false);
+        }
+        catch (Logic.Exceptions.InvalidDataException ide)
         {
-            return View();
+            Logic.Helpers.Logging.Log(ide);
+            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
         }
-
-        public ActionResult ThankYou()
+        catch (Exception ex)
         {
-            return View();
+            Logic.Helpers.Logging.Log(ex);
+            HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
         }
-
-        [HttpPost]
-        public void Submit(string subject, string supportrequest)
-        {
-
-            if (sessionInstance.LoggedIn == false)
-            {
-                return;
-            }
-
-
-            try
-            {
-                supportrequest = "User Id: " + sessionInstance.UserId + System.Environment.NewLine +
-                "Email: " + sessionInstance.Username + System.Environment.NewLine + System.Environment.NewLine +
-                supportrequest;
-
-                // TODO: inject the support address from appsettings.json
-                email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false, null, Majorsilence.Vpn.Logic.Email.EmailTemplates.None);
-
-                this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                this.HttpContext.Response.Redirect("/support/thankyou", false);
-            }
-            catch (Majorsilence.Vpn.Logic.Exceptions.InvalidDataException ide)
-            {
-                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ide);
-                this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-            }
-            catch (Exception ex)
-            {
-                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
-                this.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-            }
-
-
-        }
-
     }
 }

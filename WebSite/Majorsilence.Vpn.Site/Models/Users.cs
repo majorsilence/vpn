@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-namespace Majorsilence.Vpn.Site.Models
+namespace Majorsilence.Vpn.Site.Models;
+
+public class Users : CustomViewLayout
 {
-    public class Users : CustomViewLayout
+    public Users()
     {
-        public Users()
-        {
-           
-            UserList = Majorsilence.Vpn.Logic.Accounts.UserInfo.RetrieveUserList();
-
-        }
-
-        public IEnumerable<Majorsilence.Vpn.Poco.Users> UserList { get; private set; }
+        UserList = Logic.Accounts.UserInfo.RetrieveUserList();
     }
-}
 
+    public IEnumerable<Majorsilence.Vpn.Poco.Users> UserList { get; private set; }
+}

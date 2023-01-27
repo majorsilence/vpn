@@ -1,280 +1,328 @@
 ﻿/* Template by freewebsitetemplates.com */
 body {
-	font-family: Arial, Helvetica, sans-serif;
-	margin:0;
-	padding: 0;	
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 
 #header {
-	margin:0 auto;
-	padding: 0;	
-	overflow: hidden;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
 }
+
 #header #logo {
-	float: left;
-	height: 144px;
-	width: 355px;
-}	
+    float: left;
+    height: 144px;
+    width: 355px;
+}
+
 #header #logo img {
-	border: 0;
+    border: 0;
 }
 
 
 #body .header div {
-	margin: 0 auto;
-	padding: 0;
+    margin: 0 auto;
+    padding: 0;
 }
+
 #body .header div div {
-	background: none;	
-	margin: 0;
-	padding: 0 0 0 13px;
-	height: 200px;
+    background: none;
+    margin: 0;
+    padding: 0 0 0 13px;
+    height: 200px;
 }
+
 #body .header div h3 {
-	color: #2a4f5e;	
-	font-size: 20px;
-	line-height: 30px;
-	margin: 18px 0 0 0;
-	padding: 0;
-	text-shadow: 1px 1px 1px #fff;
+    color: #2a4f5e;
+    font-size: 20px;
+    line-height: 30px;
+    margin: 18px 0 0 0;
+    padding: 0;
+    text-shadow: 1px 1px 1px #fff;
 }
+
 #body .header div h3 span {
-	display: block;	
-	font-size: 25px;
+    display: block;
+    font-size: 25px;
 }
+
 #body .header div h3 a {
-	color: #2a4f5e;
-	text-decoration: none;	
+    color: #2a4f5e;
+    text-decoration: none;
 }
+
 #body .header div h3 a:hover {
-	color: #507685;	
+    color: #507685;
 }
+
 #body .header div p {
-	color: #507685;
-	font-size: 14px;
-	line-height: 24px;
-	margin: 12px 0 6px 0;
-	padding: 0;	
-	text-shadow: 1px 1px 1px #fff;
+    color: #507685;
+    font-size: 14px;
+    line-height: 24px;
+    margin: 12px 0 6px 0;
+    padding: 0;
+    text-shadow: 1px 1px 1px #fff;
 }
+
 #body .header div p a {
-	color: #507685;	
+    color: #507685;
 }
+
 #body .header div p a:hover {
-	color: #2a4f5e;	
+    color: #2a4f5e;
 }
+
 #body .header ul {
-	overflow: hidden;
-	margin: 0;
-	padding: 49px 0 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 49px 0 0;
 }
+
 #body .header ul li {
-	float: left;	
-	list-style: none;
-	padding: 0 5px;
+    float: left;
+    list-style: none;
+    padding: 0 5px;
 }
+
 #body .body {
-	border: 1px solid #e0e0e0;
-	margin: 0 auto 34px auto;
-	overflow: hidden;
-	padding: 0 2px;
-}	
-#body .body div {
-	float: left;	
+    border: 1px solid #e0e0e0;
+    margin: 0 auto 34px auto;
+    overflow: hidden;
+    padding: 0 2px;
 }
+
+#body .body div {
+    float: left;
+}
+
 #body .body .section {
-	background: url(/assets/images/bg-section.gif) repeat-x top left;
-	height: 193px;
-	margin: 0;
-	padding: 35px 0 0 40px;
+    background: url(/assets/images/bg-section.gif) repeat-x top left;
+    height: 193px;
+    margin: 0;
+    padding: 35px 0 0 40px;
 
 }
+
 #body .body .section img {
-	display: block;
+    display: block;
 }
+
 #body .body .section a {
-	color: #2a4f5e;
-	display: block;
-	font-size: 14px;
-	font-weight: bold;
-	height: 145px;
-	text-align: center;
-	text-decoration: none;
-	text-transform: uppercase;
-	width: 145px;
-}	
+    color: #2a4f5e;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    height: 145px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 145px;
+}
+
 #body .body .section a:hover {
-	color: #507685;	
+    color: #507685;
 }
+
 #body .body .section img {
-	border: 0;	
+    border: 0;
 }
+
 #body .body .article {
 
-	overflow: hidden;
-	padding: 19px 16px;
+    overflow: hidden;
+    padding: 19px 16px;
 }
+
 #body .body .article img {
-	border: 0;
-	float: left;
-	padding: 0 10px 0 0;
-}	
+    border: 0;
+    float: left;
+    padding: 0 10px 0 0;
+}
+
 #body .body .article h4 {
-	color: #2a4f5e;
-	font-size: 15px;
-	font-weight: bold;
-	margin: 12px 0;
-	padding: 0;	
+    color: #2a4f5e;
+    font-size: 15px;
+    font-weight: bold;
+    margin: 12px 0;
+    padding: 0;
 }
+
 #body .body .article h4 a {
-	color: #2a4f5e;
-	text-decoration: none;	
+    color: #2a4f5e;
+    text-decoration: none;
 }
+
 #body .body .article h4 a:hover {
-	color: #507685;	
+    color: #507685;
 }
+
 #body .body .article p {
-	color: #2a4f5e;
-	font-size: 14px;
-	line-height: 22px;
-	margin: 0;
-	padding: 0;	
+    color: #2a4f5e;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 0;
+    padding: 0;
 }
+
 #body .body .article p a {
-	color: #2a4f5e;	
+    color: #2a4f5e;
 }
+
 #body .body .article p a:hover {
-	color: #346b84;	
+    color: #346b84;
 }
 
 #body .contact,
 #body .about,
 #body .services,
 #body .blog {
-	margin: 0 auto;
-	padding: 25px 10px 50px 10px;	
-	width: 940px;
+    margin: 0 auto;
+    padding: 25px 10px 50px 10px;
+    width: 940px;
 }
+
 #body h1 {
-	color: #2a4f5e;
-	font-size: 27px;
-	font-weight: bold;
-	height: 74px;
-	line-height: 74px;
-	margin: 0;
-	padding: 0;	
-	text-indent: 10px;
-	text-transform: uppercase;	
+    color: #2a4f5e;
+    font-size: 27px;
+    font-weight: bold;
+    height: 74px;
+    line-height: 74px;
+    margin: 0;
+    padding: 0;
+    text-indent: 10px;
+    text-transform: uppercase;
 }
 
 #body .about div {
-	padding: 50px 0 0 0;	
+    padding: 50px 0 0 0;
 }
+
 #body .about h2 {
-	color: #2a4f5e;
-	font-size: 16px;
-	font-weight: bold;
-	margin: 0;
-	padding: 0;	
-	text-transform: uppercase;
+    color: #2a4f5e;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
 }
+
 #body .about p {
-	color: #5d5d5d;
-	font-size: 14px;
-	line-height: 24px;
-	margin: 10px 0 0;
-	padding: 0;	
-	text-align: justify;
+    color: #5d5d5d;
+    font-size: 14px;
+    line-height: 24px;
+    margin: 10px 0 0;
+    padding: 0;
+    text-align: justify;
 }
+
 #body .about p a {
-	color: #5d5d5d;
+    color: #5d5d5d;
 }
+
 #body .about p a:hover {
-	color: #2a4f5e;	
+    color: #2a4f5e;
 }
+
 #body .services div {
-	overflow: hidden;	
-	margin: 0;
-	padding: 40px 0 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 40px 0 0;
 }
+
 #body .services h2 {
-	color: #2a4f5e;
-	font-size: 16px;
-	font-weight: bold;
-	line-height: 24px;
-	margin: 0;
-	padding: 0;
-	text-transform: uppercase;
+    color: #2a4f5e;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 24px;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
 }
+
 #body .services h2 a {
-	color: #2a4f5e;	
+    color: #2a4f5e;
 }
+
 #body .services h2 a:hover {
-	color: #507685;	
+    color: #507685;
 }
+
 #body .services h3 {
-	color: #2a4f5e;
-	font-size: 14px;
-	font-weight: bold;
-	line-height: 24px;
-	margin: 15px 0 0;
-	padding: 0 30px 0 0;
-	text-transform: uppercase;	
+    color: #2a4f5e;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 24px;
+    margin: 15px 0 0;
+    padding: 0 30px 0 0;
+    text-transform: uppercase;
 }
+
 #body .services h3 a {
-	color: #2a4f5e;	
+    color: #2a4f5e;
 }
+
 #body .services h3 a:hover {
-	color: #507685;	
+    color: #507685;
 }
+
 #body .services h4 {
-	color: #2a4f5e;
-	font-size: 16px;
-	font-weight: normal;
-	line-height: 24px;
-	margin: 0;
-	padding: 0;
-	text-transform: uppercase;	
+    color: #2a4f5e;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 24px;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
 }
+
 #body .services p {
-	color: #5d5d5d;
-	font-size: 14px;	
-	line-height: 24px;
+    color: #5d5d5d;
+    font-size: 14px;
+    line-height: 24px;
 }
+
 #body .services p a {
-	color: #5d5d5d;	
+    color: #5d5d5d;
 }
+
 #body .services p a:hover {
-	color: #2a4f5e;	
+    color: #2a4f5e;
 }
+
 #body .services div ul {
-	float: left;
-	margin: 0;
-	padding: 20px 0 0;
-	width: 312px;	
+    float: left;
+    margin: 0;
+    padding: 20px 0 0;
+    width: 312px;
 }
+
 #body .services div ul li {
-	background: url(/assets/images/bullets.gif) no-repeat center left;
-	color: #5d5d5d;
-	font-size: 14px;
-	list-style: none;
-	margin: 0;
-	padding: 5px 0 5px 12px;	
-	text-align: left;
+    background: url(/assets/images/bullets.gif) no-repeat center left;
+    color: #5d5d5d;
+    font-size: 14px;
+    list-style: none;
+    margin: 0;
+    padding: 5px 0 5px 12px;
+    text-align: left;
 }
+
 #body .services div div {
-	overflow: hidden;	
-	margin: 0;
-	padding: 0 0 5px 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0 0 5px 0;
 }
+
 #body .services div div img {
-	float: left;	
-	padding: 0 10px 0 0;
+    float: left;
+    padding: 0 10px 0 0;
 }
+
 #body .services div div p {
-	padding: 0 30px 0 0;
-	text-align: justify;	
+    padding: 0 30px 0 0;
+    text-align: justify;
 }
 
 

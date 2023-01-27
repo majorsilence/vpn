@@ -3,7 +3,7 @@
 Tested with Ubuntu 14.04
 
 When logged into the site download your open vpn certificate from https://majorsilencevpn.com/setup
-by clicking the __Download OpenVPN Certificate__ button.   This will download a file called Certs.zip.
+by clicking the __Download OpenVPN Certificate__ button. This will download a file called Certs.zip.
 Unzip this file.
 
 Next install the ubuntu network manager openvpn plugin.
@@ -20,7 +20,8 @@ sudo apt-get install network-manager-openvpn-gnome
 4. Click __Add__
 5. Select the connection type __Import a saved VPN Configuration...__
 6. Click __Create...__
-7. Browse to the certficate that you unzipped, folder __majorsilencevpn/ubuntu__ and select __majorvpn-network-manager.ovpn__
+7. Browse to the certficate that you unzipped, folder __majorsilencevpn/ubuntu__ and select _
+   _majorvpn-network-manager.ovpn__
 8. Click save
 
 You now have your vpn connection setup.
@@ -31,7 +32,6 @@ You can now connect by
 2. Click __VPN Connections__
 3. Select the vpn you created above
 
-
 ## The Hard Way (if the easy way does not work)
 
 1. Click on network manager
@@ -41,11 +41,10 @@ You can now connect by
 5. Select the connection type __OpenVPN__
 6. Click __Create...__
 
-
 On the VPN tab
 
 1. On the VPN tab fill in the Gateway with the IP of your vpn connection from https://majorsilencevpn.com/setup
-    * For example: 107.170.154.114 
+    * For example: 107.170.154.114
 2. Authention type: __Certificates (TLS)__
 3. Select the __User Certificate__ from your download, something like [majorvpn].crt
 4. Select the __CA Certificate__ from your download, ca.crt
@@ -56,13 +55,11 @@ On the VPN tab
 9. Click __OK__
 10. Click __Save...__
 
-
 You can now connect by
 
 1. Click on network manager
 2. Click __VPN Connections__
 3. Select the vpn you created above
-
 
 # Screenshot tutorial
 

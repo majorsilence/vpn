@@ -1,10 +1,8 @@
-
 var Setup;
 (function (Setup) {
     function Init(isLoggedIn, isActiveAccount) {
-    
-    	
-    
+
+
         $("input[type=submit][id='ButtonChangeVpnServer']").button().click(function (event) {
             event.preventDefault();
 
@@ -17,43 +15,39 @@ var Setup;
             }
         });
 
-		ConfigAccountDivs(isLoggedIn, isActiveAccount);
+        ConfigAccountDivs(isLoggedIn, isActiveAccount);
 
     }
+
     Setup.Init = Init;
 
-	function ConfigAccountDivs(isLoggedIn, isActiveAccount)
-	{
-	
-		if(!isLoggedIn)
-		{
-			$("#vpnaccountcreation").hide();
-			return;
-		}
-	
-	
-		if(isActiveAccount)
-		{
-			$("#inactiveaccount").hide();		
-		}
-		else
-		{
-			$("#activeaccount").hide();
-		}
-	
-	}
+    function ConfigAccountDivs(isLoggedIn, isActiveAccount) {
+
+        if (!isLoggedIn) {
+            $("#vpnaccountcreation").hide();
+            return;
+        }
+
+
+        if (isActiveAccount) {
+            $("#inactiveaccount").hide();
+        } else {
+            $("#activeaccount").hide();
+        }
+
+    }
 
     function SaveUserCert(password) {
 
         var serverid = $('#SelectVpnServer option:selected').val();
         var serverName = $('#SelectVpnServer option:selected').text();
 
-    
+
         Helpers.ShowLoading();
         $.ajax({
             type: "POST",
             url: "/Generic/SaveUserVpnServer",
-            data: { vpnId: serverid, UserVpnPassword: encodeURI(password) },
+            data: {vpnId: serverid, UserVpnPassword: encodeURI(password)},
             success: function (result) {
                 Helpers.HideLoading();
                 if (result) {
@@ -62,11 +56,11 @@ var Setup;
 
                     Helpers.ShowMessage("VPN Server Changed", "Vpn Saved", Helpers.MessageType.Information);
                     $("#currentvpnserver").html(serverName);
-                    
+
                     var json = JSON.parse(result);
-                    
+
                     $("#currentvpnserverip").html(json.PptpIP);
-					$("#currentvpnserverpassword").html(json.PptpPassword);
+                    $("#currentvpnserverpassword").html(json.PptpPassword);
 
 
                 }

@@ -1,25 +1,23 @@
 using System;
 
-namespace SiteTests
+namespace SiteTests;
+
+internal class MainClass
 {
-    class MainClass
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            //var ssh = new Tests.SshTest();
-            //ssh.CreateCert();
+        //var ssh = new Tests.SshTest();
+        //ssh.CreateCert();
 
-            //var daily = new Tests.DailyProcessingTest();
-            //daily.Start();
+        //var daily = new Tests.DailyProcessingTest();
+        //daily.Start();
 
-            //var ssh = new Tests.PPTPServerTest();
-            //ssh.CreatePPT();
+        //var ssh = new Tests.PPTPServerTest();
+        //ssh.CreatePPT();
 
 
-            var test = new Setup();
-            test.BringUp();
-            test.TearDown();
-
-        }
+        var test = new Setup();
+        test.BringUp();
+        test.TearDown();
     }
 }

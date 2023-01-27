@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Majorsilence.Vpn.Logic
+namespace Majorsilence.Vpn.Logic;
+
+internal interface ICommand
 {
-    interface ICommand
-    {
-        void Execute();
-    }
+    void Execute();
 }

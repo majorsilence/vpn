@@ -1,7 +1,8 @@
 var NewUser;
 (function (NewUser) {
-	var fromFrontPage = false;
+    var fromFrontPage = false;
     var isLiveSite = false;
+
     function Init(liveSite, fromFrontPage) {
         $("input[type=submit][id='createuser']").button().click(function (event) {
             event.preventDefault();
@@ -15,16 +16,17 @@ var NewUser;
         }
 
         NewUser.fromFrontPage = false;
-       	if (fromFrontPage == true)
-       	{
-       		NewUser.fromFrontPage = true;
-       	}
+        if (fromFrontPage == true) {
+            NewUser.fromFrontPage = true;
+        }
     }
+
     NewUser.Init = Init;
 
     function CreateNewUser() {
         var firstname_val = $("#fname").val();
-        var lastname_val = $("#lname").val();;
+        var lastname_val = $("#lname").val();
+        ;
         var password_val = $("#password").val();
         var confirmPassword = $("#cpassword").val();
         var email_val = $("#email").val();
@@ -32,15 +34,14 @@ var NewUser;
         var betakey_val = $("#betaKeyText").val();
 
 
-		if(NewUser.fromFrontPage)
-		{
-			// front page only requires a password and email address.
-			// Fill in some temp data until users activate with a credit card
-			confirmPassword = password_val;
-			confirmEmail = email_val;
-			firstname_val = "ಥ_ಥ";
-			lastname_val = "ಥ_ಥ";
-		}
+        if (NewUser.fromFrontPage) {
+            // front page only requires a password and email address.
+            // Fill in some temp data until users activate with a credit card
+            confirmPassword = password_val;
+            confirmEmail = email_val;
+            firstname_val = "ಥ_ಥ";
+            lastname_val = "ಥ_ಥ";
+        }
 
 
         if (email_val != confirmEmail) {
@@ -52,8 +53,8 @@ var NewUser;
             Helpers.ShowMessage("Password and confirmation password does not match.", "Password", Helpers.MessageType.Information);
             return;
         }
-        
-        
+
+
         if ((betakey_val == "") && (NewUser.isLiveSite == false)) {
             Helpers.ShowMessage("A beta key must be entered", "Beta Key", Helpers.MessageType.Information);
             return;
@@ -79,8 +80,7 @@ var NewUser;
                 Helpers.HideLoading();
                 if (result.status = 400) {
                     Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
-                }
-                else {
+                } else {
                     Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error);
                 }
             },
@@ -88,6 +88,7 @@ var NewUser;
         });
 
     }
+
     NewUser.CreateNewUser = CreateNewUser;
 })(NewUser || (NewUser = {}));
 //# sourceMappingURL=newuser.js.map

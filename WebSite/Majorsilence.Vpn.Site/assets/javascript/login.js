@@ -10,20 +10,18 @@ var Login;
             Login.LogmeIn();
         });
     }
+
     Login.Init = Init;
 
     function LogmeIn() {
-        var email = ""; 
+        var email = "";
         var password_val = "";
-        if (location.pathname=="/login")
-        {
-        	email=$("#email_login2").val();
-        	password_val=$("#password_login2").val();
-        }
-        else
-        {
-        	email=$("#email_login").val();
-        	password_val=$("#password_login").val();
+        if (location.pathname == "/login") {
+            email = $("#email_login2").val();
+            password_val = $("#password_login2").val();
+        } else {
+            email = $("#email_login").val();
+            password_val = $("#password_login").val();
         }
 
         if (email == "") {
@@ -46,17 +44,16 @@ var Login;
             success: function (result) {
                 if (result.status == 250) {
                     document.location.href = "/account#billing";
-                }
-                else {
+                } else {
                     document.location.href = "/setup";
                 }
             },
             error: function (result) {
                 Helpers.HideLoading();
                 if (result.status == 403) {
-                    Helpers.ShowMessage("Incorrect username or password entered.  Try again or <b><a href=\"/resetpassword?email=" + encodeURI(email) + 
-                    	"\">Reset Password</a></b>",
-                     "Login Error", Helpers.MessageType.Error /* Error */);
+                    Helpers.ShowMessage("Incorrect username or password entered.  Try again or <b><a href=\"/resetpassword?email=" + encodeURI(email) +
+                        "\">Reset Password</a></b>",
+                        "Login Error", Helpers.MessageType.Error /* Error */);
                 } else {
                     Helpers.ShowMessage(result.responseText, "Unknown Error", Helpers.MessageType.Error /* Error */);
                 }
@@ -64,6 +61,7 @@ var Login;
             dataType: "html"
         });
     }
+
     Login.LogmeIn = LogmeIn;
 })(Login || (Login = {}));
 //# sourceMappingURL=login.js.map

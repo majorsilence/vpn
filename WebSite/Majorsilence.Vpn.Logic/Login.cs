@@ -6,98 +6,88 @@ using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
 
-namespace Majorsilence.Vpn.Logic
+namespace Majorsilence.Vpn.Logic;
+
+public class Login
 {
-    public class Login
+    private Login()
     {
+    }
 
-        private Login()
+    public string Username { get; private set; }
+
+    public string Password { get; private set; }
+
+    public int UserId { get; private set; }
+
+    public bool LoggedIn { get; private set; }
+
+    public bool IsAdmin { get; private set; }
+
+    public Login(string username, string password)
+    {
+        Username = username;
+        Password = password;
+    }
+
+
+    private string RetrieveUserSalt()
+    {
+        var salt = "";
+        using (var db = InitializeSettings.DbFactory)
         {
+            var x = db.Query<Poco.Users>("SELECT * FROM Users WHERE Email=@Email",
+                new { Email = Username });
+            if (x.Count() != 1)
+                throw new Exceptions.InvalidDataException(string.Format("User account ({0}) does not exist", Username));
+            else if (x.Count() == 1) salt = x.First().Salt;
         }
 
-        public string Username { get; private set; }
+        return salt;
+    }
 
-        public string Password{ get; private set; }
+    public void Execute()
+    {
+        LoggedIn = false;
+        IsAdmin = false;
+        UserId = -1;
 
-        public int UserId{ get; private set; }
-
-        public bool LoggedIn { get; private set; }
-
-        public bool IsAdmin { get; private set; }
-
-        public Login(string username, string password)
+        string salt;
+        try
         {
-            this.Username = username;
-            this.Password = password;
+            salt = RetrieveUserSalt();
+        }
+        catch (Exceptions.InvalidDataException ex)
+        {
+            Helpers.Logging.Log(ex);
+            return;
         }
 
+        // Create testing database
 
-        private string RetrieveUserSalt()
+        var saltedpassword = Helpers.Hashes.GetSHA512StringHash(Password, salt);
+
+        using (var db = InitializeSettings.DbFactory)
         {
-            string salt = "";
-            using (IDbConnection db = InitializeSettings.DbFactory)
+            db.Open();
+            var x = db.Query<Poco.Users>("SELECT * FROM Users WHERE Email=@Email AND Password = @Password",
+                new { Email = Username, Password = saltedpassword });
+            if (x.Count() == 0)
             {
-                var x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email",
-                            new {Email = Username});
-                if (x.Count() != 1)
-                {
-                    throw new Exceptions.InvalidDataException(string.Format("User account ({0}) does not exist", Username));
-                }
-                else if (x.Count() == 1)
-                {
-                    salt = x.First().Salt;
-                }
-
-            }
-            return salt;
-        }
-
-        public void Execute()
-        {
-            LoggedIn = false;
-            IsAdmin = false;
-            UserId = -1;
-
-            string salt;
-            try
-            {
-                salt = RetrieveUserSalt();
-            }
-            catch (Exceptions.InvalidDataException ex)
-            {
-                Majorsilence.Vpn.Logic.Helpers.Logging.Log(ex);
                 return;
             }
-
-            // Create testing database
-           
-            var saltedpassword = Helpers.Hashes.GetSHA512StringHash(Password, salt);
-
-            using (var db = InitializeSettings.DbFactory)
+            else if (x.Count() == 1)
             {
-                db.Open();
-                var x = db.Query<Majorsilence.Vpn.Poco.Users>("SELECT * FROM Users WHERE Email=@Email AND Password = @Password", 
-                            new {Email = Username, Password = saltedpassword});
-                if (x.Count() == 0)
-                {
-                    return;
-                }
-                else if (x.Count() == 1)
-                {
-                    LoggedIn = true;
-                    UserId = x.First().Id;
-                    IsAdmin = x.First().Admin;
-                    return;
-                }
-                else
-                {
-                    throw new Exceptions.InvalidDataException(
-                        string.Format("Something is wrong.  Multple users were returned with this login: {0}.", Username));
-                }
+                LoggedIn = true;
+                UserId = x.First().Id;
+                IsAdmin = x.First().Admin;
+                return;
+            }
+            else
+            {
+                throw new Exceptions.InvalidDataException(
+                    string.Format("Something is wrong.  Multple users were returned with this login: {0}.", Username));
             }
         }
-
-
-
     }
 }

@@ -6,5 +6,5 @@
 4. Fill in IP address that you choose in your account setup on the site
 5. For dns fill in 8.8.8.8 or 8.8.4.4
     * Those dns entires direct your phone to use google
-	* Feel free to use any dns server
+    * Feel free to use any dns server
 6. Connect and start browsing the web with your data being sent through the vpn

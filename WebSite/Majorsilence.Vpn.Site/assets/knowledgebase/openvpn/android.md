@@ -1,8 +1,9 @@
-
 * Download openvpn certs from https://majorsilencevpn.com/setup OpenVPN section
     * Note this file is in a zip file and must be extracted first
-    * If you do not have an app that can extract files install [ES File Explorer](https://play.google.com/store/apps/details?id=com.estrongs.android.pop&hl=en)
-* Install [OpenVPN Connect](https://play.google.com/store/apps/details?id=net.openvpn.openvpn&hl=en) on your android device
+    * If you do not have an app that can extract files
+      install [ES File Explorer](https://play.google.com/store/apps/details?id=com.estrongs.android.pop&hl=en)
+* Install [OpenVPN Connect](https://play.google.com/store/apps/details?id=net.openvpn.openvpn&hl=en) on your android
+  device
 * Open __OpenVPN Connect__
 * Click the menu button
 * Select __Import__

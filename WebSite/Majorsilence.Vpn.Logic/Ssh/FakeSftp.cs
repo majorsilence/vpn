@@ -1,28 +1,23 @@
 ﻿using System;
 
-namespace Majorsilence.Vpn.Logic.Ssh
+namespace Majorsilence.Vpn.Logic.Ssh;
+
+public class FakeSftp : ISftp
 {
-    public class FakeSftp : ISftp
+    public FakeSftp()
     {
-        public FakeSftp()
-        {
-        }
+    }
 
 
-        public void Login(string host)
-        {
-        }
+    public void Login(string host)
+    {
+    }
 
-        public void DownloadFile(string path, System.IO.Stream output)
-        {
-        }
+    public void DownloadFile(string path, System.IO.Stream output)
+    {
+    }
 
-        public void Dispose()
-        {
-
-        }
-
-
+    public void Dispose()
+    {
     }
 }
-

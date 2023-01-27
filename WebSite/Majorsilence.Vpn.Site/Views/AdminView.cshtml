@@ -1,16 +1,15 @@
 ﻿@model Majorsilence.Vpn.Site.Models.CustomViewLayout
 @{
     Layout = "~/Views/Vpn.cshtml";
-    
-	if (Model.IsAdmin == false)
-	{
-		this.ViewContext.HttpContext.Response.Redirect("/noaccess/", false);
-		return;
-	}
+
+    if (Model.IsAdmin == false)
+    {
+        ViewContext.HttpContext.Response.Redirect("/noaccess/", false);
+        return;
+    }
 }
-	<br />
+<br/>
 
 <div class="container">
-	@RenderBody()
+    @RenderBody()
 </div>
-

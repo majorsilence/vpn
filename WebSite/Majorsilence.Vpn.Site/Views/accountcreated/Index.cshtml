@@ -4,21 +4,20 @@
 }
 
 @{
+    var status = ViewData["status"]?.ToString();
+    if (status == "ok")
+    {
+        <h1>Account Created</h1>
 
-	string status = ViewData["status"]?.ToString();
-	if (status == "ok")
-	{
-		<h1>Account Created</h1>
-		
-	   <p>Your account as been created.  You may now sign in
-	   and start using your new vpn accounts.
-	   </p> 
-	}
-	else
-	{
-		<h1>Account Creation Failed</h1>
-	     <p>There was an error creating your account.  Please try again.</p> 
-	}
-	
+        <p>
+            Your account as been created. You may now sign in
+            and start using your new vpn accounts.
+        </p>
+    }
+    else
+    {
+        <h1>Account Creation Failed</h1>
+        <p>There was an error creating your account. Please try again.</p>
+    }
+
 }
-

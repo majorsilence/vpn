@@ -15,7 +15,6 @@ You can now connect by
     * Connect
 3. You are now connected to the vpn
 
- 
 # Screenshot tutorial
 
 ![OpenVPN Download Page](/assets/knowledgebase/openvpn/windows-networking/0001-openvpn.png)

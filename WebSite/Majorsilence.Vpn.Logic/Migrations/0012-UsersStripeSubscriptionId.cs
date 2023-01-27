@@ -2,29 +2,24 @@
 using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
-namespace Majorsilence.Vpn.Logic.Migrations
+namespace Majorsilence.Vpn.Logic.Migrations;
+
+[Migration(12, TransactionBehavior.Default)]
+public class UsersStripeSubscriptionId : Migration
 {
-    [Migration(12, TransactionBehavior.Default)]
-    public class UsersStripeSubscriptionId : Migration
+    public UsersStripeSubscriptionId()
     {
-        public UsersStripeSubscriptionId()
-        {
-        }
+    }
 
-        public override void Up()
-        {
+    public override void Up()
+    {
+        Alter.Table("Users").AddColumn("StripeSubscriptionId").AsString(255).Nullable();
+        Update.Table("Users").Set(new { StripeSubscriptionId = "" }).AllRows();
+        Alter.Table("Users").AlterColumn("StripeSubscriptionId").AsString(255).NotNullable();
+    }
 
-            Alter.Table("Users").AddColumn("StripeSubscriptionId").AsString(255).Nullable();
-            Update.Table("Users").Set(new { StripeSubscriptionId = ""}).AllRows();
-            Alter.Table("Users").AlterColumn("StripeSubscriptionId").AsString(255).NotNullable();
-
-        }
-
-        public override void Down()
-        {
-            Delete.Column("StripeSubscriptionId").FromTable("Users");
-        }
-
+    public override void Down()
+    {
+        Delete.Column("StripeSubscriptionId").FromTable("Users");
     }
 }
-

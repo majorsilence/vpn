@@ -5,7 +5,7 @@
 5. Select the connection type __Point-to-Point Tunneling Protocol (PPTP)__
 6. Click __Create__
 7. On the VPN tab fill in the Gateway with the IP of your vpn connection from https://majorsilencevpn.com/setup
-    * For example: 107.170.154.114 
+    * For example: 107.170.154.114
 8. Fill in your __User name__
 9. Fill in your __Password__
 10. Click __Advanced__
@@ -18,13 +18,11 @@
     * __Use TCP header compression__
 11. Click __OK__
 
-
 You can now connect by
 
 1. Click on network manager
 2. Click __VPN Connections__
 3. Select the vpn you created above
-
 
 # Screenshot tutorial
 

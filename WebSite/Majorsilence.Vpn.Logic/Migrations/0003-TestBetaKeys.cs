@@ -2,26 +2,22 @@
 using FluentMigrator;
 using FluentMigrator.Runner.Extensions;
 
-namespace Majorsilence.Vpn.Logic.Migrations
+namespace Majorsilence.Vpn.Logic.Migrations;
+
+[Migration(3, TransactionBehavior.Default)]
+public class TestBetaKeys : Migration
 {
-    [Migration(3, TransactionBehavior.Default)]
-    public class TestBetaKeys :Migration
+    public TestBetaKeys()
     {
-        public TestBetaKeys()
-        {
-        }
+    }
 
-        public override void Up()
-        {
-            Insert.IntoTable("BetaKeys").Row(new {Code="AbC56#", IsUsed=false});
-            Insert.IntoTable("BetaKeys").Row(new {Code="AbC56#2", IsUsed=false});
+    public override void Up()
+    {
+        Insert.IntoTable("BetaKeys").Row(new { Code = "AbC56#", IsUsed = false });
+        Insert.IntoTable("BetaKeys").Row(new { Code = "AbC56#2", IsUsed = false });
+    }
 
-        }
-
-        public override void Down()
-        {
-
-        }
+    public override void Down()
+    {
     }
 }
-
