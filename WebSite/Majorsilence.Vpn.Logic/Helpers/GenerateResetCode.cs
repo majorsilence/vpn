@@ -5,10 +5,15 @@ namespace Majorsilence.Vpn.Logic.Helpers;
 
 public class GenerateResetCode
 {
-    private static string key = "PFzR6eSE56Tl7WC12ODE2oc8FSlq0O";
-
+    private readonly IEncryptionKeysSettings _keys;
+    public GenerateResetCode(IEncryptionKeysSettings keys)
+    {
+        _keys = keys;
+    }
+    
     public string GeneratePasswordResetCode(string email, int maxSize)
     {
+        string key = _keys.Key1;
         var code = "";
         var chars = new char[62];
         key = email + key;

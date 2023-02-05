@@ -5,6 +5,7 @@ using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
@@ -12,11 +13,14 @@ public class SupportController : Controller
 {
     private readonly IEmail email;
     private readonly ISessionVariables sessionInstance;
+    private readonly ILogger<SupportController> _logger;
 
-    public SupportController(IEmail email, ISessionVariables sessionInstance)
+    public SupportController(IEmail email, ISessionVariables sessionInstance,
+        ILogger<SupportController> logger)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
+        _logger = logger;
     }
 
     public ActionResult Index()
@@ -49,12 +53,12 @@ public class SupportController : Controller
         }
         catch (InvalidDataException ide)
         {
-            Logging.Log(ide);
+            _logger.LogError(ide, "InvalidDataException");
             HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "Exception");
             HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         }
     }

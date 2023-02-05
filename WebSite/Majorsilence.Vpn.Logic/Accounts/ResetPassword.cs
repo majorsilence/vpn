@@ -13,15 +13,16 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 public class ResetPassword
 {
     private readonly IEmail email;
-    private readonly GenerateResetCode generateCode = new();
+    private readonly GenerateResetCode generateCode;
 
     private ResetPassword()
     {
     }
 
-    public ResetPassword(IEmail email)
+    public ResetPassword(IEmail email, IEncryptionKeysSettings keys)
     {
         this.email = email;
+        generateCode = new GenerateResetCode(keys);
     }
 
     public bool validateCode(string resetCode, string password)

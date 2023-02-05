@@ -1,18 +1,90 @@
+using System;
+using System.Security.Policy;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Email;
+using Majorsilence.Vpn.Logic.Helpers;
+using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Site;
+using Majorsilence.Vpn.Site.Helpers;
+using Majorsilence.Vpn.Site.Models;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
+using VpnSite.Models;
 
-namespace Majorsilence.Vpn.Site;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
 {
-    public static void Main(string[] args)
-    {
-        CreateHostBuilder(args).Build().Run();
-    }
+    options.Cookie.Name = ".majorsilence.vpn.site.session";
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
-    public static IHostBuilder CreateHostBuilder(string[] args)
-    {
-        return Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-    }
+builder.Services.AddLocalization(options => options.ResourcesPath = "App_GlobalResources");
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddTransient(_ =>
+    new MySqlConnection(builder.Configuration["ConnectionStrings:LocalMySqlServer"]));
+
+builder.Services.AddScoped<Majorsilence.Vpn.Site.Models.Settings>(i =>
+{
+    return builder.Configuration.GetSection("Settings").Get<Majorsilence.Vpn.Site.Models.Settings>();
+});
+builder.Services.AddScoped<IEmail>(i =>
+{
+    var s = i.GetService<Majorsilence.Vpn.Site.Models.Settings>().Smtp;
+    return new LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
+});
+builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Site.Models.Settings>().Paypal);
+builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Site.Models.Settings>().EncryptionKeys);
+builder.Services.AddScoped<ISessionVariables, SessionVariables>();
+
+builder.Services.AddMvc()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+var app = builder.Build();
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+app.UseSession();
+
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapRazorPages();
+    endpoints.MapControllerRoute(
+        "areas",
+        "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+    endpoints.MapControllerRoute(
+        "default",
+        "{controller=Home}/{action=Index}/{id?}");
+});
+
+builder.Services.AddHostedService<BackgroundWorker>();
+app.Run();

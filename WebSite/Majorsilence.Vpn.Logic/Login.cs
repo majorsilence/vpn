@@ -3,19 +3,23 @@ using Dapper;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
 
 namespace Majorsilence.Vpn.Logic;
 
 public class Login
 {
+    private ILogger _logger;
     private Login()
     {
     }
 
-    public Login(string username, string password)
+    public Login(string username, string password,
+        ILogger logger)
     {
         Username = username;
         Password = password;
+        _logger = logger;
     }
 
     public string Username { get; }
@@ -57,7 +61,7 @@ public class Login
         }
         catch (InvalidDataException ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "Failed to retrieve user salt.");
             return;
         }
 

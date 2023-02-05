@@ -16,6 +16,7 @@ using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using SiteInfo = Majorsilence.Vpn.Poco.SiteInfo;
 
@@ -27,18 +28,21 @@ public class InitializeSettings : ICommand
     private static string strConnectionSessions;
     private Timer dailyProcessingTimer;
     private readonly bool isLiveSite;
-
+    private readonly ILogger _logger;
+    
     private InitializeSettings()
     {
     }
 
-    public InitializeSettings(string strVpnConnection, string sessionsConnection, IEmail email, bool isLiveSite)
+    public InitializeSettings(string strVpnConnection, string sessionsConnection, IEmail email, bool isLiveSite,
+        ILogger logger)
     {
         strConnectionVpn = strVpnConnection;
         strConnectionSessions = sessionsConnection;
 
         Email = email;
         this.isLiveSite = isLiveSite;
+        _logger = logger;
     }
 
     public static IEmail Email { get; private set; }
@@ -62,6 +66,7 @@ public class InitializeSettings : ICommand
 
     private void InitializeTimers()
     {
+        // TODO: replace with worker service
         const int dailyProcessInSeconds = 1000 * 60 * 60 * 2; // every 2 hours
         dailyProcessingTimer = new Timer(dailyProcessInSeconds);
         dailyProcessingTimer.Elapsed += DailyProcessing;
@@ -72,12 +77,12 @@ public class InitializeSettings : ICommand
     {
         try
         {
-            var proc = new DailyProcessing();
+            var proc = new DailyProcessing(_logger);
             proc.Execute();
         }
         catch (Exception ex)
         {
-            Logging.Log(ex, true);
+            _logger.LogError(ex, "Failed running DailyProcessing");
         }
     }
 

@@ -4,19 +4,22 @@ using Dapper;
 using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
 
 namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class UserInfo
 {
     private readonly Users details;
+    private readonly ILogger _logger;
 
     private UserInfo()
     {
     }
 
-    public UserInfo(int userid)
+    public UserInfo(int userid, ILogger logger)
     {
+        _logger = logger;
         using (var cn = InitializeSettings.DbFactory)
         {
             cn.Open();
@@ -58,7 +61,7 @@ public class UserInfo
         if (newPassword != confirmNewPassword)
             throw new InvalidDataException("New password and confirm new password do not match.");
 
-        var login = new Login(details.Email, oldPassword);
+        var login = new Login(details.Email, oldPassword, _logger);
 
         login.Execute();
 

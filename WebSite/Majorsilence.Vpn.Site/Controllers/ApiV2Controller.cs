@@ -11,6 +11,8 @@ using Majorsilence.Vpn.Logic.OpenVpn;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -18,10 +20,15 @@ namespace Majorsilence.Vpn.Site.Controllers;
 public class ApiV2Controller : Controller
 {
     private readonly ISessionVariables sessionVars;
-
-    public ApiV2Controller(ISessionVariables sessionInstance)
+    private readonly ILogger<ApiV2Controller> _logger;
+    private readonly IEncryptionKeysSettings _keys;
+    
+    public ApiV2Controller(ISessionVariables sessionInstance, ILogger<ApiV2Controller> logger,
+        IEncryptionKeysSettings keys)
     {
         sessionVars = sessionInstance;
+        _logger = logger;
+        _keys = keys;
     }
 
     public ActionResult Index()
@@ -56,18 +63,18 @@ public class ApiV2Controller : Controller
         string token = context.Request.Headers["VpnAuthToken"];
         var uid = -1;
         int.TryParse(context.Request.Headers["VpnUserId"], out uid);
-        var api = new UserApiTokens();
+        var api = new UserApiTokens(_keys);
         var data = api.Retrieve(uid);
 
         if (data.Token1 != token)
         {
-            Logging.Log("data.Token1 != token", false);
+            _logger.LogWarning("data.Token1 != token");
             return false;
         }
 
         if (data.Token1ExpireTime <= DateTime.UtcNow)
         {
-            Logging.Log("data.Token1ExpireTime <= DateTime.UtcNow", false);
+            _logger.LogWarning("data.Token1ExpireTime <= DateTime.UtcNow");
             return false;
         }
 
@@ -92,7 +99,7 @@ public class ApiV2Controller : Controller
             var creds = ParseAuthHeader(authHeader);
 
 
-            var login = new Login(creds[0], creds[1]);
+            var login = new Login(creds[0], creds[1], _logger);
 
 
             try
@@ -102,7 +109,7 @@ public class ApiV2Controller : Controller
             catch (InvalidDataException ex)
             {
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                Logging.Log(ex);
+                _logger.LogError(ex, "Auth error");
                 return Content("InternalServerError");
             }
 
@@ -119,7 +126,7 @@ public class ApiV2Controller : Controller
             sessionVars.Username = login.Username;
 
 
-            var toks = new UserApiTokens();
+            var toks = new UserApiTokens(_keys);
             var tokData = toks.Retrieve(login.UserId);
 
             var results = new ApiAuthResponse
@@ -139,7 +146,7 @@ public class ApiV2Controller : Controller
         catch (Exception ex)
         {
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            Logging.Log(ex);
+            _logger.LogError(ex, "Auth error");
             return Content("InternalServerError");
         }
     }
@@ -153,14 +160,14 @@ public class ApiV2Controller : Controller
             if (!IsAuthenticateUserWithToken(HttpContext, out userid))
             {
                 Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                Logging.Log("IsAuthenticateUserWithToken is false", false);
+                _logger.LogInformation("IsAuthenticateUserWithToken is false");
                 return Content("Unauthorized");
             }
         }
         catch (Exception ex)
         {
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            Logging.Log(ex);
+            _logger.LogError(ex, "Server lookup");
             return Content("InternalServerError " + ex.Message + ex.StackTrace);
         }
 
@@ -175,7 +182,7 @@ public class ApiV2Controller : Controller
         catch (Exception ex)
         {
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            Logging.Log(ex);
+            _logger.LogError(ex, "Server lookup details");
             return Content("InternalServerError");
         }
     }
@@ -197,14 +204,14 @@ public class ApiV2Controller : Controller
             if (!IsAuthenticateUserWithToken(HttpContext, out userid))
             {
                 Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                Logging.Log("IsAuthenticateUserWithToken is false", false);
+                _logger.LogInformation("IsAuthenticateUserWithToken is false");
                 return Content("Unauthorized");
             }
         }
         catch (Exception ex)
         {
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            Logging.Log(ex);
+            _logger.LogError(ex, "DownloadOpenVpnCert error");
             return Content("InternalServerError " + ex.Message + ex.StackTrace);
         }
 
@@ -217,7 +224,7 @@ public class ApiV2Controller : Controller
         catch (Exception ex)
         {
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            Logging.Log(ex);
+            _logger.LogError(ex, "DownloadOpenVpnCert zipped certs error");
             return Content("InternalServerError");
         }
     }

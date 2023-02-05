@@ -5,16 +5,19 @@ using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
 public class SignupController : Controller
 {
     private readonly IEmail email;
+    private ILogger _logger;
 
-    public SignupController(IEmail email)
+    public SignupController(IEmail email, ILogger logger)
     {
         this.email = email;
+        _logger = logger;
     }
 
     public ActionResult Index()
@@ -47,12 +50,12 @@ public class SignupController : Controller
         }
         catch (InvalidDataException ide)
         {
-            Logging.Log(ide);
+            _logger.LogError(ide, "CreateUser InvalidDataException");
             HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "CreateUser");
             HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         }
     }

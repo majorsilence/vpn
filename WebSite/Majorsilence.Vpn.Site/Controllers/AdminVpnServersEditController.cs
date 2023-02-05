@@ -4,16 +4,21 @@ using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NuGet.Common;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AdminVpnServersEditController : Controller
 {
     private readonly ISessionVariables sessionInstance;
+    private readonly ILogger<AdminVpnServersEditController> _logger;
 
-    public AdminVpnServersEditController(ISessionVariables sessionInstance)
+    public AdminVpnServersEditController(ISessionVariables sessionInstance,
+        ILogger<AdminVpnServersEditController> logger)
     {
         this.sessionInstance = sessionInstance;
+        _logger = logger;
     }
 
     public ActionResult Index(int? id, string address, int? port, string desc,
@@ -55,7 +60,7 @@ public class AdminVpnServersEditController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "AdminVpnServersEditController");
         }
 
         return View(new CustomViewLayout(sessionInstance));

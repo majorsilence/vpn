@@ -9,9 +9,14 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class UserApiTokens
 {
+    private readonly IEncryptionKeysSettings _keys;
+    public UserApiTokens(IEncryptionKeysSettings keys)
+    {
+        _keys = keys;
+    }
     private string GenerateToken()
     {
-        var codes = new GenerateResetCode();
+        var codes = new GenerateResetCode(_keys);
         return codes.GeneratePasswordResetCode(DateTime.Now.ToLongTimeString(), 100);
     }
 

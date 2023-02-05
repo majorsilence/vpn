@@ -12,6 +12,7 @@ using Majorsilence.Vpn.Logic.Ssh;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using InvalidDataException = Majorsilence.Vpn.Logic.Exceptions.InvalidDataException;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -20,11 +21,16 @@ public class GenericController : Controller
 {
     private readonly IEmail email;
     private readonly ISessionVariables sessionInstance;
-
-    public GenericController(IEmail email, ISessionVariables sessionInstance)
+    private ILogger _logger;
+    private IEncryptionKeysSettings _keys;
+    public GenericController(IEmail email, ISessionVariables sessionInstance,
+        ILogger logger,
+        IEncryptionKeysSettings keys)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
+        _logger = logger;
+        _keys = keys;
     }
 
     public IActionResult Index()
@@ -55,7 +61,7 @@ public class GenericController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "SaveUserVpnServer vpnserver");
 
             HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return null;
@@ -68,7 +74,7 @@ public class GenericController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "SaveUserVpnServer pptp");
 
 
             HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -135,7 +141,7 @@ public class GenericController : Controller
     [HttpPost]
     public void LoginValidation(string username, string password)
     {
-        var login = new Login(username, password);
+        var login = new Login(username, password, _logger);
 
         try
         {
@@ -173,7 +179,7 @@ public class GenericController : Controller
     {
         try
         {
-            var resetPSW = new ResetPassword(email);
+            var resetPSW = new ResetPassword(email, _keys);
             resetPSW.sendPasswordLink(username);
         }
         catch (InvalidDataException ide)
@@ -197,7 +203,7 @@ public class GenericController : Controller
                 return;
             }
 
-            var resetPSW = new ResetPassword(email);
+            var resetPSW = new ResetPassword(email, _keys);
             resetPSW.validateCode(code, newpsw);
             HttpContext.Response.StatusCode = 250;
         }
@@ -224,7 +230,7 @@ public class GenericController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex, true);
+            _logger.LogError(ex, "StripeWebhook");
             HttpContext.Response.StatusCode = 500;
         }
     }

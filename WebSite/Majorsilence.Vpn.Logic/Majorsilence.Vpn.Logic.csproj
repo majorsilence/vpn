@@ -1,42 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <ProjectGuid>{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}</ProjectGuid>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <TargetFrameworks>net6.0</TargetFrameworks>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Dapper">
-      <HintPath>..\References\Dapper.dll</HintPath>
-    </Reference>
-    <Reference Include="Dapper.Contrib">
-      <HintPath>..\References\Dapper.Contrib.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
-    <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
-    <PackageReference Include="MySql.Data" Version="8.0.32" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="RestSharp" Version="108.0.3" />
-    <PackageReference Include="SSH.NET" Version="2020.0.2" />
-    <PackageReference Include="Stripe.net" Version="41.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Email\EmailTemplate.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="IDbConnectionExtensions.cs" />
-  </ItemGroup>
+    <PropertyGroup>
+        <ProjectGuid>{35B0D4BC-8E11-4BA8-9DC2-322478C75FD5}</ProjectGuid>
+        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+        <TargetFrameworks>net6.0</TargetFrameworks>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Dapper">
+            <HintPath>..\References\Dapper.dll</HintPath>
+        </Reference>
+        <Reference Include="Dapper.Contrib">
+            <HintPath>..\References\Dapper.Contrib.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="DotNetZip" Version="1.16.0" />
+        <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
+        <PackageReference Include="MySql.Data" Version="8.0.32" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+        <PackageReference Include="RestSharp" Version="108.0.3" />
+        <PackageReference Include="SSH.NET" Version="2020.0.2" />
+        <PackageReference Include="Stripe.net" Version="41.5.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Email\EmailTemplate.txt" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="IDbConnectionExtensions.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="app.config" />
+    </ItemGroup>
 </Project>

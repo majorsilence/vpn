@@ -8,6 +8,7 @@ using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
 using Stripe;
 using SiteInfo = Majorsilence.Vpn.Logic.Helpers.SiteInfo;
 
@@ -15,6 +16,12 @@ namespace Majorsilence.Vpn.Logic;
 
 public class DailyProcessing : ICommand
 {
+    private ILogger _logger;
+    public DailyProcessing(ILogger logger)
+    {
+        _logger = logger;
+    }
+    
     public void Execute()
     {
         CheckForNewPayments();
@@ -72,15 +79,8 @@ public class DailyProcessing : ICommand
 
                 if (user == null || user.Count() != 1)
                 {
-                    var ex = new InvalidDataException(
-                        "Cannot find stripe customer data in users table.  Stripe Customer Account: " +
-                        stripeCustomerId);
-
-                    Logging.Log(ex);
-                    InitializeSettings.Email.SendMail_BackgroundThread("Error running DailyProcessing: " + ex.Message,
-                        "Error running DailyProcessing", SiteInfo.AdminEmail, true, null,
-                        EmailTemplates.Generic);
-
+                    _logger.LogWarning("Cannot find stripe customer data in users table.  Stripe Customer Account: " +
+                                       stripeCustomerId);
                     continue;
                 }
 

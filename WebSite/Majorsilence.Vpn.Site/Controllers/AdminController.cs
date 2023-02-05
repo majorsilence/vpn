@@ -7,6 +7,7 @@ using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SiteInfo = Majorsilence.Vpn.Poco.SiteInfo;
 
 namespace Majorsilence.Vpn.Site.Controllers;
@@ -15,11 +16,13 @@ public class AdminController : Controller
 {
     private readonly IEmail email;
     private readonly ISessionVariables sessionInstance;
-
-    public AdminController(IEmail email, ISessionVariables sessionInstance)
+    private ILogger _logger;
+    public AdminController(IEmail email, ISessionVariables sessionInstance,
+        ILogger logger)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
+        _logger = logger;
     }
 
 
@@ -71,7 +74,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "RemoveStripeAccount");
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -95,7 +98,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "RemoveSubscription");
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -109,7 +112,7 @@ public class AdminController : Controller
         {
             if (removeaccount != null && removeaccount == "yes")
             {
-                var user = new UserInfo(id);
+                var user = new UserInfo(id, _logger);
                 user.RemoveAccount();
 
 
@@ -119,7 +122,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "RemoveUser");
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -139,7 +142,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "ToggleAdmin");
             Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }
@@ -183,7 +186,7 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "SaveSiteInfo");
             Response.Redirect("/admin/siteinfo?status=" + HttpUtility.HtmlEncode(ex.Message), false);
         }
     }

@@ -2,15 +2,16 @@ using System.Collections.Generic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
 using SiteInfo = Majorsilence.Vpn.Logic.Helpers.SiteInfo;
 
 namespace Majorsilence.Vpn.Site.Models;
 
 public class Account : CustomViewLayout
 {
-    public Account(int userId)
+    public Account(int userId, ILogger logger)
     {
-        var profileInfo = new UserInfo(userId).GetProfile();
+        var profileInfo = new UserInfo(userId, logger).GetProfile();
         FirstName = profileInfo.FirstName;
         LastName = profileInfo.LastName;
         UsersEmail = profileInfo.Email;

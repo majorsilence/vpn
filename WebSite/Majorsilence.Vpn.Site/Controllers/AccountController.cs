@@ -15,6 +15,8 @@ using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using NuGet.Common;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
@@ -23,18 +25,21 @@ public class AccountController : Controller
     private readonly IEmail email;
     private readonly IStringLocalizer<AccountController> localizer;
     private readonly ISessionVariables sessionInstance;
+    private ILogger<AccountController> _logger;
 
     public AccountController(IEmail email, ISessionVariables sessionInstance,
-        IStringLocalizer<AccountController> localizer)
+        IStringLocalizer<AccountController> localizer,
+        ILogger<AccountController> logger)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
         this.localizer = localizer;
+        _logger = logger;
     }
 
     public ActionResult Index()
     {
-        var acct = new Account(sessionInstance.UserId)
+        var acct = new Account(sessionInstance.UserId, _logger)
         {
             SessionVariables = sessionInstance
         };
@@ -64,7 +69,7 @@ public class AccountController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "CancelSubscription");
             HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         }
     }
@@ -91,7 +96,7 @@ public class AccountController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "Charge error");
             message = "fail";
         }
 
@@ -130,7 +135,7 @@ public class AccountController : Controller
         }
         catch (Exception ex)
         {
-            Logging.Log(ex);
+            _logger.LogError(ex, "");
             ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made",
                 sessionInstance.UserId);
         }
@@ -147,7 +152,7 @@ public class AccountController : Controller
             return;
         }
 
-        var update = new UserInfo(sessionInstance.UserId);
+        var update = new UserInfo(sessionInstance.UserId, _logger);
         try
         {
             update.UpdateProfile(email, firstname, lastname);
@@ -161,12 +166,12 @@ public class AccountController : Controller
         }
         catch (InvalidDataException ide)
         {
-            Logging.Log(ide);
+            _logger.LogError(ide, "UpdateProfile");
             HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
         catch (EmailAddressAlreadyUsedException eaaue)
         {
-            Logging.Log(eaaue);
+            _logger.LogError(eaaue, "UpdateProfile already used email address");
             HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
         }
     }
@@ -181,7 +186,7 @@ public class AccountController : Controller
             return;
         }
 
-        var update = new UserInfo(sessionInstance.UserId);
+        var update = new UserInfo(sessionInstance.UserId, _logger);
         try
         {
             update.UpdatePassword(oldpassword, newpassword, confirmnewpassword);
