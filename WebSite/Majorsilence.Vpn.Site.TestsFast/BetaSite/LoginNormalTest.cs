@@ -5,6 +5,8 @@ using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.BetaSite;
@@ -61,7 +63,9 @@ public class LoginNormalTest
     [Test]
     public void CanLogin()
     {
-        var login = new Login(emailAddress, password);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var login = new Login(emailAddress, password, logger);
         login.Execute();
 
         Console.WriteLine(login.LoggedIn);
@@ -80,7 +84,9 @@ public class LoginNormalTest
     [Test]
     public void InvalidUsernameLogin()
     {
-        var login = new Login("hithere", password);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var login = new Login("hithere", password, logger);
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);
@@ -92,7 +98,9 @@ public class LoginNormalTest
     [Test]
     public void InvalidPasswordLogin()
     {
-        var login = new Login(emailAddress, "wrong password");
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var login = new Login(emailAddress, "wrong password", logger);
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);
@@ -104,7 +112,9 @@ public class LoginNormalTest
     [Test]
     public void InvalidUsernameAndPasswordLogin()
     {
-        var login = new Login("hi there", "wrong password");
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var login = new Login("hi there", "wrong password", logger);
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);

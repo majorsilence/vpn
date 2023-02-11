@@ -4,6 +4,8 @@ using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.LiveSite;
@@ -57,8 +59,9 @@ public class UserInfoTest
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
-
-        var info = new UserInfo(userid);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var info = new UserInfo(userid, logger);
         var profile = info.GetProfile();
 
         Assert.That("Peter", Is.EqualTo(profile.FirstName));
@@ -90,8 +93,9 @@ public class UserInfoTest
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
-
-        var info = new UserInfo(userid);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var info = new UserInfo(userid, logger);
         var profile = info.GetProfile();
 
         Assert.That("Peter", Is.EqualTo(profile.FirstName));
@@ -107,7 +111,7 @@ public class UserInfoTest
         Assert.That(unicodeEmailAddress, Is.EqualTo(profile.Email));
 
 
-        var info2 = new UserInfo(userid);
+        var info2 = new UserInfo(userid, logger);
         var profile2 = info2.GetProfile();
         Assert.That("Happy", Is.EqualTo(profile2.FirstName));
         Assert.That("Dude", Is.EqualTo(profile2.LastName));
@@ -137,8 +141,9 @@ public class UserInfoTest
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
-
-        var info = new UserInfo(userid);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var info = new UserInfo(userid, logger);
         // var profile = info.GetProfile();
 
         Assert.Throws<InvalidDataException>(() => info.UpdateProfile(unicodeEmailAddress, "", "Dude"));
@@ -166,8 +171,9 @@ public class UserInfoTest
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
-
-        var info = new UserInfo(userid);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var info = new UserInfo(userid, logger);
         var profile = info.GetProfile();
 
         Assert.Throws<InvalidDataException>(() =>
@@ -196,8 +202,9 @@ public class UserInfoTest
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
-
-        var info = new UserInfo(userid);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var info = new UserInfo(userid, logger);
         var profile = info.GetProfile();
 
         Assert.Throws<InvalidDataException>(() => info.UpdateProfile("", "Happy", "Dude"));
@@ -241,8 +248,9 @@ public class UserInfoTest
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
-
-        var info = new UserInfo(userid);
+        var mock = new Mock<ILogger>();
+        var logger = mock.Object;
+        var info = new UserInfo(userid, logger);
         var profile = info.GetProfile();
 
         Assert.Throws<EmailAddressAlreadyUsedException>(() =>

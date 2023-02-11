@@ -16,6 +16,7 @@ using Majorsilence.Vpn.Poco;
 using Majorsilence.Vpn.Site.Controllers;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.TestsFast.MvcFakes;
+using Microsoft.Extensions.Logging;
 using Moq;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
@@ -72,9 +73,12 @@ public class Setup
 
             var mock = new Mock<ISessionVariables>();
             mock.SetupAllProperties();
-
             var sessionVars = mock.Object;
-            var controller = new ApiV2Controller(sessionVars);
+            var mockLogger = new Mock<ILogger<ApiV2Controller>>();
+            var logger = mockLogger.Object;
+            var keysMock = new Mock<IEncryptionKeysSettings>();
+            var keys = keysMock.Object;
+            var controller = new ApiV2Controller(sessionVars, logger, keys);
 
             var header = new NameValueCollection();
             header.Add("Authorization", headerAuth.ToString());
@@ -123,9 +127,13 @@ public class Setup
     [SetUp]
     public void BringUp()
     {
-        // setup database and shit
+        var mockLogger = new Mock<ILogger>();
+        var logger = mockLogger.Object;
+        // setup database and stuff
         var email = new FakeEmail();
-        var setup = new InitializeSettings("localhost", testingdb, email, false);
+        var setup = new InitializeSettings("localhost", 
+            testingdb, email, false,
+            logger);
         setup.Execute();
 
 

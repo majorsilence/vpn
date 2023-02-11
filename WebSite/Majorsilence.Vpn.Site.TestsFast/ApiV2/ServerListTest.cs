@@ -3,10 +3,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Site.Controllers;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.TestsFast.MvcFakes;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -30,9 +32,12 @@ public class ServerListTest
 
             var mock = new Mock<ISessionVariables>();
             mock.SetupAllProperties();
-
             var sessionVars = mock.Object;
-            var controller = new ApiV2Controller(sessionVars);
+            var mockLogger = new Mock<ILogger<ApiV2Controller>>();
+            var logger = mockLogger.Object;
+            var keysMock = new Mock<IEncryptionKeysSettings>();
+            var keys = keysMock.Object;
+            var controller = new ApiV2Controller(sessionVars, logger, keys);
 
             FakeControllerContext.SetContext(controller, header);
 

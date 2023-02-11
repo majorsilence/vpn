@@ -7,6 +7,8 @@ using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Poco;
+using Microsoft.Extensions.Logging;
+using Moq;
 using MySql.Data.MySqlClient;
 using NUnit.Framework;
 
@@ -28,9 +30,12 @@ public class Setup
     {
         UpVpnTestServer();
 
-        // setup database and shit
+        // setup database and stuff
         var email = new FakeEmail();
-        var setup = new InitializeSettings("localhost", testingdb, email, false);
+        var mockLogger = new Mock<ILogger>();
+        var logger = mockLogger.Object;
+        var setup = new InitializeSettings("localhost", testingdb, email, 
+            false, logger);
         setup.Execute();
 
         // set test server ssh port

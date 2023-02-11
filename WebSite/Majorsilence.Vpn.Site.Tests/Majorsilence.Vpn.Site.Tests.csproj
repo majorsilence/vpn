@@ -33,18 +33,19 @@
         <Optimize>false</Optimize>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj"/>
-        <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj"/>
-        <ProjectReference Include="..\Majorsilence.Vpn.Site\Majorsilence.Vpn.Site.csproj"/>
+        <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj" />
+        <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj" />
+        <ProjectReference Include="..\Majorsilence.Vpn.Site\Majorsilence.Vpn.Site.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Dapper.Contrib" Version="2.0.78"/>
-        <PackageReference Include="NUnit" Version="3.13.3"/>
+        <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+        <PackageReference Include="Moq" Version="4.16.0" />
+        <PackageReference Include="NUnit" Version="3.13.3" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="obj\x64\Debug\.NETFramework,Version=v4.5.AssemblyAttributes.cs"/>
-        <Compile Remove="obj\x64\Release\.NETFramework,Version=v4.5.AssemblyAttributes.cs"/>
-        <Compile Remove="obj\x86\Debug\.NETFramework,Version=v4.5.AssemblyAttributes.cs"/>
-        <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.5.AssemblyAttributes.cs"/>
+        <Compile Remove="obj\x64\Debug\.NETFramework,Version=v4.5.AssemblyAttributes.cs" />
+        <Compile Remove="obj\x64\Release\.NETFramework,Version=v4.5.AssemblyAttributes.cs" />
+        <Compile Remove="obj\x86\Debug\.NETFramework,Version=v4.5.AssemblyAttributes.cs" />
+        <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.5.AssemblyAttributes.cs" />
     </ItemGroup>
 </Project>
