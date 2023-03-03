@@ -1,6 +1,6 @@
 ﻿using Majorsilence.Vpn.Logic.Payments;
 
-namespace VpnSite.Models;
+namespace Majorsilence.Vpn.Logic.AppSettings;
 
 public class PaypalSettings : IPaypalSettings
 {

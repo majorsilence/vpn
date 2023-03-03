@@ -6,6 +6,7 @@ using Majorsilence.Vpn.Poco;
 
 namespace Majorsilence.Vpn.Logic.Helpers;
 
+// fixme, switch to di
 public static class SiteInfo
 {
     private static Poco.SiteInfo info;

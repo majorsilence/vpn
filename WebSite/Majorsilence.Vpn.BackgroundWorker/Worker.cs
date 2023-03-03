@@ -1,24 +1,18 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.AppSettings;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Helpers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using VpnSite.Models;
 
-namespace Majorsilence.Vpn.Site;
+namespace Majorsilence.Vpn.BackgroundWorker;
 
-public class BackgroundWorker : BackgroundService
+public class Worker : BackgroundService
 {
     private IEmail email;
     private ILogger _logger;
     private string vpnConnectionString;
     string sessionConnectionString;
 
-    public BackgroundWorker(ILogger logger, SmtpSettings smtp, IConfiguration configuration)
+    public Worker(ILogger logger, SmtpSettings smtp, IConfiguration configuration)
     {
         _logger = logger;
         email = new LiveEmail(smtp.FromAddress, smtp.Username, smtp.Password, smtp.Host, smtp.Port);

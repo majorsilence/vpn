@@ -15,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
-using VpnSite.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,17 +36,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddTransient(_ =>
     new MySqlConnection(builder.Configuration["ConnectionStrings:LocalMySqlServer"]));
 
-builder.Services.AddScoped<Majorsilence.Vpn.Site.Models.Settings>(i =>
+builder.Services.AddScoped<Majorsilence.Vpn.Logic.AppSettings.Settings>(i =>
 {
-    return builder.Configuration.GetSection("Settings").Get<Majorsilence.Vpn.Site.Models.Settings>();
+    return builder.Configuration.GetSection("Settings").Get<Majorsilence.Vpn.Logic.AppSettings.Settings>();
 });
 builder.Services.AddScoped<IEmail>(i =>
 {
-    var s = i.GetService<Majorsilence.Vpn.Site.Models.Settings>().Smtp;
+    var s = i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Smtp;
     return new LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
 });
-builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Site.Models.Settings>().Paypal);
-builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Site.Models.Settings>().EncryptionKeys);
+builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
+builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
 builder.Services.AddScoped<ISessionVariables, SessionVariables>();
 
 builder.Services.AddMvc()
@@ -86,5 +85,4 @@ app.UseEndpoints(endpoints =>
         "{controller=Home}/{action=Index}/{id?}");
 });
 
-builder.Services.AddHostedService<BackgroundWorker>();
 app.Run();

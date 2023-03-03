@@ -1,7 +1,6 @@
 using Majorsilence.Vpn.Logic.Payments;
-using VpnSite.Models;
 
-namespace Majorsilence.Vpn.Site.Models;
+namespace Majorsilence.Vpn.Logic.AppSettings;
 
 public class Settings
 {
