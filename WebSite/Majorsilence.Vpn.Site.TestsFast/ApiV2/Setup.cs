@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic;
@@ -43,7 +44,7 @@ public class Setup
 
     public static int userid { get; private set; }
 
-    private void RetrieveLoginTokenAndAssert()
+    private async Task RetrieveLoginTokenAndAssert()
     {
         var peterAccount = new CreateAccount(
             new CreateAccountInfo
@@ -58,7 +59,7 @@ public class Setup
             }
             , true, InitializeSettings.Email);
 
-        userid = peterAccount.Execute();
+        userid = await peterAccount.ExecuteAsync();
 
         // in an actual desktop app this will need to be setup as static
         var cookieContainer = new CookieContainer();
@@ -125,7 +126,7 @@ public class Setup
     ///     Called once before unit tests in a namespace are tested.  Only called once for all tests.
     /// </summary>
     [SetUp]
-    public void BringUp()
+    public async Task BringUp()
     {
         var mockLogger = new Mock<ILogger>();
         var logger = mockLogger.Object;
@@ -134,7 +135,7 @@ public class Setup
         var setup = new InitializeSettings("localhost", 
             testingdb, email, false,
             logger);
-        setup.Execute();
+        await setup.ExecuteAsync();
 
 
         // set test server ssh port
@@ -159,7 +160,7 @@ public class Setup
             db.Insert(new BetaKeys("abc5", false, false));
         }
 
-        RetrieveLoginTokenAndAssert();
+        await RetrieveLoginTokenAndAssert();
     }
 
     private void CleanLogin()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
@@ -21,7 +22,7 @@ public class PaymentsTest
     private int userid;
 
     [SetUp]
-    public void Setup()
+    public async Task Setup()
     {
         var peterAccount = new CreateAccount(
             new CreateAccountInfo
@@ -36,7 +37,7 @@ public class PaymentsTest
             }
             , true, InitializeSettings.Email);
 
-        userid = peterAccount.Execute();
+        userid = await peterAccount.ExecuteAsync();
 
         var account2 = new CreateAccount(
             new CreateAccountInfo
@@ -51,7 +52,7 @@ public class PaymentsTest
             }
             , false, InitializeSettings.Email);
 
-        nonAdminUserId = account2.Execute();
+        nonAdminUserId = await account2.ExecuteAsync();
     }
 
     [TearDown]

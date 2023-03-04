@@ -1,4 +1,5 @@
-﻿using Majorsilence.Vpn.Logic;
+﻿using System.Threading.Tasks;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 
 namespace Majorsilence.Vpn.Site.Models;
@@ -15,10 +16,10 @@ public class AdminInviteBetaUsers : CustomViewLayout
 
     public bool EmailSent { get; private set; }
 
-    public void SendMail(string emailAddress)
+    public async Task SendMailAsync(string emailAddress)
     {
         var keys = new BetaKeys(InitializeSettings.Email);
-        keys.MailInvite(emailAddress);
+        await keys.MailInvite(emailAddress);
         EmailSent = true;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic.Email;
@@ -36,7 +37,7 @@ public class CreateAccount
         this.email = email;
     }
 
-    public int Execute()
+    public async Task<int> ExecuteAsync()
     {
         ValidateData();
 
@@ -71,14 +72,14 @@ public class CreateAccount
 
                 txn.Commit();
 
-                if (isAdmin == false) EmailAccountCreation();
+                if (isAdmin == false) await EmailAccountCreation();
 
                 return (int)userid;
             }
         }
     }
 
-    private void EmailAccountCreation()
+    private async Task EmailAccountCreation()
     {
         var subject = string.Format("{0} Account Created", SiteInfo.SiteName);
         var message = new StringBuilder();
@@ -89,7 +90,7 @@ public class CreateAccount
         message.Append(string.Format("You can login and start using your account anytime at {0}."
             , SiteInfo.SiteUrl));
 
-        email.SendMail_BackgroundThread(message.ToString(), subject, details.Email, true);
+        await email.SendMail(message.ToString(), subject, details.Email, true);
     }
 
     private void BetaKeySetup()

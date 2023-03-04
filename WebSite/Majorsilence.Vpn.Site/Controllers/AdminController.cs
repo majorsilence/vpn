@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Web;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
@@ -55,7 +56,7 @@ public class AdminController : Controller
         return View(new CustomViewLayout(sessionInstance));
     }
 
-    public void RemoveStripeAccount(int id, string removeaccount)
+    public async Task RemoveStripeAccount(int id, string removeaccount)
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return;
 
@@ -64,8 +65,8 @@ public class AdminController : Controller
             if (removeaccount != null && removeaccount == "yes")
             {
                 var payments = new StripePayment(id, email);
-                payments.CancelSubscription();
-                payments.CancelAccount();
+                await payments.CancelSubscription();
+                await payments.CancelAccount();
 
 
                 Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode("User with id removed: " + id),
@@ -80,7 +81,7 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    public void RemoveSubscription(int id, string removeaccount)
+    public async Task RemoveSubscription(int id, string removeaccount)
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return;
 
@@ -89,7 +90,7 @@ public class AdminController : Controller
             if (removeaccount != null && removeaccount == "yes")
             {
                 var payments = new StripePayment(id, email);
-                payments.CancelSubscription();
+                await payments.CancelSubscription();
 
 
                 Response.Redirect("/admin/users?status=" + HttpUtility.HtmlEncode("User with id removed: " + id),

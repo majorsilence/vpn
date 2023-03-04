@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic;
@@ -25,7 +26,7 @@ public class Setup
     ///     Called once before unit tests in a namespace are tested.  Only called once for all tests.
     /// </summary>
     [SetUp]
-    public void BringUp()
+    public async Task BringUp()
     {
         var mockLogger = new Mock<ILogger>();
         var logger = mockLogger.Object;
@@ -34,7 +35,7 @@ public class Setup
         var setup = new InitializeSettings("localhost", 
             testingdb, email, false,
             logger);
-        setup.Execute();
+        await setup.ExecuteAsync();
 
 
         // set test server ssh port

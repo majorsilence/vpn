@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
@@ -26,7 +27,7 @@ public class SignupController : Controller
     }
 
     [HttpPost]
-    public void CreateUser(string email, string emailconfirm, string password, string passwordconfirm,
+    public async Task CreateUser(string email, string emailconfirm, string password, string passwordconfirm,
         string firstname, string lastname, string betakey)
     {
         try
@@ -44,7 +45,7 @@ public class SignupController : Controller
                 },
                 this.email
             );
-            account.Execute();
+            await account.ExecuteAsync();
 
             HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
         }

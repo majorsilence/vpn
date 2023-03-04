@@ -1,4 +1,5 @@
-﻿using Majorsilence.Vpn.Site.Helpers;
+﻿using System.Threading.Tasks;
+using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,7 @@ public class AdminInviteBetaUsersController : Controller
         return View(model);
     }
 
-    public ActionResult SendMail(string emailAddress)
+    public async Task<ActionResult> SendMail(string emailAddress)
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
@@ -34,7 +35,7 @@ public class AdminInviteBetaUsersController : Controller
             SessionVariables = sessionInstance
         };
 
-        model.SendMail(emailAddress);
+        await model.SendMailAsync(emailAddress);
         return View(model);
     }
 }

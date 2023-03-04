@@ -43,7 +43,7 @@ builder.Services.AddScoped<Majorsilence.Vpn.Logic.AppSettings.Settings>(i =>
 builder.Services.AddScoped<IEmail>(i =>
 {
     var s = i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Smtp;
-    return new LiveEmail(s.FromAddress, s.Username, s.Password, s.Host, s.Port);
+    return new EmailWorkQueue();
 });
 builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
 builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);

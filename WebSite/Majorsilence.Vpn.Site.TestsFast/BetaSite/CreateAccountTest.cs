@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
@@ -39,7 +40,7 @@ public class CreateAccountTest
     }
 
     [Test]
-    public void ValidDataTest()
+    public async Task ValidDataTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -56,13 +57,13 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        peterAccount.Execute();
+        await peterAccount.ExecuteAsync();
 
         Assert.That(AccountExists(emailAddress), Is.True);
     }
 
     [Test]
-    public void DuplicateEmailTest()
+    public async Task DuplicateEmailTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -79,7 +80,7 @@ public class CreateAccountTest
             }
             , false, InitializeSettings.Email);
 
-        peterAccount.Execute();
+        await peterAccount.ExecuteAsync();
 
 
         var peterAccount2 = new CreateAccount(
@@ -95,7 +96,7 @@ public class CreateAccountTest
             }
             , false, InitializeSettings.Email);
 
-        Assert.Throws<EmailAddressAlreadyUsedException>(() => peterAccount2.Execute());
+        Assert.Throws<EmailAddressAlreadyUsedException>(async () => await peterAccount2.ExecuteAsync());
 
         Assert.That(AccountExists(emailAddress), Is.True);
     }
@@ -118,7 +119,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        Assert.Throws<PasswordMismatchException>(() => peterAccount.Execute());
+        Assert.Throws<PasswordMismatchException>(async () => await peterAccount.ExecuteAsync());
     }
 
     [Test]
@@ -140,7 +141,7 @@ public class CreateAccountTest
             , true, InitializeSettings.Email);
 
 
-        Assert.Throws<PasswordLengthException>(() => peterAccount.Execute());
+        Assert.Throws<PasswordLengthException>(async () => await peterAccount.ExecuteAsync());
     }
 
     [Test]
@@ -161,11 +162,11 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        Assert.Throws<EmailMismatchException>(() => peterAccount.Execute());
+        Assert.Throws<EmailMismatchException>(async () => await peterAccount.ExecuteAsync());
     }
 
     [Test]
-    public void TestUnicode()
+    public async Task TestUnicode()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -182,7 +183,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        peterAccount.Execute();
+        await peterAccount.ExecuteAsync();
 
         using (var cn = InitializeSettings.DbFactory)
         {
@@ -198,7 +199,7 @@ public class CreateAccountTest
     }
 
     [Test]
-    public void IsAdmin()
+    public async Task IsAdmin()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -215,7 +216,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        peterAccount.Execute();
+        await peterAccount.ExecuteAsync();
 
         using (var cn = InitializeSettings.DbFactory)
         {
@@ -227,7 +228,7 @@ public class CreateAccountTest
     }
 
     [Test]
-    public void IsNotAdmin()
+    public async Task IsNotAdmin()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -244,7 +245,7 @@ public class CreateAccountTest
             }
             , false, InitializeSettings.Email);
 
-        peterAccount.Execute();
+        await peterAccount.ExecuteAsync();
 
         using (var cn = InitializeSettings.DbFactory)
         {
@@ -273,7 +274,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        Assert.Throws<InvalidDataException>(() => peterAccount.Execute());
+        Assert.Throws<InvalidDataException>(async () => await peterAccount.ExecuteAsync());
     }
 
     [Test]
@@ -294,7 +295,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        Assert.Throws<InvalidDataException>(() => peterAccount.Execute());
+        Assert.Throws<InvalidDataException>(async() => await peterAccount.ExecuteAsync());
     }
 
     [Test]
@@ -315,11 +316,11 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        Assert.Throws<InvalidDataException>(() => peterAccount.Execute());
+        Assert.Throws<InvalidDataException>(async () => await peterAccount.ExecuteAsync());
     }
 
     [Test]
-    public void BetaKeyAlreadyInUse()
+    public async Task BetaKeyAlreadyInUse()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -336,7 +337,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        peterAccount.Execute();
+        await peterAccount.ExecuteAsync();
 
         var peterAccount2 = new CreateAccount(
             new CreateAccountInfo
@@ -351,7 +352,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        Assert.Throws<BetaKeyAlreadyUsedException>(() => peterAccount2.Execute());
+        Assert.Throws<BetaKeyAlreadyUsedException>(async() => await peterAccount2.ExecuteAsync());
 
 
         Assert.That(AccountExists(emailAddress), Is.True);
@@ -377,7 +378,7 @@ public class CreateAccountTest
             , true, InitializeSettings.Email);
 
 
-        Assert.Throws<InvalidBetaKeyException>(() => peterAccount.Execute());
+        Assert.Throws<InvalidBetaKeyException>(async () => await peterAccount.ExecuteAsync());
 
 
         Assert.That(AccountExists(emailAddress), Is.False);
@@ -401,7 +402,7 @@ public class CreateAccountTest
             }
             , true, InitializeSettings.Email);
 
-        Assert.Throws<InvalidBetaKeyException>(() => peterAccount.Execute());
+        Assert.Throws<InvalidBetaKeyException>(async() => await peterAccount.ExecuteAsync());
 
 
         Assert.That(AccountExists(emailAddress), Is.False);

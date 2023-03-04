@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
@@ -34,7 +35,7 @@ public class SupportController : Controller
     }
 
     [HttpPost]
-    public void Submit(string subject, string supportrequest)
+    public async Task Submit(string subject, string supportrequest)
     {
         if (sessionInstance.LoggedIn == false) return;
 
@@ -46,7 +47,7 @@ public class SupportController : Controller
                              supportrequest;
 
             // TODO: inject the support address from appsettings.json
-            email.SendMail_BackgroundThread(supportrequest, subject, "peter@majorsilence.com", false);
+            await email.SendMail(supportrequest, subject, "peter@majorsilence.com", false);
 
             HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
             HttpContext.Response.Redirect("/support/thankyou", false);

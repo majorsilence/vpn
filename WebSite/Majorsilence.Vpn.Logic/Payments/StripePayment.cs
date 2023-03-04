@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
@@ -48,7 +49,7 @@ public class StripePayment
             SiteInfo.MonthlyPaymentId);
     }
 
-    public void CancelAccount()
+    public async Task CancelAccount()
     {
         SslSecurity.Callback();
 
@@ -67,14 +68,14 @@ public class StripePayment
             data.StripeCustomerAccount = "";
             db.Update(data);
 
-            email.SendMail_BackgroundThread("Your vpn credit card account has been deleted.  " +
+            await email.SendMail("Your vpn credit card account has been deleted.  " +
                                             "You will not be billed again.  You will continue to have access until your current payment expires.",
                 "VPN Credit Card Account Deleted", data.Email, true, null,
                 EmailTemplates.Generic);
         }
     }
 
-    public void CancelSubscription()
+    public async Task CancelSubscription()
     {
         SslSecurity.Callback();
 
@@ -92,7 +93,7 @@ public class StripePayment
             data.StripeSubscriptionId = "";
             db.Update(data);
 
-            email.SendMail_BackgroundThread("Your vpn account subscription has been cancelled.  " +
+            await email.SendMail("Your vpn account subscription has been cancelled.  " +
                                             "You will not be billed again.  You will continue to have access until your current payment expires.",
                 "VPN Account Subscription Cancelled", data.Email, true, null,
                 EmailTemplates.Generic);

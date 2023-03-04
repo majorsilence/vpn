@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
@@ -10,12 +11,12 @@ namespace Majorsilence.Vpn.Site.TestsFast.BetaSite;
 public class BetaKeysTest
 {
     [Test]
-    public void ValidDataTest()
+    public async Task ValidDataTest()
     {
         var email = new FakeEmail();
 
         var test = new BetaKeys(email);
-        var betakey = test.MailInvite("sometestemailbetakey@majorsilence.com");
+        var betakey = await test.MailInvite("sometestemailbetakey@majorsilence.com");
 
 
         using (var cn = InitializeSettings.DbFactory)

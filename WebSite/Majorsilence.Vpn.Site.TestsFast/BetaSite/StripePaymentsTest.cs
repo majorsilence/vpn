@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
@@ -23,7 +24,7 @@ public class StripePaymentsTest
     private int userid;
 
     [SetUp]
-    public void Setup()
+    public async Task Setup()
     {
         StripeConfiguration.SetApiKey(SiteInfo.StripeAPISecretKey);
 
@@ -42,7 +43,7 @@ public class StripePaymentsTest
             }
             , true, InitializeSettings.Email);
 
-        userid = peterAccount.Execute();
+        userid = await peterAccount.ExecuteAsync();
 
 
         CreateToken();

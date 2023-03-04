@@ -54,7 +54,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public void CancelSubscription()
+    public async Task CancelSubscription()
     {
         if (sessionInstance.LoggedIn == false) return;
 
@@ -62,7 +62,7 @@ public class AccountController : Controller
         try
         {
             var pay = new StripePayment(sessionInstance.UserId, email);
-            pay.CancelSubscription();
+            await pay.CancelSubscription();
             HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
             ActionLog.Log_BackgroundThread("Subscription Cancelled", sessionInstance.UserId);

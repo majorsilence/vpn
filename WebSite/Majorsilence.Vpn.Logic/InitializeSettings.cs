@@ -3,6 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Timers;
 using Dapper;
 using Dapper.Contrib.Extensions;
@@ -22,7 +23,7 @@ using SiteInfo = Majorsilence.Vpn.Poco.SiteInfo;
 
 namespace Majorsilence.Vpn.Logic;
 
-public class InitializeSettings : ICommand
+public class InitializeSettings
 {
     private static string strConnectionVpn;
     private static string strConnectionSessions;
@@ -55,37 +56,14 @@ public class InitializeSettings : ICommand
         //   server, username, password, port));
         new MySqlConnection(strConnectionVpn);
 
-    public void Execute()
+    public async Task ExecuteAsync()
     {
         CreateIfNotExists();
         MigrateDatabase();
         LoadCacheVariables();
-        CreateTestAccount();
-        InitializeTimers();
+        await CreateTestAccount();
     }
-
-    private void InitializeTimers()
-    {
-        // TODO: replace with worker service
-        const int dailyProcessInSeconds = 1000 * 60 * 60 * 2; // every 2 hours
-        dailyProcessingTimer = new Timer(dailyProcessInSeconds);
-        dailyProcessingTimer.Elapsed += DailyProcessing;
-        dailyProcessingTimer.Enabled = true;
-    }
-
-    private void DailyProcessing(object sender, ElapsedEventArgs e)
-    {
-        try
-        {
-            var proc = new DailyProcessing(_logger);
-            proc.Execute();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed running DailyProcessing");
-        }
-    }
-
+    
     private void LoadCacheVariables()
     {
         LoadSiteInfo();
@@ -226,7 +204,7 @@ public class InitializeSettings : ICommand
         }
     }
 
-    private void CreateTestAccount()
+    private async Task CreateTestAccount()
     {
         // TODO: Replace values with settings in appSetting.json
 
@@ -249,7 +227,7 @@ public class InitializeSettings : ICommand
                         BetaKey = "AbC56#"
                     }
                     , true, Email);
-                peterAccount.Execute();
+                await peterAccount.ExecuteAsync();
             }
         }
     }

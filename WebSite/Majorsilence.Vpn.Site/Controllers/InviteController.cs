@@ -1,4 +1,5 @@
-﻿using Majorsilence.Vpn.Logic;
+﻿using System.Threading.Tasks;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,12 @@ public class InviteController : Controller
         return View();
     }
 
-    public ActionResult SendMail(string emailladdress)
+    public async Task<ActionResult> SendMail(string emailladdress)
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
         var keys = new BetaKeys(InitializeSettings.Email);
-        keys.MailInvite(emailladdress, sessionInstance.UserId);
+        await keys.MailInvite(emailladdress, sessionInstance.UserId);
 
         return View();
     }

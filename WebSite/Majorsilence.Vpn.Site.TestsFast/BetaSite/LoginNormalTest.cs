@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
@@ -19,7 +20,7 @@ public class LoginNormalTest
     private int userid;
 
     [SetUp]
-    public void Setup()
+    public async Task Setup()
     {
         var peterAccount = new CreateAccount(
             new CreateAccountInfo
@@ -34,7 +35,7 @@ public class LoginNormalTest
             }
             , false, InitializeSettings.Email);
 
-        peterAccount.Execute();
+        await peterAccount.ExecuteAsync();
         Console.WriteLine("Created account");
         using (var cn = InitializeSettings.DbFactory)
         {

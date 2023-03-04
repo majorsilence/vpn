@@ -20,7 +20,7 @@ public class DatabaseMigrationWorker : BackgroundService
         sessionConnectionString = configuration.GetConnectionString("MySqlSessions");
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var setup = new InitializeSettings(vpnConnectionString,
             sessionConnectionString,
@@ -30,15 +30,11 @@ public class DatabaseMigrationWorker : BackgroundService
 
         try
         {
-            Retry.Do(() => { setup.Execute(); }, TimeSpan.FromSeconds(2), 5);
+            await Retry.DoAsync(async () => { await setup.ExecuteAsync(); }, TimeSpan.FromSeconds(2), 5);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "BackgroundWorker");
-            email.SendMail_BackgroundThread("It appears the server setup failed: " + ex.Message,
-                "MajorsilnceVPN setup failure on application_start", SiteInfo.AdminEmail, false);
+            _logger.LogError(ex, "DatabaseMigrationWorker: It appears the database migrations failed");
         }
-
-        return Task.CompletedTask;
     }
 }

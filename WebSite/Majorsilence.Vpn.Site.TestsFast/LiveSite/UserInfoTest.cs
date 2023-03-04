@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
@@ -38,7 +39,7 @@ public class UserInfoTest
     }
 
     [Test]
-    public void RetreiveUserInfoTest()
+    public async Task RetreiveUserInfoTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -55,7 +56,7 @@ public class UserInfoTest
             }
             , false, InitializeSettings.Email);
 
-        var userid = peterAccount.Execute();
+        var userid = await peterAccount.ExecuteAsync();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
@@ -72,7 +73,7 @@ public class UserInfoTest
     }
 
     [Test]
-    public void UpdateUserInfoTest()
+    public async Task UpdateUserInfoTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -89,7 +90,7 @@ public class UserInfoTest
             }
             , false, InitializeSettings.Email);
 
-        var userid = peterAccount.Execute();
+        var userid = await peterAccount.ExecuteAsync();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
@@ -120,7 +121,7 @@ public class UserInfoTest
 
 
     [Test]
-    public void UpdateUserInfoInvalidFirstNameTest()
+    public async Task UpdateUserInfoInvalidFirstNameTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -137,7 +138,7 @@ public class UserInfoTest
             }
             , false, InitializeSettings.Email);
 
-        var userid = peterAccount.Execute();
+        var userid = await peterAccount.ExecuteAsync();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
@@ -150,7 +151,7 @@ public class UserInfoTest
     }
 
     [Test]
-    public void UpdateUserInfoInvalidLastNameTest()
+    public async Task UpdateUserInfoInvalidLastNameTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -167,7 +168,7 @@ public class UserInfoTest
             }
             , false, InitializeSettings.Email);
 
-        var userid = peterAccount.Execute();
+        var userid = await peterAccount.ExecuteAsync();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
@@ -181,7 +182,7 @@ public class UserInfoTest
     }
 
     [Test]
-    public void UpdateUserInfoInvalidEmailTest()
+    public async Task UpdateUserInfoInvalidEmailTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -198,7 +199,7 @@ public class UserInfoTest
             }
             , false, InitializeSettings.Email);
 
-        var userid = peterAccount.Execute();
+        var userid = await peterAccount.ExecuteAsync();
 
         Assert.That(AccountExists(emailAddress), Is.True);
 
@@ -211,7 +212,7 @@ public class UserInfoTest
     }
 
     [Test]
-    public void UpdateUserInfoEmailAddressAlreadyUsedTest()
+    public async Task UpdateUserInfoEmailAddressAlreadyUsedTest()
     {
         Assert.That(AccountExists(emailAddress), Is.False);
 
@@ -228,7 +229,7 @@ public class UserInfoTest
             }
             , false, InitializeSettings.Email);
 
-        var userid = peterAccount.Execute();
+        var userid = await peterAccount.ExecuteAsync();
 
         var peterAccount2 = new CreateAccount(
             new CreateAccountInfo
@@ -243,7 +244,7 @@ public class UserInfoTest
             }
             , false, InitializeSettings.Email);
 
-        peterAccount2.Execute();
+        await peterAccount2.ExecuteAsync();
 
 
         Assert.That(AccountExists(emailAddress), Is.True);

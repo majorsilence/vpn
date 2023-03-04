@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using Dapper;
 using Dapper.Contrib.Extensions;
@@ -53,7 +54,7 @@ public class BetaKeys
     /// </summary>
     /// <returns>The betakey code</returns>
     /// <param name="emailAddress">Email address.</param>
-    public string MailInvite(string emailAddress)
+    public async Task<string> MailInvite(string emailAddress)
     {
         var betakey = RetrieveAndMarkSendKey();
         var subject = SiteInfo.SiteName + " Invite";
@@ -68,7 +69,7 @@ public class BetaKeys
         message += " Your beta key is below. <br><br>";
         message += string.Format("<strong>{0}</strong>", betakey);
 
-        email.SendMail_BackgroundThread(message, subject, emailAddress, true, null, EmailTemplates.BetaKey);
+        await email.SendMail(message, subject, emailAddress, true, null, EmailTemplates.BetaKey);
 
         return betakey;
     }
@@ -87,7 +88,7 @@ public class BetaKeys
         return betaKey;
     }
 
-    public string MailInvite(string emailAddressSendTo, int sentFromUserId)
+    public async Task<string> MailInvite(string emailAddressSendTo, int sentFromUserId)
     {
         string sentFromFirstName;
         string sentFromLastName;
@@ -120,7 +121,7 @@ public class BetaKeys
         message += " Your beta key is below. <br><br>";
         message += string.Format("<strong>{0}</strong>", betakey);
 
-        email.SendMail_BackgroundThread(message, subject, emailAddressSendTo, true, null, EmailTemplates.BetaKey);
+        await email.SendMail(message, subject, emailAddressSendTo, true, null, EmailTemplates.BetaKey);
 
         return betakey;
     }
