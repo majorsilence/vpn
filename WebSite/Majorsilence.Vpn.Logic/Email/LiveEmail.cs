@@ -27,8 +27,8 @@ public class LiveEmail : IEmail
     public void SendMail(string message, string subject, string to,
         bool isHtml, byte[] attachment = null, EmailTemplates template = EmailTemplates.None)
     {
-        var mm = new MailMessage();
-        var smcl = new SmtpClient();
+        using var mm = new MailMessage();
+        using var smcl = new SmtpClient();
 
         mm.To.Add(to);
 
@@ -97,13 +97,10 @@ public class LiveEmail : IEmail
             resourceName = "Majorsilence.Vpn.Logic.Email.EmailTemplate.txt";
         else
             resourceName = "Majorsilence.Vpn.Logic.Email.EmailTemplate.txt";
-
-
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        using (var reader = new StreamReader(stream))
-        {
-            var result = reader.ReadToEnd();
-            return result;
-        }
+        
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+        using var reader = new StreamReader(stream);
+        var result = reader.ReadToEnd();
+        return result;
     }
 }
