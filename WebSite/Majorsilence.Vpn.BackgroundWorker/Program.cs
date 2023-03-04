@@ -21,7 +21,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
         services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
         services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
-        services.AddHostedService<Worker>();
+        services.AddHostedService<DatabaseMigrationWorker>();
     })
     .Build();
 

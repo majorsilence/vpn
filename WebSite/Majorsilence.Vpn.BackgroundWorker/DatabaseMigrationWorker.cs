@@ -5,14 +5,14 @@ using Majorsilence.Vpn.Logic.Helpers;
 
 namespace Majorsilence.Vpn.BackgroundWorker;
 
-public class Worker : BackgroundService
+public class DatabaseMigrationWorker : BackgroundService
 {
     private IEmail email;
     private ILogger _logger;
     private string vpnConnectionString;
     string sessionConnectionString;
 
-    public Worker(ILogger logger, SmtpSettings smtp, IConfiguration configuration)
+    public DatabaseMigrationWorker(ILogger logger, SmtpSettings smtp, IConfiguration configuration)
     {
         _logger = logger;
         email = new LiveEmail(smtp.FromAddress, smtp.Username, smtp.Password, smtp.Host, smtp.Port);
