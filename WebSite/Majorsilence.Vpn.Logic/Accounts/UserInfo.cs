@@ -30,9 +30,9 @@ public class UserInfo
         }
     }
 
-    public IEnumerable<Users> RetrieveUserList()
+    public static IEnumerable<Users> RetrieveUserList(DatabaseSettings dbSettings)
     {
-        using (var cn = _dbSettings.DbFactory)
+        using (var cn = dbSettings.DbFactory)
         {
             cn.Open();
 

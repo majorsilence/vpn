@@ -1,14 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Email;
 
 namespace Majorsilence.Vpn.Site.Models;
 
 public class AdminInviteBetaUsers : CustomViewLayout
 {
-    public AdminInviteBetaUsers()
+    private readonly IEmail _email;
+    private readonly DatabaseSettings _dbSettings;
+    public AdminInviteBetaUsers(IEmail email, DatabaseSettings dbSettings)
     {
-        var keys = new BetaKeys(DatabaseSettings.Email);
+        _email = email;
+        _dbSettings = dbSettings;
+        var keys = new BetaKeys(_email, _dbSettings);
         RemainingBetaKeys = keys.UnsuedKeyCount();
     }
 
@@ -18,7 +23,7 @@ public class AdminInviteBetaUsers : CustomViewLayout
 
     public async Task SendMailAsync(string emailAddress)
     {
-        var keys = new BetaKeys(DatabaseSettings.Email);
+        var keys = new BetaKeys(_email, _dbSettings);
         await keys.MailInvite(emailAddress);
         EmailSent = true;
     }

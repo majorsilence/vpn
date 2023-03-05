@@ -19,8 +19,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
         services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
         services.AddScoped<DatabaseSettings>(i => new DatabaseSettings(h.Configuration["ConnectionStrings:LocalMySqlServer"],
-            h.Configuration["ConnectionStrings:MySqlSessions"], 
-            i.GetService<IEmail>(),
+            h.Configuration["ConnectionStrings:MySqlSessions"],
             false,
             i.GetService<ILogger>()
         ));

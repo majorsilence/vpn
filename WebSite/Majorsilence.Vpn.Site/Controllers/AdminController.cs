@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Helpers;
@@ -18,12 +19,15 @@ public class AdminController : Controller
     private readonly IEmail email;
     private readonly ISessionVariables sessionInstance;
     private ILogger _logger;
+    private readonly DatabaseSettings _dbSettings;
     public AdminController(IEmail email, ISessionVariables sessionInstance,
-        ILogger logger)
+        ILogger logger,
+        DatabaseSettings dbSettings)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
         _logger = logger;
+        _dbSettings = dbSettings;
     }
 
 
@@ -44,7 +48,7 @@ public class AdminController : Controller
 
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
-        var model = new Users
+        var model = new Users(_dbSettings)
         {
             SessionVariables = sessionInstance
         };
@@ -53,7 +57,7 @@ public class AdminController : Controller
 
     public ActionResult ErrorReport()
     {
-        return View(new CustomViewLayout(sessionInstance));
+        return View(new CustomViewLayout(sessionInstance, _dbSettings));
     }
 
     public async Task RemoveStripeAccount(int id, string removeaccount)
@@ -64,7 +68,7 @@ public class AdminController : Controller
         {
             if (removeaccount != null && removeaccount == "yes")
             {
-                var payments = new StripePayment(id, email);
+                var payments = new StripePayment(id, email, _dbSettings);
                 await payments.CancelSubscription();
                 await payments.CancelAccount();
 
@@ -89,7 +93,7 @@ public class AdminController : Controller
         {
             if (removeaccount != null && removeaccount == "yes")
             {
-                var payments = new StripePayment(id, email);
+                var payments = new StripePayment(id, email, _dbSettings);
                 await payments.CancelSubscription();
 
 
@@ -113,7 +117,7 @@ public class AdminController : Controller
         {
             if (removeaccount != null && removeaccount == "yes")
             {
-                var user = new UserInfo(id, _logger);
+                var user = new UserInfo(id, _logger, _dbSettings);
                 user.RemoveAccount();
 
 
@@ -135,7 +139,7 @@ public class AdminController : Controller
 
         try
         {
-            var modify = new ModifyAccount();
+            var modify = new ModifyAccount(_dbSettings);
             modify.ToggleIsAdmin(id);
 
             Response.Redirect(
@@ -181,7 +185,7 @@ public class AdminController : Controller
             };
 
             Logic.Helpers.SiteInfo.InitializeSimple(info, monthlypaymentrate, yearlypaymentrate);
-            Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
+            Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb(_dbSettings);
 
             Response.Redirect("/admin/siteinfo?status=ok", false);
         }

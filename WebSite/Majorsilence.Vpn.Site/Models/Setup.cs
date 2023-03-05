@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Payments;
 
@@ -6,16 +7,17 @@ namespace Majorsilence.Vpn.Site.Models;
 
 public class Setup : CustomViewLayout
 {
-    public Setup(int userid, string username)
+    public Setup(int userid, string username, 
+        DatabaseSettings dbSettings)
     {
-        var details = new ServerDetails();
+        var details = new ServerDetails(dbSettings);
         ServerInfo = details.Info;
 
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, dbSettings);
         ActiveAccount = !pay.IsExpired();
 
 
-        var userServerDetails = new UserServerDetails(userid);
+        var userServerDetails = new UserServerDetails(userid, dbSettings);
         if (userServerDetails.Info == null)
         {
             CurrentServer = "none";

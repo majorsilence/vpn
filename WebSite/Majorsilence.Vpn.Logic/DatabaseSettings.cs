@@ -16,7 +16,6 @@ public class DatabaseSettings
     public string StrConnectionSessions { get; }
     public bool IsLiveSite { get; }
     private readonly ILogger _logger;
-    public IEmail Email { get; private set; }
     public IDbConnection DbFactory => new MySqlConnection(StrConnectionVpn);
 
     public IDbConnection DbFactoryWithoutDatabase =>
@@ -25,13 +24,11 @@ public class DatabaseSettings
         new MySqlConnection(StrConnectionVpn);
 
 
-    public DatabaseSettings(string strVpnConnection, string sessionsConnection, IEmail email, bool isLiveSite,
+    public DatabaseSettings(string strVpnConnection, string sessionsConnection, bool isLiveSite,
         ILogger logger)
     {
         StrConnectionVpn = strVpnConnection;
         StrConnectionSessions = sessionsConnection;
-
-        Email = email;
         this.IsLiveSite = isLiveSite;
         _logger = logger;
     }

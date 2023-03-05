@@ -40,14 +40,13 @@ builder.Services.AddScoped<Majorsilence.Vpn.Logic.AppSettings.Settings>(i =>
 builder.Services.AddScoped<IEmail>(i =>
 {
     var s = i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Smtp;
-    return new EmailWorkQueue();
+    return new EmailWorkQueue(i.GetService<DatabaseSettings>());
 });
 builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
 builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
 builder.Services.AddScoped<ISessionVariables, SessionVariables>();
 builder.Services.AddScoped<DatabaseSettings>(i => new DatabaseSettings(builder.Configuration["ConnectionStrings:LocalMySqlServer"],
-    builder.Configuration["ConnectionStrings:MySqlSessions"], 
-    i.GetService<IEmail>(),
+    builder.Configuration["ConnectionStrings:MySqlSessions"],
     false,
     i.GetService<ILogger>()
 ));

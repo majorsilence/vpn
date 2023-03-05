@@ -1,10 +1,12 @@
-﻿namespace Majorsilence.Vpn.Site.Models;
+﻿using Majorsilence.Vpn.Logic;
+
+namespace Majorsilence.Vpn.Site.Models;
 
 public class Privacy
 {
-    public Privacy()
+    public Privacy(DatabaseSettings dbSettings)
     {
-        var t = new Logic.Site.Privacy();
+        var t = new Logic.Site.Privacy(dbSettings);
         CurrentPrivacy = t.CurrentPrivacy();
     }
 

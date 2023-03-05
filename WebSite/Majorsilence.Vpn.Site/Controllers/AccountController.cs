@@ -25,21 +25,27 @@ public class AccountController : Controller
     private readonly IEmail email;
     private readonly IStringLocalizer<AccountController> localizer;
     private readonly ISessionVariables sessionInstance;
-    private ILogger<AccountController> _logger;
+    private readonly ILogger<AccountController> _logger;
+    private readonly ActionLog _actionLog;
+    private readonly DatabaseSettings _dbSettings;
 
     public AccountController(IEmail email, ISessionVariables sessionInstance,
         IStringLocalizer<AccountController> localizer,
-        ILogger<AccountController> logger)
+        ILogger<AccountController> logger,
+        ActionLog actionLog,
+        DatabaseSettings dbSettings)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
         this.localizer = localizer;
         _logger = logger;
+        _actionLog = actionLog;
+        _dbSettings = dbSettings;
     }
 
     public ActionResult Index()
     {
-        var acct = new Account(sessionInstance.UserId, _logger)
+        var acct = new Account(sessionInstance.UserId, _logger, _dbSettings)
         {
             SessionVariables = sessionInstance
         };
@@ -61,11 +67,11 @@ public class AccountController : Controller
         HttpContext.Response.ContentType = "text/html";
         try
         {
-            var pay = new StripePayment(sessionInstance.UserId, email);
+            var pay = new StripePayment(sessionInstance.UserId, email, _dbSettings);
             await pay.CancelSubscription();
             HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
-            ActionLog.Log_BackgroundThread("Subscription Cancelled", sessionInstance.UserId);
+             _actionLog.Log("Subscription Cancelled", sessionInstance.UserId);
         }
         catch (Exception ex)
         {
@@ -86,12 +92,12 @@ public class AccountController : Controller
         try
         {
             var pay = new StripePayment(sessionInstance.UserId,
-                email);
+                email, _dbSettings);
             pay.MakePayment(stripeToken, discount);
 
-            ActionLog.Log_BackgroundThread("Payment made", sessionInstance.UserId);
+            _actionLog.Log("Payment made", sessionInstance.UserId);
 
-
+            // fixme: do not use Task.Run
             Task.Run(() => SetDefaultVpnServer());
         }
         catch (Exception ex)
@@ -106,11 +112,11 @@ public class AccountController : Controller
 
     private void SetDefaultVpnServer()
     {
-        ActionLog.Log_BackgroundThread("Attempt to set default vpn server after payment made",
+        _actionLog.Log("Attempt to set default vpn server after payment made",
             sessionInstance.UserId);
         try
         {
-            var details = new ServerDetails();
+            var details = new ServerDetails(_dbSettings);
 
             using (var sshNewServer =
                    new LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
@@ -119,7 +125,8 @@ public class AccountController : Controller
             using (var sftp = new LiveSftp(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             {
                 var cert = new CertsOpenVpnGenerateCommand(sessionInstance.UserId,
-                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer, sftp);
+                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer, sftp, _dbSettings,
+                    _actionLog);
                 cert.Execute();
             }
 
@@ -129,14 +136,15 @@ public class AccountController : Controller
                    new LiveSsh(SiteInfo.SshPort, SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             {
                 var pptp = new ManagePPTP(sessionInstance.UserId,
-                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer);
+                    details.Info.First().VpnServerId, sshNewServer, sshRevokeServer,
+                    _dbSettings);
                 pptp.AddUser();
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "");
-            ActionLog.Log_BackgroundThread("Failed to set default vpn server after payment made",
+            _actionLog.Log("Failed to set default vpn server after payment made",
                 sessionInstance.UserId);
         }
     }
@@ -152,12 +160,12 @@ public class AccountController : Controller
             return;
         }
 
-        var update = new UserInfo(sessionInstance.UserId, _logger);
+        var update = new UserInfo(sessionInstance.UserId, _logger, _dbSettings);
         try
         {
             update.UpdateProfile(email, firstname, lastname);
 
-            ActionLog.Log_BackgroundThread(string.Format(
+            _actionLog.Log(string.Format(
                     "Profile Update - Email -> {0} - First Name -> {1} - Last Name -> {2}",
                     email, firstname, lastname),
                 sessionInstance.UserId);
@@ -186,11 +194,11 @@ public class AccountController : Controller
             return;
         }
 
-        var update = new UserInfo(sessionInstance.UserId, _logger);
+        var update = new UserInfo(sessionInstance.UserId, _logger, _dbSettings);
         try
         {
             update.UpdatePassword(oldpassword, newpassword, confirmnewpassword);
-            ActionLog.Log_BackgroundThread("Password Changed",
+            _actionLog.Log("Password Changed",
                 sessionInstance.UserId);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
         }

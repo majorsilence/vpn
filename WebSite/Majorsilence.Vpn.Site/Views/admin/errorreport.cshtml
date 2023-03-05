@@ -1,6 +1,7 @@
 ﻿@using System.Text
 @using Majorsilence.Vpn.Logic.Admin
 @using Majorsilence.Vpn.Site.Helpers
+@model Majorsilence.Vpn.Logic.DatabaseSettings;
 @{
     ViewBag.Title = "Error Report";
     Layout = "~/Views/AdminView.cshtml";
@@ -18,7 +19,7 @@
     html.Append("<th>Time Created</th>");
     html.AppendLine("</tr>");
 
-    var errors = new ErrorReports();
+    var errors = new ErrorReports(@Model);
     foreach (var err in errors.RetrieveAll())
     {
         html.AppendLine("<tr>");

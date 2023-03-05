@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +10,16 @@ namespace Majorsilence.Vpn.Site.Controllers;
 public class AdminInviteBetaUsersController : Controller
 {
     private readonly ISessionVariables sessionInstance;
-
-    public AdminInviteBetaUsersController(ISessionVariables sessionInstance)
+    private readonly DatabaseSettings _dbSettings;
+    private readonly IEmail _email;
+    
+    public AdminInviteBetaUsersController(ISessionVariables sessionInstance,
+        DatabaseSettings dbSettings,
+        IEmail email)
     {
         this.sessionInstance = sessionInstance;
+        _dbSettings = dbSettings;
+        _email = email;
     }
 
 
@@ -19,7 +27,7 @@ public class AdminInviteBetaUsersController : Controller
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
-        var model = new AdminInviteBetaUsers
+        var model = new AdminInviteBetaUsers(_email, _dbSettings)
         {
             SessionVariables = sessionInstance
         };
@@ -30,7 +38,7 @@ public class AdminInviteBetaUsersController : Controller
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
-        var model = new AdminInviteBetaUsers
+        var model = new AdminInviteBetaUsers(_email, _dbSettings)
         {
             SessionVariables = sessionInstance
         };

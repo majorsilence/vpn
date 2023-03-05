@@ -24,16 +24,19 @@ public class GenericController : Controller
     private ILogger _logger;
     private IEncryptionKeysSettings _keys;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ActionLog _actionLog;
     public GenericController(IEmail email, ISessionVariables sessionInstance,
         ILogger logger,
         IEncryptionKeysSettings keys,
-        DatabaseSettings dbSettings)
+        DatabaseSettings dbSettings,
+        ActionLog actionLog)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
         _logger = logger;
         _keys = keys;
         _dbSettings = dbSettings;
+        _actionLog = actionLog;
     }
 
     public IActionResult Index()
@@ -85,14 +88,14 @@ public class GenericController : Controller
             using (var ssh = new LiveSsh(SiteInfo.SshPort,
                        SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             {
-                var revokeOVPN = new CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh, _dbSettings);
+                var revokeOVPN = new CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh, _dbSettings, _actionLog);
                 revokeOVPN.Execute();
             }
 
             return null;
         }
 
-        var model = new Setup(sessionInstance.UserId, sessionInstance.Username);
+        var model = new Setup(sessionInstance.UserId, sessionInstance.Username, _dbSettings);
 
         HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
@@ -110,7 +113,7 @@ public class GenericController : Controller
                    SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
         {
             var cert = new CertsOpenVpnGenerateCommand(sessionInstance.UserId,
-                vpnServerId, sshNewServer, sshRevokeServer, sftp);
+                vpnServerId, sshNewServer, sshRevokeServer, sftp, _dbSettings, _actionLog);
             cert.Execute();
         }
     }
@@ -123,7 +126,7 @@ public class GenericController : Controller
                    SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
         {
             var pptp = new ManagePPTP(sessionInstance.UserId, vpnServerId,
-                sshNewServer, sshRevokeServer);
+                sshNewServer, sshRevokeServer, _dbSettings);
             pptp.AddUser();
         }
     }
@@ -136,7 +139,7 @@ public class GenericController : Controller
                    SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
         {
             var ipsec = new IpSec(sessionInstance.UserId, vpnServerId, sshNewServer,
-                sshRevokeServer);
+                sshRevokeServer, _dbSettings);
             ipsec.AddUser();
         }
     }
@@ -144,7 +147,7 @@ public class GenericController : Controller
     [HttpPost]
     public void LoginValidation(string username, string password)
     {
-        var login = new Login(username, password, _logger);
+        var login = new Login(username, password, _logger, _dbSettings);
 
         try
         {
@@ -165,7 +168,7 @@ public class GenericController : Controller
         {
             // if payments have expired or were never setup prompt the user
             // to setup payments
-            var paymets = new Payment(sessionInstance.UserId);
+            var paymets = new Payment(sessionInstance.UserId, _dbSettings);
             if (paymets.IsExpired())
                 HttpContext.Response.StatusCode = 250;
             else
@@ -182,7 +185,7 @@ public class GenericController : Controller
     {
         try
         {
-            var resetPSW = new ResetPassword(email, _keys);
+            var resetPSW = new ResetPassword(email, _keys, _dbSettings);
             resetPSW.sendPasswordLink(username);
         }
         catch (InvalidDataException ide)
@@ -206,7 +209,7 @@ public class GenericController : Controller
                 return;
             }
 
-            var resetPSW = new ResetPassword(email, _keys);
+            var resetPSW = new ResetPassword(email, _keys, _dbSettings);
             resetPSW.validateCode(code, newpsw);
             HttpContext.Response.StatusCode = 250;
         }

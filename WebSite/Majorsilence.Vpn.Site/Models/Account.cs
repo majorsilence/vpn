@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Poco;
@@ -9,16 +10,16 @@ namespace Majorsilence.Vpn.Site.Models;
 
 public class Account : CustomViewLayout
 {
-    public Account(int userId, ILogger logger)
+    public Account(int userId, ILogger logger, DatabaseSettings dbSettings)
     {
-        var profileInfo = new UserInfo(userId, logger).GetProfile();
+        var profileInfo = new UserInfo(userId, logger, dbSettings).GetProfile();
         FirstName = profileInfo.FirstName;
         LastName = profileInfo.LastName;
         UsersEmail = profileInfo.Email;
 
         ChargeAmount = SiteInfo.CurrentMonthlyRate.ToString("G29");
         ChargeAmountStripCents = SiteInfo.CurrentMonthlyRateInCents;
-        var payInfo = new Payment(userId);
+        var payInfo = new Payment(userId, dbSettings);
         AccountExpired = payInfo.IsExpired();
         PaymentHistory = payInfo.History();
     }

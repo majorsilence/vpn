@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
@@ -14,11 +15,14 @@ public class SignupController : Controller
 {
     private readonly IEmail email;
     private ILogger _logger;
-
-    public SignupController(IEmail email, ILogger logger)
+    private readonly DatabaseSettings _dbSettings;
+    
+    public SignupController(IEmail email, ILogger logger,
+        DatabaseSettings dbSettings)
     {
         this.email = email;
         _logger = logger;
+        _dbSettings = dbSettings;
     }
 
     public ActionResult Index()
@@ -43,7 +47,8 @@ public class SignupController : Controller
                     PasswordConfirm = passwordconfirm,
                     BetaKey = betakey
                 },
-                this.email
+                this.email,
+                _dbSettings
             );
             await account.ExecuteAsync();
 
