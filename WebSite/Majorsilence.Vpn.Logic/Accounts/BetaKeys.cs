@@ -13,15 +13,17 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 public class BetaKeys
 {
     private readonly IEmail email;
+    private readonly DatabaseSettings _dbSettings;
 
-    public BetaKeys(IEmail email)
+    public BetaKeys(IEmail email, DatabaseSettings dbSettings)
     {
         this.email = email;
+        _dbSettings = dbSettings;
     }
 
     public int UnsuedKeyCount()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
 
@@ -32,7 +34,7 @@ public class BetaKeys
 
     private string RetrieveAndMarkSendKey()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             using (var txn = db.BeginTransaction())
@@ -77,7 +79,7 @@ public class BetaKeys
     private string GenerateKeyAndMarkSent()
     {
         var betaKey = Guid.NewGuid().ToString();
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
 
@@ -93,7 +95,7 @@ public class BetaKeys
         string sentFromFirstName;
         string sentFromLastName;
         string sentFromEmailAddress;
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
 

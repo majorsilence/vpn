@@ -81,9 +81,9 @@ public static class SiteInfo
         YearlyPaymentId = yearlyPaymentId;
     }
 
-    public static void SaveCurrentSettingsToDb()
+    public static void SaveCurrentSettingsToDb(DatabaseSettings dbSettings)
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = dbSettings.DbFactory)
         {
             cn.Open();
             using (var txn = cn.BeginTransaction())

@@ -35,7 +35,7 @@ public class PaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         userid = await peterAccount.ExecuteAsync();
 
@@ -50,7 +50,7 @@ public class PaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey2
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         nonAdminUserId = await account2.ExecuteAsync();
     }
@@ -58,7 +58,7 @@ public class PaymentsTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UserPayments");
@@ -81,7 +81,7 @@ public class PaymentsTest
         var pay = new Payment(userid);
         pay.SaveUserPayment(payment, createDate, paycode);
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var data = cn.Query<UserPayments>(

@@ -9,17 +9,19 @@ namespace Majorsilence.Vpn.Logic;
 
 public class Login
 {
-    private ILogger _logger;
+    private readonly ILogger _logger;
+    private readonly DatabaseSettings _dbSettings;
     private Login()
     {
     }
 
     public Login(string username, string password,
-        ILogger logger)
+        ILogger logger, DatabaseSettings dbSettings)
     {
         Username = username;
         Password = password;
         _logger = logger;
+        _dbSettings = dbSettings;
     }
 
     public string Username { get; }
@@ -36,7 +38,7 @@ public class Login
     private string RetrieveUserSalt()
     {
         var salt = "";
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var x = db.Query<Users>("SELECT * FROM Users WHERE Email=@Email",
                 new { Email = Username });
@@ -69,7 +71,7 @@ public class Login
 
         var saltedpassword = Hashes.GetSHA512StringHash(Password, salt);
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             var x = db.Query<Users>("SELECT * FROM Users WHERE Email=@Email AND Password = @Password",
@@ -85,7 +87,7 @@ public class Login
             }
 
             throw new InvalidDataException(
-                string.Format("Something is wrong.  Multple users were returned with this login: {0}.", Username));
+                string.Format("Something is wrong.  Multiple users were returned with this login: {0}.", Username));
         }
     }
 }

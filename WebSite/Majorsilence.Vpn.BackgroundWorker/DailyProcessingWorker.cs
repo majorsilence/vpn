@@ -7,24 +7,26 @@ namespace Majorsilence.Vpn.BackgroundWorker;
 
 public class DailyProcessingWorker : BackgroundService
 {
-    private IEmail email;
-    private ILogger _logger;
-    private string vpnConnectionString;
-
-    public DailyProcessingWorker(ILogger logger, SmtpSettings smtp, IConfiguration configuration)
+    private readonly IEmail _email;
+    private readonly ILogger _logger;
+    private readonly DatabaseSettings _dbSettings;
+    private readonly ActionLog _actionLog;
+    public DailyProcessingWorker(ILogger logger, IEmail email, DatabaseSettings dbSettings,
+        ActionLog actionLog)
     {
         _logger = logger;
-        email = new LiveEmail(smtp.FromAddress, smtp.Username, smtp.Password, smtp.Host, smtp.Port);
-        vpnConnectionString = configuration.GetConnectionString("MySqlVpn");
+        _email = email;
+        _dbSettings = dbSettings;
+        _actionLog = actionLog;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (true && !stoppingToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var proc = new DailyProcessing(_logger);
+                var proc = new DailyProcessing(_logger, _dbSettings, _actionLog);
                 proc.Execute();
                 _logger.LogInformation("DailyProcessingWorker: Run");
             }

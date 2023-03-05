@@ -12,11 +12,17 @@ namespace Majorsilence.Vpn.Logic.Email;
 
 public class EmailWorkQueue : IEmail
 {
+    private readonly DatabaseSettings _dbSettings;
+    public EmailWorkQueue(DatabaseSettings dbSettings)
+    {
+        _dbSettings = dbSettings;
+    }
+    
     public async Task SendMail(string message, string subject, string to,
         bool isHtml, byte[] attachment = null, EmailTemplates template = EmailTemplates.None)
     {
         // TODO: replace with kafka, redis streams, or something similar
-        using var db = InitializeSettings.DbFactory;
+        using var db = _dbSettings.DbFactory;
         db.Open();
         
         var sendMessage = message;

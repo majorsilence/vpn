@@ -33,11 +33,11 @@ public class LoginNormalTest
                 PasswordConfirm = password,
                 BetaKey = betaKey
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         await peterAccount.ExecuteAsync();
         Console.WriteLine("Created account");
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var users = cn.Query<Users>("SELECT * FROM Users WHERE Email = @Email", new { Email = emailAddress });
@@ -52,7 +52,7 @@ public class LoginNormalTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });

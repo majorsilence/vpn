@@ -10,9 +10,11 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 public class UserApiTokens
 {
     private readonly IEncryptionKeysSettings _keys;
-    public UserApiTokens(IEncryptionKeysSettings keys)
+    private readonly DatabaseSettings _dbSettings;
+    public UserApiTokens(IEncryptionKeysSettings keys, DatabaseSettings dbSettings)
     {
         _keys = keys;
+        _dbSettings = dbSettings;
     }
     private string GenerateToken()
     {
@@ -22,7 +24,7 @@ public class UserApiTokens
 
     public UsersApiTokens Create(int userId)
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 
@@ -66,7 +68,7 @@ public class UserApiTokens
 
     public UsersApiTokens Retrieve(int userid)
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 

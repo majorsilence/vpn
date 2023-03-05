@@ -13,7 +13,7 @@ public class SiteInfo
     [SetUp]
     public void Setup()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
 
@@ -26,7 +26,7 @@ public class SiteInfo
     [TearDown]
     public void Teardown()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
 
@@ -65,7 +65,7 @@ public class SiteInfo
         Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
 
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
 

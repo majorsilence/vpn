@@ -12,15 +12,17 @@ public class UserInfo
 {
     private readonly Users details;
     private readonly ILogger _logger;
-
+    private readonly DatabaseSettings _dbSettings;
     private UserInfo()
     {
     }
 
-    public UserInfo(int userid, ILogger logger)
+    public UserInfo(int userid, ILogger logger,
+        DatabaseSettings dbSettings)
     {
         _logger = logger;
-        using (var cn = InitializeSettings.DbFactory)
+        _dbSettings = dbSettings;
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 
@@ -28,9 +30,9 @@ public class UserInfo
         }
     }
 
-    public static IEnumerable<Users> RetrieveUserList()
+    public IEnumerable<Users> RetrieveUserList()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 
@@ -40,7 +42,7 @@ public class UserInfo
 
     public void RemoveAccount()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 
@@ -61,7 +63,7 @@ public class UserInfo
         if (newPassword != confirmNewPassword)
             throw new InvalidDataException("New password and confirm new password do not match.");
 
-        var login = new Login(details.Email, oldPassword, _logger);
+        var login = new Login(details.Email, oldPassword, _logger, _dbSettings);
 
         login.Execute();
 
@@ -69,7 +71,7 @@ public class UserInfo
 
 
         var pwd = new CreatePasswords(newPassword, details.FirstName + details.LastName);
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 
@@ -88,7 +90,7 @@ public class UserInfo
             throw new InvalidDataException("A first name must be entered.");
         if (lastName.Trim() == "") throw new InvalidDataException("A last name must be entered.");
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 

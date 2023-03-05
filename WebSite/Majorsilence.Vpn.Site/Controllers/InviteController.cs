@@ -25,7 +25,7 @@ public class InviteController : Controller
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;
 
-        var keys = new BetaKeys(InitializeSettings.Email);
+        var keys = new BetaKeys(DatabaseSettings.Email);
         await keys.MailInvite(emailladdress, sessionInstance.UserId);
 
         return View();

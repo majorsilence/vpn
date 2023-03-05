@@ -14,15 +14,18 @@ public class ResetPassword
 {
     private readonly IEmail email;
     private readonly GenerateResetCode generateCode;
+    private readonly DatabaseSettings _dbSettings;
 
     private ResetPassword()
     {
     }
 
-    public ResetPassword(IEmail email, IEncryptionKeysSettings keys)
+    public ResetPassword(IEmail email, IEncryptionKeysSettings keys,
+        DatabaseSettings dbSettings)
     {
         this.email = email;
         generateCode = new GenerateResetCode(keys);
+        _dbSettings = dbSettings;
     }
 
     public bool validateCode(string resetCode, string password)
@@ -35,7 +38,7 @@ public class ResetPassword
                 user.PasswordResetCode = "";
                 user.Password = pwd.Password;
                 user.Salt = pwd.Salt;
-                using (var db = InitializeSettings.DbFactory)
+                using (var db = _dbSettings.DbFactory)
                 {
                     db.Open();
 
@@ -59,7 +62,7 @@ public class ResetPassword
         var user = RetrieveUser(username, "");
         var ressetCode = generateCode.GeneratePasswordResetCode(username);
         user.PasswordResetCode = ressetCode;
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             using (var txn = db.BeginTransaction())
@@ -80,7 +83,7 @@ public class ResetPassword
     private Users RetrieveUser(string username, string code)
     {
         var user = new Users();
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             IEnumerable<Users> x = null;

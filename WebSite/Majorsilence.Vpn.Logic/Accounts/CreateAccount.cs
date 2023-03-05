@@ -19,15 +19,18 @@ public class CreateAccount
     private readonly IEmail email;
 
     private readonly bool isAdmin;
+    private readonly DatabaseSettings _dbSettings;
 
     private CreateAccount()
     {
     }
 
-    public CreateAccount(CreateAccountInfo details, IEmail email)
+    public CreateAccount(CreateAccountInfo details, IEmail email,
+        DatabaseSettings dbSettings)
     {
         this.details = details;
         this.email = email;
+        _dbSettings = dbSettings;
     }
 
     public CreateAccount(CreateAccountInfo details, bool isAdmin, IEmail email)
@@ -41,7 +44,7 @@ public class CreateAccount
     {
         ValidateData();
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
 
@@ -95,7 +98,7 @@ public class CreateAccount
 
     private void BetaKeySetup()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             var info = db.Query<Poco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code = @code",
@@ -139,7 +142,7 @@ public class CreateAccount
 
     private void ValidateEmailNotAlreadyUsed()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             var info = db.Query<Poco.BetaKeys>("SELECT * FROM Users WHERE Email = @Email",

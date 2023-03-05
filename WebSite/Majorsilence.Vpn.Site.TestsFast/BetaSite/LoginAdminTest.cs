@@ -30,7 +30,7 @@ public class LoginAdminTest
                 PasswordConfirm = password,
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         userid = await peterAccount.ExecuteAsync();
     }
@@ -38,7 +38,7 @@ public class LoginAdminTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });

@@ -4,8 +4,9 @@ namespace Majorsilence.Vpn.Logic.Ppp;
 
 public class IpSec : PppBase
 {
-    public IpSec(int userId, int vpnServerId, ISsh sshNewServer, ISsh sshRevokeServer)
-        : base(userId, vpnServerId, sshNewServer, sshRevokeServer)
+    public IpSec(int userId, int vpnServerId, ISsh sshNewServer, ISsh sshRevokeServer,
+        DatabaseSettings dbSettings)
+        : base(userId, vpnServerId, sshNewServer, sshRevokeServer, dbSettings)
     {
     }
 

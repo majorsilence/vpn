@@ -13,16 +13,17 @@ public class Payment
 {
     private readonly int userId;
     private readonly Users userInfo;
-
+    private readonly DatabaseSettings _dbSettings;
     private Payment()
     {
     }
 
-    public Payment(int userId)
+    public Payment(int userId, DatabaseSettings dbSettings)
     {
         this.userId = userId;
+        _dbSettings = dbSettings;
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             userInfo = db.Get<Users>(userId);
@@ -31,7 +32,7 @@ public class Payment
 
     public IEnumerable<UserPayments> History()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var x = db.Query<UserPayments>("SELECT * FROM UserPayments WHERE UserId=@UserId",
                 new { UserId = userId });
@@ -57,7 +58,7 @@ public class Payment
 
     public DateTime ExpireDate()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             var x = db.Query<UserPayments>(
@@ -91,7 +92,7 @@ public class Payment
             throw new InvalidUserIdException(
                 string.Format("The user attempting to make payments does not exist.", userId));
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
 

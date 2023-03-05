@@ -33,9 +33,6 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "App_GlobalR
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddTransient(_ =>
-    new MySqlConnection(builder.Configuration["ConnectionStrings:LocalMySqlServer"]));
-
 builder.Services.AddScoped<Majorsilence.Vpn.Logic.AppSettings.Settings>(i =>
 {
     return builder.Configuration.GetSection("Settings").Get<Majorsilence.Vpn.Logic.AppSettings.Settings>();
@@ -48,10 +45,18 @@ builder.Services.AddScoped<IEmail>(i =>
 builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
 builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
 builder.Services.AddScoped<ISessionVariables, SessionVariables>();
+builder.Services.AddScoped<DatabaseSettings>(i => new DatabaseSettings(builder.Configuration["ConnectionStrings:LocalMySqlServer"],
+    builder.Configuration["ConnectionStrings:MySqlSessions"], 
+    i.GetService<IEmail>(),
+    false,
+    i.GetService<ILogger>()
+));
+builder.Services.AddScoped<ActionLog>();
 
 builder.Services.AddMvc()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddHostedService<StartupWorker>();
 
 var app = builder.Build();
 if (builder.Environment.IsDevelopment())

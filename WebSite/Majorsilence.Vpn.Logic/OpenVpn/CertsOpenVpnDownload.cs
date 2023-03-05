@@ -8,13 +8,18 @@ namespace Majorsilence.Vpn.Logic.OpenVpn;
 
 public class CertsOpenVpnDownload
 {
+    private readonly DatabaseSettings _dbSettings;
+    public CertsOpenVpnDownload(DatabaseSettings dbSettings)
+    {
+        _dbSettings = dbSettings;
+    }
     public byte[] UploadToClient(int userid)
     {
-        var ovpn = new InlineOvpnProfile(userid);
+        var ovpn = new InlineOvpnProfile(userid, _dbSettings);
 
         using (var zip = new ZipFile())
         {
-            using (var db = InitializeSettings.DbFactory)
+            using (var db = _dbSettings.DbFactory)
             {
                 db.Open();
 

@@ -57,7 +57,7 @@ public class Setup
                 PasswordConfirm = password,
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         userid = await peterAccount.ExecuteAsync();
 
@@ -132,14 +132,14 @@ public class Setup
         var logger = mockLogger.Object;
         // setup database and stuff
         var email = new FakeEmail();
-        var setup = new InitializeSettings("localhost", 
+        var setup = new DatabaseSettings("localhost", 
             testingdb, email, false,
             logger);
         await setup.ExecuteAsync();
 
 
         // set test server ssh port
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = DatabaseSettings.DbFactory)
         {
             db.Open();
             var siteInfo = db.Query<SiteInfo>("SELECT * FROM SiteInfo");
@@ -165,7 +165,7 @@ public class Setup
 
     private void CleanLogin()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UsersApiTokens WHERE UserId = @Id", new { Id = userid });
@@ -180,7 +180,7 @@ public class Setup
     [TearDown]
     public void TearDown()
     {
-        var connStrDrop = InitializeSettings.DbFactoryWithoutDatabase.ConnectionString;
+        var connStrDrop = DatabaseSettings.DbFactoryWithoutDatabase.ConnectionString;
         var cnDrop = new MySqlConnection(connStrDrop);
         var cmdDrop = cnDrop.CreateCommand();
         cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);

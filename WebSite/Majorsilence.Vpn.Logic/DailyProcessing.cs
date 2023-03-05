@@ -16,10 +16,15 @@ namespace Majorsilence.Vpn.Logic;
 
 public class DailyProcessing : ICommand
 {
-    private ILogger _logger;
-    public DailyProcessing(ILogger logger)
+    private readonly ILogger _logger;
+    private readonly DatabaseSettings _dbSettings;
+    private readonly ActionLog _actionLog;
+    public DailyProcessing(ILogger logger, DatabaseSettings dbSettings,
+        ActionLog actionLog)
     {
         _logger = logger;
+        _dbSettings = dbSettings;
+        _actionLog = actionLog;
     }
     
     public void Execute()
@@ -35,7 +40,7 @@ public class DailyProcessing : ICommand
         // retrieve all events for the past day and proceed to process 
         // subscription cancellations.
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var data = db.Query<DatabaseInfo>("SELECT * FROM DatabaseInfo");
 
@@ -85,12 +90,12 @@ public class DailyProcessing : ICommand
                 }
 
                 var userid = user.First().Id;
-                var pay = new Payment(userid);
+                var pay = new Payment(userid, _dbSettings);
 
                 // amount in cents
                 pay.SaveUserPayment(evt.Amount / 100.0m, evt.Created, SiteInfo.MonthlyPaymentId);
 
-                ActionLog.Log_BackgroundThread("Payment made", userid);
+                _actionLog.Log("Payment made", userid);
             }
 
 

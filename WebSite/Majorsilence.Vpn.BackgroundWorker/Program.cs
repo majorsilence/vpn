@@ -7,9 +7,6 @@ using MySql.Data.MySqlClient;
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((h,services) =>
     {
-        services.AddTransient(_ =>
-            new MySqlConnection(h.Configuration["ConnectionStrings:LocalMySqlServer"]));
-
         services.AddScoped<Majorsilence.Vpn.Logic.AppSettings.Settings>(i =>
         {
             return h.Configuration.GetSection("Settings").Get<Majorsilence.Vpn.Logic.AppSettings.Settings>();
@@ -21,7 +18,15 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
         services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
         services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
+        services.AddScoped<DatabaseSettings>(i => new DatabaseSettings(h.Configuration["ConnectionStrings:LocalMySqlServer"],
+            h.Configuration["ConnectionStrings:MySqlSessions"], 
+            i.GetService<IEmail>(),
+            false,
+            i.GetService<ILogger>()
+        ));
+        services.AddScoped<ActionLog>();
         services.AddHostedService<DatabaseMigrationWorker>();
+        services.AddHostedService<StartupWorker>();
         services.AddHostedService<DailyProcessingWorker>();
         services.AddHostedService<EmailWorker>();
     })

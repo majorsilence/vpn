@@ -6,9 +6,15 @@ namespace Majorsilence.Vpn.Logic;
 
 public class ActionLog
 {
+    private readonly DatabaseSettings _dbSettings;
+    public ActionLog(DatabaseSettings dbSettings)
+    {
+        _dbSettings = dbSettings;
+    }
+    
     public void Log(string action, int userid)
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = _dbSettings.DbFactory)
         {
             cn.Open();
 
@@ -21,14 +27,5 @@ public class ActionLog
 
             cn.Insert(data);
         }
-    }
-
-    public static void Log_BackgroundThread(string action, int userid)
-    {
-        Task.Run(() =>
-        {
-            var act = new ActionLog();
-            act.Log(action, userid);
-        });
     }
 }

@@ -33,7 +33,7 @@ public class GenerateCertsTest
                 PasswordConfirm = "Password54",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         userid = await peterAccount.ExecuteAsync();
 
@@ -47,7 +47,7 @@ public class GenerateCertsTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM ActionLog WHERE UserId=@UserId", new { UserId = userid });

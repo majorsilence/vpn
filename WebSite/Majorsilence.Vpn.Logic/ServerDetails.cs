@@ -9,7 +9,7 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 /// </summary>
 public class ServerDetails
 {
-    public ServerDetails()
+    public ServerDetails(DatabaseSettings dbSettings)
     {
         //  this._userId = userId;
 
@@ -19,7 +19,7 @@ public class ServerDetails
         sql.Append("from VpnServers a ");
         sql.Append("join Regions b on a.RegionId = b.Id WHERE a.Active=1");
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = dbSettings.DbFactory)
         {
             db.Open();
             Info = db.Query<UserServerDetailsInfo>(sql.ToString());

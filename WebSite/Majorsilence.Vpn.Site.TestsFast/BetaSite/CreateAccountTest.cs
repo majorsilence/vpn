@@ -19,7 +19,7 @@ public class CreateAccountTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });
@@ -31,7 +31,7 @@ public class CreateAccountTest
 
     private bool AccountExists(string email)
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var users = cn.Query<Users>("SELECT * FROM Users WHERE Email = @Email", new { Email = email });
@@ -55,7 +55,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         await peterAccount.ExecuteAsync();
 
@@ -78,7 +78,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         await peterAccount.ExecuteAsync();
 
@@ -94,7 +94,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey2
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         Assert.Throws<EmailAddressAlreadyUsedException>(async () => await peterAccount2.ExecuteAsync());
 
@@ -117,7 +117,7 @@ public class CreateAccountTest
                 PasswordConfirm = "A different password",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         Assert.Throws<PasswordMismatchException>(async () => await peterAccount.ExecuteAsync());
     }
@@ -138,7 +138,7 @@ public class CreateAccountTest
                 PasswordConfirm = "",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
 
         Assert.Throws<PasswordLengthException>(async () => await peterAccount.ExecuteAsync());
@@ -160,7 +160,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         Assert.Throws<EmailMismatchException>(async () => await peterAccount.ExecuteAsync());
     }
@@ -181,11 +181,11 @@ public class CreateAccountTest
                 PasswordConfirm = "β",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         await peterAccount.ExecuteAsync();
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var data = cn.Query<Users>("SELECT * FROM Users WHERE Email = @email",
@@ -214,11 +214,11 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         await peterAccount.ExecuteAsync();
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var data = cn.Query<Users>("SELECT * FROM Users WHERE Email = @email", new { email = emailAddress });
@@ -243,11 +243,11 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         await peterAccount.ExecuteAsync();
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var data = cn.Query<Users>("SELECT * FROM Users WHERE Email = @email", new { email = emailAddress });
@@ -272,7 +272,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         Assert.Throws<InvalidDataException>(async () => await peterAccount.ExecuteAsync());
     }
@@ -293,7 +293,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         Assert.Throws<InvalidDataException>(async() => await peterAccount.ExecuteAsync());
     }
@@ -314,7 +314,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         Assert.Throws<InvalidDataException>(async () => await peterAccount.ExecuteAsync());
     }
@@ -335,7 +335,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         await peterAccount.ExecuteAsync();
 
@@ -350,7 +350,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         Assert.Throws<BetaKeyAlreadyUsedException>(async() => await peterAccount2.ExecuteAsync());
 
@@ -375,7 +375,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = "A Fake Beta Key"
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
 
         Assert.Throws<InvalidBetaKeyException>(async () => await peterAccount.ExecuteAsync());
@@ -400,7 +400,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         Assert.Throws<InvalidBetaKeyException>(async() => await peterAccount.ExecuteAsync());
 

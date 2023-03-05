@@ -22,13 +22,15 @@ public class ApiV2Controller : Controller
     private readonly ISessionVariables sessionVars;
     private readonly ILogger<ApiV2Controller> _logger;
     private readonly IEncryptionKeysSettings _keys;
-    
+    private readonly DatabaseSettings _dbSettings;
     public ApiV2Controller(ISessionVariables sessionInstance, ILogger<ApiV2Controller> logger,
-        IEncryptionKeysSettings keys)
+        IEncryptionKeysSettings keys,
+        DatabaseSettings dbSettings)
     {
         sessionVars = sessionInstance;
         _logger = logger;
         _keys = keys;
+        _dbSettings = dbSettings;
     }
 
     public ActionResult Index()
@@ -63,7 +65,7 @@ public class ApiV2Controller : Controller
         string token = context.Request.Headers["VpnAuthToken"];
         var uid = -1;
         int.TryParse(context.Request.Headers["VpnUserId"], out uid);
-        var api = new UserApiTokens(_keys);
+        var api = new UserApiTokens(_keys, _dbSettings);
         var data = api.Retrieve(uid);
 
         if (data.Token1 != token)
@@ -99,7 +101,7 @@ public class ApiV2Controller : Controller
             var creds = ParseAuthHeader(authHeader);
 
 
-            var login = new Login(creds[0], creds[1], _logger);
+            var login = new Login(creds[0], creds[1], _logger, _dbSettings);
 
 
             try
@@ -126,7 +128,7 @@ public class ApiV2Controller : Controller
             sessionVars.Username = login.Username;
 
 
-            var toks = new UserApiTokens(_keys);
+            var toks = new UserApiTokens(_keys, _dbSettings);
             var tokData = toks.Retrieve(login.UserId);
 
             var results = new ApiAuthResponse
@@ -173,7 +175,7 @@ public class ApiV2Controller : Controller
 
         try
         {
-            var details = new ServerDetails();
+            var details = new ServerDetails(_dbSettings);
 
             var data = JsonConvert.SerializeObject(details.Info);
             Response.StatusCode = (int)HttpStatusCode.OK;
@@ -232,7 +234,7 @@ public class ApiV2Controller : Controller
 
     private string WriteZippedCertsToString(int userid)
     {
-        var dl = new CertsOpenVpnDownload();
+        var dl = new CertsOpenVpnDownload(_dbSettings);
         var fileBytes = dl.UploadToClient(userid);
 
         return Convert.ToBase64String(fileBytes);

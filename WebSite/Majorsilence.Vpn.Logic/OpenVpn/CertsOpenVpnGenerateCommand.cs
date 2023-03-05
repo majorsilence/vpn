@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlServerCe;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,15 +19,20 @@ public class CertsOpenVpnGenerateCommand : ICommand
     private readonly ISftp sftpClient;
     private readonly ISsh sshClientNewServer;
     private readonly ISsh sshClientRevokeServer;
+    private readonly DatabaseSettings _dbSettings;
+    private readonly ActionLog _actionLog;
 
     private CertsOpenVpnGenerateCommand()
     {
     }
 
     public CertsOpenVpnGenerateCommand(int userId, int vpnServerId, ISsh sshClientNewServer,
-        ISsh sshClientRevokeServer, ISftp sftpClient)
+        ISsh sshClientRevokeServer, ISftp sftpClient, DatabaseSettings dbSettings,
+        ActionLog actionLog)
     {
-        using (var db = InitializeSettings.DbFactory)
+        _dbSettings = dbSettings;
+        _actionLog = actionLog;
+        using (var db = dbSettings.DbFactory)
         {
             db.Open();
             userData = db.Get<Users>(userId);
@@ -44,11 +50,11 @@ public class CertsOpenVpnGenerateCommand : ICommand
             throw new AccountNotActiveException(
                 "To generate a new open vpn cert you first activate your account by making a payment.");
 
-        ActionLog.Log_BackgroundThread(string.Format("OpenVpn Generate Command Start - {0}", vpnData.Description),
+        _actionLog.Log(string.Format("OpenVpn Generate Command Start - {0}", vpnData.Description),
             userData.Id);
 
         ulong num = 0;
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             using (var txn = db.BeginTransaction())
@@ -62,18 +68,18 @@ public class CertsOpenVpnGenerateCommand : ICommand
         var certName = string.Format("{0}{1}-{2}", num, randomString, userData.Email);
 
         // First things first, revoke any old certificates on the server
-        var revoke = new CertsOpenVpnRevokeCommand(userData.Id, sshClientRevokeServer);
+        var revoke = new CertsOpenVpnRevokeCommand(userData.Id, sshClientRevokeServer, _dbSettings, _actionLog);
         revoke.Execute();
 
         // now generate the new certificate
         CreateUserCerts(certName);
 
-        ActionLog.Log_BackgroundThread("OpenVpn Generate Command Finished", userData.Id);
+        _actionLog.Log("OpenVpn Generate Command Finished", userData.Id);
     }
 
     private bool IsActiveAccount()
     {
-        var pay = new Payment(userData.Id);
+        var pay = new Payment(userData.Id, _dbSettings);
         return !pay.IsExpired();
     }
 
@@ -165,7 +171,7 @@ public class CertsOpenVpnGenerateCommand : ICommand
     private void SaveUserCert(string certName, byte[] certCa, byte[] certCrt,
         byte[] certKey, bool expired)
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             // TODO: how does this work, id is user id not UserOpenVpnCerts id

@@ -12,7 +12,7 @@ public class UserServerDetails
     {
     }
 
-    public UserServerDetails(int userId)
+    public UserServerDetails(int userId, DatabaseSettings dbSettings)
     {
         //  this._userId = userId;
 
@@ -24,7 +24,7 @@ public class UserServerDetails
         sql.Append("join UserOpenVpnCerts c on c.VpnServersId = a.Id ");
         sql.Append("where c.userid = @uid");
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = dbSettings.DbFactory)
         {
             db.Open();
             var info = db.Query<UserServerDetailsInfo>(sql.ToString(), new { uid = userId });

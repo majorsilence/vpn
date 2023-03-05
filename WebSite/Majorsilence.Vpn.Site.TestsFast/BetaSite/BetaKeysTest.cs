@@ -19,7 +19,7 @@ public class BetaKeysTest
         var betakey = await test.MailInvite("sometestemailbetakey@majorsilence.com");
 
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var data = cn.Query<Poco.BetaKeys>("SELECT * FROM BetaKeys WHERE Code=@Code", new { Code = betakey });

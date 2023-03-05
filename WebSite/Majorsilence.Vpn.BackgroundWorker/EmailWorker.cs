@@ -9,24 +9,25 @@ namespace Majorsilence.Vpn.BackgroundWorker;
 
 public class EmailWorker : BackgroundService
 {
-    private IEmail email;
-    private ILogger _logger;
-    private string vpnConnectionString;
+    private readonly IEmail email;
+    private readonly ILogger _logger;
+    private readonly DatabaseSettings _dbSettings;
 
-    public EmailWorker(ILogger logger, SmtpSettings smtp, IConfiguration configuration)
+    public EmailWorker(ILogger logger, SmtpSettings smtp, IConfiguration configuration,
+        DatabaseSettings dbSettings)
     {
         _logger = logger;
         email = new LiveEmail(smtp.FromAddress, smtp.Username, smtp.Password, smtp.Host, smtp.Port);
-        vpnConnectionString = configuration.GetConnectionString("MySqlVpn");
+        _dbSettings = dbSettings;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (true && !stoppingToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                using (var db = InitializeSettings.DbFactory)
+                using (var db = _dbSettings.DbFactory)
                 {
                     var queuedEmails = 
                         await db.QueryAsync<Poco.EmailWorkQueue>(

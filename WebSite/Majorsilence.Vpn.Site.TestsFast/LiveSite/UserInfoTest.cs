@@ -20,7 +20,7 @@ public class UserInfoTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });
@@ -30,7 +30,7 @@ public class UserInfoTest
 
     private bool AccountExists(string email)
     {
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             var users = cn.Query<Users>("SELECT * FROM Users WHERE Email = @Email", new { Email = email });
@@ -54,7 +54,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         var userid = await peterAccount.ExecuteAsync();
 
@@ -88,7 +88,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         var userid = await peterAccount.ExecuteAsync();
 
@@ -136,7 +136,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         var userid = await peterAccount.ExecuteAsync();
 
@@ -166,7 +166,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         var userid = await peterAccount.ExecuteAsync();
 
@@ -197,7 +197,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         var userid = await peterAccount.ExecuteAsync();
 
@@ -227,7 +227,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         var userid = await peterAccount.ExecuteAsync();
 
@@ -242,7 +242,7 @@ public class UserInfoTest
                 PasswordConfirm = "Password2",
                 BetaKey = ""
             }
-            , false, InitializeSettings.Email);
+            , false, DatabaseSettings.Email);
 
         await peterAccount2.ExecuteAsync();
 

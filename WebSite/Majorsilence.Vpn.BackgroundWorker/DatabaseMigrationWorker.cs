@@ -7,26 +7,18 @@ namespace Majorsilence.Vpn.BackgroundWorker;
 
 public class DatabaseMigrationWorker : BackgroundService
 {
-    private IEmail email;
-    private ILogger _logger;
-    private string vpnConnectionString;
-    string sessionConnectionString;
-
-    public DatabaseMigrationWorker(ILogger logger, SmtpSettings smtp, IConfiguration configuration)
+    private readonly ILogger _logger;
+    private readonly DatabaseSettings _dbSettings;
+    
+    public DatabaseMigrationWorker(ILogger logger, DatabaseSettings dbSettings)
     {
         _logger = logger;
-        email = new LiveEmail(smtp.FromAddress, smtp.Username, smtp.Password, smtp.Host, smtp.Port);
-        vpnConnectionString = configuration.GetConnectionString("MySqlVpn");
-        sessionConnectionString = configuration.GetConnectionString("MySqlSessions");
+        _dbSettings = dbSettings;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var setup = new InitializeSettings(vpnConnectionString,
-            sessionConnectionString,
-            email,
-            false,
-            _logger);
+        var setup = new DataMigrations(_dbSettings);
 
         try
         {

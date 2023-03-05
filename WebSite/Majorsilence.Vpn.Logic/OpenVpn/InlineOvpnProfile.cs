@@ -15,9 +15,9 @@ public class InlineOvpnProfile
     private readonly VpnServers serverData;
     private readonly UserOpenVpnCerts userCertData;
 
-    public InlineOvpnProfile(int userId)
+    public InlineOvpnProfile(int userId, DatabaseSettings dbSettings)
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = dbSettings.DbFactory)
         {
             db.Open();
             var data = db.Query<UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",

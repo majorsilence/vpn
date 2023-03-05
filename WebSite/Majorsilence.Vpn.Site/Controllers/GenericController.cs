@@ -23,14 +23,17 @@ public class GenericController : Controller
     private readonly ISessionVariables sessionInstance;
     private ILogger _logger;
     private IEncryptionKeysSettings _keys;
+    private readonly DatabaseSettings _dbSettings;
     public GenericController(IEmail email, ISessionVariables sessionInstance,
         ILogger logger,
-        IEncryptionKeysSettings keys)
+        IEncryptionKeysSettings keys,
+        DatabaseSettings dbSettings)
     {
         this.email = email;
         this.sessionInstance = sessionInstance;
         _logger = logger;
         _keys = keys;
+        _dbSettings = dbSettings;
     }
 
     public IActionResult Index()
@@ -43,7 +46,7 @@ public class GenericController : Controller
     {
         if (sessionInstance.LoggedIn == false) return null;
 
-        var dl = new CertsOpenVpnDownload();
+        var dl = new CertsOpenVpnDownload(_dbSettings);
         var fileBytes = dl.UploadToClient(sessionInstance.UserId);
 
         return File(fileBytes, "application/zip", "Certs.zip");
@@ -82,7 +85,7 @@ public class GenericController : Controller
             using (var ssh = new LiveSsh(SiteInfo.SshPort,
                        SiteInfo.VpnSshUser, SiteInfo.VpnSshPassword))
             {
-                var revokeOVPN = new CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh);
+                var revokeOVPN = new CertsOpenVpnRevokeCommand(sessionInstance.UserId, ssh, _dbSettings);
                 revokeOVPN.Execute();
             }
 

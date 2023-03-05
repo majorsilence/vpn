@@ -17,14 +17,17 @@ public abstract class PppBase
     protected Users userData;
     protected string userRequestedPassword;
     protected VpnServers vpnData;
-
+    private readonly DatabaseSettings _dbSettings;
+    
     protected PppBase()
     {
     }
 
-    protected PppBase(int userId, int vpnServerId, ISsh sshNewServer, ISsh sshRevokeServer)
+    protected PppBase(int userId, int vpnServerId, ISsh sshNewServer, ISsh sshRevokeServer,
+        DatabaseSettings dbSettings)
     {
-        using (var db = InitializeSettings.DbFactory)
+        _dbSettings = dbSettings;
+        using (var db = _dbSettings.DbFactory)
         {
             userData = db.Get<Users>(userId);
             vpnData = db.Get<VpnServers>(vpnServerId);
@@ -37,7 +40,7 @@ public abstract class PppBase
 
     private bool IsActiveAccount()
     {
-        var pay = new Payment(userData.Id);
+        var pay = new Payment(userData.Id, _dbSettings);
         return !pay.IsExpired();
     }
 
@@ -71,7 +74,7 @@ public abstract class PppBase
     public void RevokeUser()
     {
         // we should only revoke if we have records indicating the user has an account on this server.
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var certData = db.Query<UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
                 new { UserId = userData.Id });
@@ -95,7 +98,7 @@ public abstract class PppBase
 
     protected void SaveUserInfo()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var data = db.Query<UserPptpInfo>("SELECT * FROM UserPptpInfo wHERE UserId=@UserId",
                 new { UserId = userData.Id });

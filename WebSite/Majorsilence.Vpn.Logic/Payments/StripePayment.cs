@@ -16,6 +16,7 @@ public class StripePayment
 {
     private readonly int _userId;
     private readonly IEmail email;
+    private readonly DatabaseSettings _dbSettings;
 
     private StripePayment()
     {
@@ -24,10 +25,11 @@ public class StripePayment
     /// <summary>
     /// </summary>
     /// <param name="userId"></param>
-    public StripePayment(int userId, IEmail email)
+    public StripePayment(int userId, IEmail email, DatabaseSettings dbSettings)
     {
         _userId = userId;
         this.email = email;
+        _dbSettings = dbSettings;
     }
 
 
@@ -44,7 +46,7 @@ public class StripePayment
         else if (string.IsNullOrWhiteSpace(customerDetails.Value.StripeSubscriptionId))
             CreateStripeSubscription(stripeToken, coupon);
 
-        var pay = new Payment(_userId);
+        var pay = new Payment(_userId, _dbSettings);
         pay.SaveUserPayment(SiteInfo.CurrentMonthlyRate, DateTime.UtcNow,
             SiteInfo.MonthlyPaymentId);
     }
@@ -62,7 +64,7 @@ public class StripePayment
         var custService = new CustomerService(client);
         custService.Delete(customerDetails.Value.StripeCustId);
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var data = db.Get<Users>(_userId);
             data.StripeCustomerAccount = "";
@@ -87,7 +89,7 @@ public class StripePayment
             subscriptionService.Cancel(customerDetails.Value.StripeSubscriptionId);
         }
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var data = db.Get<Users>(_userId);
             data.StripeSubscriptionId = "";
@@ -106,7 +108,7 @@ public class StripePayment
 
     private void CreateStripeSubscription(string stripeToken, string coupon)
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var data = db.Get<Users>(_userId);
 
@@ -152,7 +154,7 @@ public class StripePayment
     private void CreateStripeCustomer(string stripeToken, string coupon)
     {
         var customer = new CustomerCreateOptions();
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var data = db.Get<Users>(_userId);
 
@@ -202,7 +204,7 @@ public class StripePayment
         var stripeCustId = "";
         var stripeSubscriptionId = "";
 
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             var data = db.Get<Users>(_userId);
 

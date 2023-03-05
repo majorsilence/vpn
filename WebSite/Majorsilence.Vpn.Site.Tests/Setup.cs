@@ -35,12 +35,12 @@ public class Setup
         var email = new FakeEmail();
         var mockLogger = new Mock<ILogger>();
         var logger = mockLogger.Object;
-        var setup = new InitializeSettings("localhost", testingdb, email, 
+        var setup = new DatabaseSettings("localhost", testingdb, email, 
             false, logger);
         await setup.ExecuteAsync();
 
         // set test server ssh port
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = DatabaseSettings.DbFactory)
         {
             db.Open();
             var siteInfo = db.Query<SiteInfo>("SELECT * FROM SiteInfo");
@@ -67,7 +67,7 @@ public class Setup
     [TearDown]
     public void TearDown()
     {
-        var connStrDrop = InitializeSettings.DbFactoryWithoutDatabase.ConnectionString;
+        var connStrDrop = DatabaseSettings.DbFactoryWithoutDatabase.ConnectionString;
         var cnDrop = new MySqlConnection(connStrDrop);
         var cmdDrop = cnDrop.CreateCommand();
         cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);

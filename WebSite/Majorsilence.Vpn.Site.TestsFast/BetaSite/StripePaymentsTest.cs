@@ -41,7 +41,7 @@ public class StripePaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, InitializeSettings.Email);
+            , true, DatabaseSettings.Email);
 
         userid = await peterAccount.ExecuteAsync();
 
@@ -83,7 +83,7 @@ public class StripePaymentsTest
     {
         token = "";
 
-        using (var cn = InitializeSettings.DbFactory)
+        using (var cn = DatabaseSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UserPayments");

@@ -17,15 +17,17 @@ public class PaypalPayment
     private readonly IPaypalSettings _paypalSettings;
     private string url;
     private readonly int userId;
+    private readonly DatabaseSettings _dbSettings;
 
     private PaypalPayment()
     {
     }
 
-    public PaypalPayment(int userId, IPaypalSettings paypalSettings)
+    public PaypalPayment(int userId, IPaypalSettings paypalSettings, DatabaseSettings dbSettings)
     {
         this.userId = userId;
         _paypalSettings = paypalSettings;
+        _dbSettings = dbSettings;
     }
 
     /// <summary>
@@ -180,7 +182,7 @@ public class PaypalPayment
                 var payPalResponse =
                     JsonConvert.DeserializeObject<PaypalPayExecuteResponse>(content);
 
-                var pay = new Payment(userId);
+                var pay = new Payment(userId, _dbSettings);
                 foreach (var transaction in payPalResponse.transactions)
                 {
                     var amount = transaction.amount.total;

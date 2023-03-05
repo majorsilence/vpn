@@ -13,14 +13,18 @@ public class CertsOpenVpnRevokeCommand : ICommand
 {
     private readonly ISsh sshClient;
     private readonly Users userData;
-
+    private readonly DatabaseSettings _dbSettings;
+    private readonly ActionLog _actionLog;
     private CertsOpenVpnRevokeCommand()
     {
     }
 
-    public CertsOpenVpnRevokeCommand(int userId, ISsh sshClient)
+    public CertsOpenVpnRevokeCommand(int userId, ISsh sshClient, DatabaseSettings dbSettings,
+        ActionLog actionLog)
     {
-        using (var db = InitializeSettings.DbFactory)
+        _dbSettings = dbSettings;
+        _actionLog = actionLog;
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             userData = db.Get<Users>(userId);
@@ -33,7 +37,7 @@ public class CertsOpenVpnRevokeCommand : ICommand
     {
         var certName = "";
         VpnServers vpnData = null;
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             var certData = db.Query<UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
@@ -51,11 +55,11 @@ public class CertsOpenVpnRevokeCommand : ICommand
 
         if (certName == "") return;
 
-        ActionLog.Log_BackgroundThread("OpenVpn Revoke Start", userData.Id);
+        _actionLog.Log("OpenVpn Revoke Start", userData.Id);
 
         RevokeUserCert(vpnData.Address, certName);
 
-        ActionLog.Log_BackgroundThread("OpenVpn Revoke Finished", userData.Id);
+        _actionLog.Log("OpenVpn Revoke Finished", userData.Id);
     }
 
     /// <summary>

@@ -6,9 +6,15 @@ namespace Majorsilence.Vpn.Logic.Admin;
 
 public class ErrorReports
 {
+    private readonly DatabaseSettings _dbSettings;
+    public ErrorReports(DatabaseSettings dbSettings)
+    {
+        _dbSettings = dbSettings;
+    }
+    
     public IEnumerable<Errors> RetrieveAll()
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             return db.Query<Errors>("SELECT * FROM Errors ORDER BY Id desc");
@@ -17,7 +23,7 @@ public class ErrorReports
 
     public IEnumerable<Errors> RetrieveLimit(int start, int count)
     {
-        using (var db = InitializeSettings.DbFactory)
+        using (var db = _dbSettings.DbFactory)
         {
             db.Open();
             return db.Query<Errors>("SELECT * FROM Errors LIMIT @Start, @Count",
