@@ -4,6 +4,7 @@ using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Admin;
+using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.OpenVpn;
 using Majorsilence.Vpn.Logic.Payments;
@@ -33,7 +34,7 @@ public class GenerateCertsTest
                 PasswordConfirm = "Password54",
                 BetaKey = ""
             }
-            , false, DatabaseSettings.Email);
+            , false, new FakeEmail());
 
         userid = await peterAccount.ExecuteAsync();
 

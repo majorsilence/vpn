@@ -45,7 +45,7 @@ builder.Services.AddScoped<IEmail>(i =>
 builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
 builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
 builder.Services.AddScoped<ISessionVariables, SessionVariables>();
-builder.Services.AddScoped<DatabaseSettings>(i => new DatabaseSettings(builder.Configuration["ConnectionStrings:LocalMySqlServer"],
+builder.Services.AddScoped<DatabaseSettings>(i => new DatabaseSettings(builder.Configuration["ConnectionStrings:MySqlVpn"],
     builder.Configuration["ConnectionStrings:MySqlSessions"],
     false,
     i.GetService<ILogger>()

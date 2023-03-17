@@ -48,4 +48,9 @@
         <Compile Remove="obj\x86\Debug\.NETFramework,Version=v4.5.AssemblyAttributes.cs" />
         <Compile Remove="obj\x86\Release\.NETFramework,Version=v4.5.AssemblyAttributes.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

@@ -57,7 +57,7 @@ public class AdminController : Controller
 
     public ActionResult ErrorReport()
     {
-        return View(new CustomViewLayout(sessionInstance, _dbSettings));
+        return View(new CustomViewLayout(sessionInstance));
     }
 
     public async Task RemoveStripeAccount(int id, string removeaccount)

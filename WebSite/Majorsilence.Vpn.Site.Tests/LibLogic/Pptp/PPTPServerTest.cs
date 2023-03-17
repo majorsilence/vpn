@@ -10,7 +10,7 @@ public class PPTPServerTest
         using (var sshNewServer = new FakeSsh())
         using (var sshRevokeServer = new FakeSsh())
         {
-            var ppt = new ManagePPTP(2, 1, sshNewServer, sshRevokeServer);
+            var ppt = new ManagePPTP(2, 1, sshNewServer, sshRevokeServer, Setup.DbSettings);
             ppt.AddUser();
         }
     }

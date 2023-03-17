@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,6 +18,7 @@ using Majorsilence.Vpn.Poco;
 using Majorsilence.Vpn.Site.Controllers;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.TestsFast.MvcFakes;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using MySql.Data.MySqlClient;
@@ -32,7 +34,8 @@ namespace Majorsilence.Vpn.Site.TestsFast.ApiV2;
 [SetUpFixture]
 public class Setup
 {
-    private static readonly string testingdb = Guid.NewGuid().ToString().Replace("-", "");
+    private static string testingdb;
+    public static DatabaseSettings DbSettings { get; private set; }
 
     public static readonly string emailAddress = "testlogins@majorsilence.com";
     public static readonly string betaKey = "abc1";
@@ -57,7 +60,7 @@ public class Setup
                 PasswordConfirm = password,
                 BetaKey = betaKey
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         userid = await peterAccount.ExecuteAsync();
 
@@ -131,15 +134,23 @@ public class Setup
         var mockLogger = new Mock<ILogger>();
         var logger = mockLogger.Object;
         // setup database and stuff
-        var email = new FakeEmail();
-        var setup = new DatabaseSettings("localhost", 
-            testingdb, email, false,
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false);
+
+        IConfiguration config = builder.Build();
+        var cnBuilder = new MySqlConnectionStringBuilder(config["ConnectionStrings:MySqlVpn"]);
+        testingdb = cnBuilder.Database;
+        DbSettings = new DatabaseSettings(config["ConnectionStrings:MySqlVpn"],
+            config["ConnectionStrings:MySqlSessions"],
+            false,
             logger);
-        await setup.ExecuteAsync();
+        var inst = new InitiateGlobalStaticVariables(DbSettings);
+        inst.Execute();
 
 
         // set test server ssh port
-        using (var db = DatabaseSettings.DbFactory)
+        using (var db = DbSettings.DbFactory)
         {
             db.Open();
             var siteInfo = db.Query<SiteInfo>("SELECT * FROM SiteInfo");
@@ -165,7 +176,7 @@ public class Setup
 
     private void CleanLogin()
     {
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = DbSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UsersApiTokens WHERE UserId = @Id", new { Id = userid });
@@ -180,9 +191,9 @@ public class Setup
     [TearDown]
     public void TearDown()
     {
-        var connStrDrop = DatabaseSettings.DbFactoryWithoutDatabase.ConnectionString;
-        var cnDrop = new MySqlConnection(connStrDrop);
-        var cmdDrop = cnDrop.CreateCommand();
+        var connStrDrop = DbSettings.DbFactoryWithoutDatabase.ConnectionString;
+        using var cnDrop = new MySqlConnection(connStrDrop);
+        using var cmdDrop = cnDrop.CreateCommand();
         cmdDrop.CommandText = string.Format("DROP DATABASE IF EXISTS `{0}`;", testingdb);
         cmdDrop.CommandType = CommandType.Text;
 

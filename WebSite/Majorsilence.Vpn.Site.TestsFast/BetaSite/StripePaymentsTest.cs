@@ -41,7 +41,7 @@ public class StripePaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         userid = await peterAccount.ExecuteAsync();
 

@@ -1,4 +1,5 @@
-﻿using Majorsilence.Vpn.Logic.OpenVpn;
+﻿using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.OpenVpn;
 using Majorsilence.Vpn.Logic.Ssh;
 using NUnit.Framework;
 
@@ -29,7 +30,8 @@ public class GenerateCertsTest
         using (var sftp = new FakeSftp())
         {
             var certs = new CertsOpenVpnGenerateCommand(2, 1, sshNewServer,
-                sshRevokeServer, sftp);
+                sshRevokeServer, sftp, SiteTests.Setup.DbSettings, 
+                new ActionLog(SiteTests.Setup.DbSettings));
             certs.Execute();
         }
     }
