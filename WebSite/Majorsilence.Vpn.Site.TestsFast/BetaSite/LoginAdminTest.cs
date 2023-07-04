@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Email;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -30,7 +31,7 @@ public class LoginAdminTest
                 PasswordConfirm = password,
                 BetaKey = betaKey
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         userid = await peterAccount.ExecuteAsync();
     }
@@ -38,7 +39,7 @@ public class LoginAdminTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = BetaSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM Users WHERE Email = @email", new { email = emailAddress });
@@ -52,7 +53,7 @@ public class LoginAdminTest
     {
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var login = new Login(emailAddress, password, logger);
+        var login = new Login(emailAddress, password, logger, BetaSite.Setup.DbSettings);
         login.Execute();
 
         Console.WriteLine(login.LoggedIn);
@@ -73,7 +74,7 @@ public class LoginAdminTest
     {
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var login = new Login("hithere", password, logger);
+        var login = new Login("hithere", password, logger, BetaSite.Setup.DbSettings);
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);
@@ -87,7 +88,7 @@ public class LoginAdminTest
     {
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var login = new Login(emailAddress, "wrong password", logger);
+        var login = new Login(emailAddress, "wrong password", logger, BetaSite.Setup.DbSettings);
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);
@@ -101,7 +102,7 @@ public class LoginAdminTest
     {
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var login = new Login("hi there", "wrong password", logger);
+        var login = new Login("hi there", "wrong password", logger, BetaSite.Setup.DbSettings);
         login.Execute();
 
         Assert.That(login.LoggedIn, Is.False);

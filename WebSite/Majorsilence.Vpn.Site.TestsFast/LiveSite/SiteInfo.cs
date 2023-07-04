@@ -13,7 +13,7 @@ public class SiteInfo
     [SetUp]
     public void Setup()
     {
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = LiveSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
 
@@ -26,7 +26,7 @@ public class SiteInfo
     [TearDown]
     public void Teardown()
     {
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = LiveSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
 
@@ -35,7 +35,7 @@ public class SiteInfo
         }
 
         Logic.Helpers.SiteInfo.InitializeSimple(sinfo, prates.CurrentMonthlyRate, prates.CurrentYearlyRate);
-        Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
+        Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb(LiveSite.Setup.DbSettings);
     }
 
     private Poco.SiteInfo sinfo;
@@ -62,10 +62,10 @@ public class SiteInfo
         var yearlyRate = 62.47m;
 
         Logic.Helpers.SiteInfo.InitializeSimple(info, monthlyRate, yearlyRate);
-        Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb();
+        Logic.Helpers.SiteInfo.SaveCurrentSettingsToDb(LiveSite.Setup.DbSettings);
 
 
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = LiveSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
 

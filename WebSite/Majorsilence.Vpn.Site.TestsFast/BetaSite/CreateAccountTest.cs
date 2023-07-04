@@ -315,7 +315,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         Assert.Throws<InvalidDataException>(async () => await peterAccount.ExecuteAsync());
     }
@@ -336,7 +336,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         await peterAccount.ExecuteAsync();
 
@@ -351,7 +351,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         Assert.Throws<BetaKeyAlreadyUsedException>(async() => await peterAccount2.ExecuteAsync());
 
@@ -376,7 +376,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = "A Fake Beta Key"
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
 
         Assert.Throws<InvalidBetaKeyException>(async () => await peterAccount.ExecuteAsync());
@@ -401,7 +401,7 @@ public class CreateAccountTest
                 PasswordConfirm = "Password1",
                 BetaKey = ""
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         Assert.Throws<InvalidBetaKeyException>(async() => await peterAccount.ExecuteAsync());
 

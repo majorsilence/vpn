@@ -83,7 +83,7 @@ public class StripePaymentsTest
     {
         token = "";
 
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = BetaSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UserPayments");
@@ -106,7 +106,7 @@ public class StripePaymentsTest
     public void HappyPathNoCouponTest()
     {
         SslSecurity.Callback();
-        var pay = new StripePayment(userid, new FakeEmail());
+        var pay = new StripePayment(userid, new FakeEmail(), BetaSite.Setup.DbSettings);
         pay.MakePayment(token, "");
     }
 
@@ -114,7 +114,7 @@ public class StripePaymentsTest
     public void MissingTokenTest()
     {
         SslSecurity.Callback();
-        var pay = new StripePayment(userid, new FakeEmail());
+        var pay = new StripePayment(userid, new FakeEmail(), BetaSite.Setup.DbSettings);
 
         Assert.Throws<InvalidStripeTokenException>(() => pay.MakePayment("", ""));
     }

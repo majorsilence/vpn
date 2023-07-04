@@ -82,7 +82,7 @@ public class Setup
             var logger = mockLogger.Object;
             var keysMock = new Mock<IEncryptionKeysSettings>();
             var keys = keysMock.Object;
-            var controller = new ApiV2Controller(sessionVars, logger, keys);
+            var controller = new ApiV2Controller(sessionVars, logger, keys, ApiV2.Setup.DbSettings);
 
             var header = new NameValueCollection();
             header.Add("Authorization", headerAuth.ToString());

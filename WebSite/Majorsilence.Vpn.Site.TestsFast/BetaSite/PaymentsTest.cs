@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
+using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Poco;
@@ -35,7 +36,7 @@ public class PaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey
             }
-            , true, DatabaseSettings.Email);
+            , true, new FakeEmail());
 
         userid = await peterAccount.ExecuteAsync();
 
@@ -50,7 +51,7 @@ public class PaymentsTest
                 PasswordConfirm = "Password1",
                 BetaKey = betaKey2
             }
-            , false, DatabaseSettings.Email);
+            , false, new FakeEmail());
 
         nonAdminUserId = await account2.ExecuteAsync();
     }
@@ -58,7 +59,7 @@ public class PaymentsTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = BetaSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM UserPayments");
@@ -78,10 +79,10 @@ public class PaymentsTest
         const decimal payment = 56.76m;
         var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, BetaSite.Setup.DbSettings);
         pay.SaveUserPayment(payment, createDate, paycode);
 
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = BetaSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
             var data = cn.Query<UserPayments>(
@@ -101,7 +102,7 @@ public class PaymentsTest
         const decimal payment = 56.76m;
         var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Payment(-1);
+        var pay = new Payment(-1, BetaSite.Setup.DbSettings);
 
         Assert.Throws<InvalidUserIdException>(() => pay.SaveUserPayment(payment, createDate, paycode));
     }
@@ -111,7 +112,7 @@ public class PaymentsTest
     public void IsExpiredTest()
     {
         // Beta account should never be expired
-        var pay = new Payment(nonAdminUserId);
+        var pay = new Payment(nonAdminUserId, BetaSite.Setup.DbSettings);
         Assert.That(pay.IsExpired(), Is.True);
     }
 
@@ -119,7 +120,7 @@ public class PaymentsTest
     public void IsAdminExpiredTest()
     {
         // Beta account should never be expired
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, BetaSite.Setup.DbSettings);
         Assert.That(pay.IsExpired(), Is.False);
     }
 
@@ -131,7 +132,7 @@ public class PaymentsTest
         const decimal payment = 56.76m;
         var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Payment(nonAdminUserId);
+        var pay = new Payment(nonAdminUserId, BetaSite.Setup.DbSettings);
         pay.SaveUserPayment(payment, createDate, paycode);
 
 
@@ -145,7 +146,7 @@ public class PaymentsTest
         var payment = 56.76m;
         var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, BetaSite.Setup.DbSettings);
         pay.SaveUserPayment(payment, createDate, paycode);
 
 
@@ -161,7 +162,7 @@ public class PaymentsTest
         var payment = 56.76m;
         var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, BetaSite.Setup.DbSettings);
         pay.SaveUserPayment(payment, createDate, paycode);
 
 
@@ -172,7 +173,7 @@ public class PaymentsTest
     public void IsExpiredInvalidUserIdTest()
     {
         // Beta account should never be expired except for invalid user accounts
-        var pay = new Payment(-1);
+        var pay = new Payment(-1, BetaSite.Setup.DbSettings);
 
         Assert.That(pay.IsExpired(), Is.True);
     }
@@ -185,7 +186,7 @@ public class PaymentsTest
         var payment = 56.76m;
         var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, BetaSite.Setup.DbSettings);
 
 
         for (var i = 0; i < 1000; i++)
@@ -202,7 +203,7 @@ public class PaymentsTest
         var payment = 56.76m;
         var paycode = SiteInfo.MonthlyPaymentId;
 
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, BetaSite.Setup.DbSettings);
 
         pay.SaveUserPayment(payment, createDate, paycode);
         var expireDate = createDate.AddMonths(1).AddDays(1);
@@ -221,7 +222,7 @@ public class PaymentsTest
         var payment = 56.76m;
         var paycode = SiteInfo.YearlyPaymentId;
 
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, BetaSite.Setup.DbSettings);
 
         pay.SaveUserPayment(payment, createDate, paycode);
         var expireDate = createDate.AddYears(1).AddDays(1);

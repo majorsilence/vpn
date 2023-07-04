@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Timers;
 using Dapper;
@@ -16,9 +17,9 @@ public class DatabaseSettings
     public string StrConnectionSessions { get; }
     public bool IsLiveSite { get; }
     private readonly ILogger _logger;
-    public IDbConnection DbFactory => new MySqlConnection(StrConnectionVpn);
+    public DbConnection DbFactory => new MySqlConnection(StrConnectionVpn);
 
-    public IDbConnection DbFactoryWithoutDatabase =>
+    public DbConnection DbFactoryWithoutDatabase =>
         // return new MySql.Data.MySqlClient.MySqlConnection(string.Format("Server={0};Uid={1};Pwd={2};Port={3};CharSet=utf8mb4;",
         //   server, username, password, port));
         new MySqlConnection(StrConnectionVpn);

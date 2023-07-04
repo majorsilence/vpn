@@ -38,17 +38,17 @@ public class GenerateCertsTest
 
         userid = await peterAccount.ExecuteAsync();
 
-        var region = new Regions();
+        var region = new Regions(LiveSite.Setup.DbSettings);
         regionid = region.Insert("Test region", true);
 
-        var vpnserver = new VpnServers();
+        var vpnserver = new VpnServers(LiveSite.Setup.DbSettings);
         vpnseverid = vpnserver.Insert("localhost", 5678, "a fake vpnserver for testing", regionid, true);
     }
 
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = LiveSite.Setup.DbSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM ActionLog WHERE UserId=@UserId", new { UserId = userid });
@@ -64,7 +64,7 @@ public class GenerateCertsTest
     [Test]
     public void GenerateCertHappyPath()
     {
-        var pay = new Payment(userid);
+        var pay = new Payment(userid, LiveSite.Setup.DbSettings);
         pay.SaveUserPayment(5, DateTime.UtcNow, Logic.Helpers.SiteInfo.MonthlyPaymentId);
 
         using (var sshClient = new FakeSsh(FakeSsh.TestingScenerios.OpenVpnHappyPath))
@@ -72,7 +72,8 @@ public class GenerateCertsTest
         using (var sftpClient = new FakeSftp())
         {
             var vpn = new CertsOpenVpnGenerateCommand(userid, vpnseverid,
-                sshClient, sshRevokeClient, sftpClient);
+                sshClient, sshRevokeClient, sftpClient, LiveSite.Setup.DbSettings,
+                new ActionLog(LiveSite.Setup.DbSettings));
 
             vpn.Execute();
         }
@@ -86,7 +87,8 @@ public class GenerateCertsTest
         using (var sftpClient = new FakeSftp())
         {
             var vpn = new CertsOpenVpnGenerateCommand(userid, vpnseverid,
-                sshClient, sshRevokeClient, sftpClient);
+                sshClient, sshRevokeClient, sftpClient, LiveSite.Setup.DbSettings,
+                new ActionLog(LiveSite.Setup.DbSettings));
 
             Assert.Throws<AccountNotActiveException>(() => vpn.Execute());
         }

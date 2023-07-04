@@ -12,7 +12,7 @@ public class CreateAccountTest
     [TearDown]
     public void Cleanup()
     {
-        using (var cn = DatabaseSettings.DbFactory)
+        using (var cn = Setup.DbSettings.DbFactory)
         {
             cn.Open();
             cn.Execute("DELETE FROM users WHERE email = @email", new { email = emailAddress });
