@@ -187,7 +187,7 @@ public class InitialDatabase : Migration
         {
             VpnSshUser = "avpnSshUser", VpnSshPassword = sshPassword,
             SshPort = port, AdminEmail = "yourAdminEmail", SiteName = "Majorsilence VPN",
-            SiteUrl = "https://majorsilencevpn.com", StripeAPISecretKey = "YourStripeSecretKey",
+            SiteUrl = "https://vpn.majorsilence.com", StripeAPISecretKey = "YourStripeSecretKey",
             LiveSite = liveSite
         });
     }

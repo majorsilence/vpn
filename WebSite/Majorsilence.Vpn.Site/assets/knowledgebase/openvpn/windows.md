@@ -5,7 +5,7 @@
     * Install it following the instructions found on the openvpn page
 2. In your start menu search for __OpenVPN configuration file directory__
     * Open this folder
-    * Find the [majorvpn].ovpn file you downloaded from https://majorsilencevpn.com/setup OpenVPN section
+    * Find the [majorvpn].ovpn file you downloaded from https://vpn.majorsilence.com/setup OpenVPN section
     * Copy it into the OpenVpn folder you have open
 
 You can now connect by

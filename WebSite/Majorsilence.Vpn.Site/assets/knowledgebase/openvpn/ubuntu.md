@@ -2,7 +2,7 @@
 
 Tested with Ubuntu 14.04
 
-When logged into the site download your open vpn certificate from https://majorsilencevpn.com/setup
+When logged into the site download your open vpn certificate from https://vpn.majorsilence.com/setup
 by clicking the __Download OpenVPN Certificate__ button. This will download a file called Certs.zip.
 Unzip this file.
 
@@ -43,7 +43,7 @@ You can now connect by
 
 On the VPN tab
 
-1. On the VPN tab fill in the Gateway with the IP of your vpn connection from https://majorsilencevpn.com/setup
+1. On the VPN tab fill in the Gateway with the IP of your vpn connection from https://vpn.majorsilence.com/setup
     * For example: 107.170.154.114
 2. Authention type: __Certificates (TLS)__
 3. Select the __User Certificate__ from your download, something like [majorvpn].crt

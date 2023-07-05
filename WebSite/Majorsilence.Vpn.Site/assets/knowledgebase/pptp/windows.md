@@ -6,7 +6,7 @@
 4. Select __Connect to a workplace__ and click __Next__
 5. Select __No, create a new connection__ and click __Next__
 6. Under how do you want to connect select __Use my Internet connection (VPN)__
-7. Fill in IP address is available from https://majorsilencevpn.com/setup when you are logged into the site
+7. Fill in IP address is available from https://vpn.majorsilence.com/setup when you are logged into the site
 8. Check on __Remember my credentials__ and click __Next__
 
 You are now ready to connect to the vpn.

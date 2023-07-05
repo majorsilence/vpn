@@ -1,4 +1,4 @@
-* Download openvpn certs from https://majorsilencevpn.com/setup OpenVPN section
+* Download openvpn certs from https://vpn.majorsilence.com/setup OpenVPN section
     * Note this file is in a zip file and must be extracted first
     * If you do not have an app that can extract files
       install [ES File Explorer](https://play.google.com/store/apps/details?id=com.estrongs.android.pop&hl=en)

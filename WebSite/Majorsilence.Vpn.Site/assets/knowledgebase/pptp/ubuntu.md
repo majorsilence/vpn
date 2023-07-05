@@ -4,7 +4,7 @@
 4. Click __Add__
 5. Select the connection type __Point-to-Point Tunneling Protocol (PPTP)__
 6. Click __Create__
-7. On the VPN tab fill in the Gateway with the IP of your vpn connection from https://majorsilencevpn.com/setup
+7. On the VPN tab fill in the Gateway with the IP of your vpn connection from https://vpn.majorsilence.com/setup
     * For example: 107.170.154.114
 8. Fill in your __User name__
 9. Fill in your __Password__

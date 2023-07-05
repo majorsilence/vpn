@@ -74,7 +74,7 @@ public class ResetPassword
         }
 
         email.SendMail(string.Format(
-                "Your Email Reset Code is: <a href=\"https://majorsilencevpn.com/validatecode?resetcode={0}\">{1}</a>",
+                "Your Email Reset Code is: <a href=\"https://vpn.majorsilence.com/validatecode?resetcode={0}\">{1}</a>",
                 HttpUtility.UrlEncode(ressetCode), ressetCode),
             "Password Reset", username, true, null, EmailTemplates.Generic);
         return true;
