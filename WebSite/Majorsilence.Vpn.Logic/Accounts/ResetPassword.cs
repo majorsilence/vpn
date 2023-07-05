@@ -31,28 +31,29 @@ public class ResetPassword
     public bool validateCode(string resetCode, string password)
     {
         var user = RetrieveUser("", resetCode);
-        if (user != null)
-            if (user.PasswordResetCode == resetCode)
+        if (user == null) return true;
+        
+        if (user.PasswordResetCode == resetCode)
+        {
+            var pwd = new CreatePasswords(password, user.FirstName + user.LastName);
+            user.PasswordResetCode = "";
+            user.Password = pwd.Password;
+            user.Salt = pwd.Salt;
+            using (var db = _dbSettings.DbFactory)
             {
-                var pwd = new CreatePasswords(password, user.FirstName + user.LastName);
-                user.PasswordResetCode = "";
-                user.Password = pwd.Password;
-                user.Salt = pwd.Salt;
-                using (var db = _dbSettings.DbFactory)
+                db.Open();
+
+                using (var txn = db.BeginTransaction())
                 {
-                    db.Open();
+                    db.Update(user);
 
-                    using (var txn = db.BeginTransaction())
-                    {
-                        db.Update(user);
-
-                        txn.Commit();
-                    }
+                    txn.Commit();
                 }
-
-                email.SendMail("Your Password was Reset", "Password Reset", user.Email, false);
-                return true;
             }
+
+            email.SendMail("Your Password was Reset", "Password Reset", user.Email, false);
+            return true;
+        }
 
         return true;
     }

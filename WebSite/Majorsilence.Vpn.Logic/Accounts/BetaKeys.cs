@@ -66,10 +66,10 @@ public class BetaKeys
             HttpUtility.HtmlEncode(emailAddress),
             HttpUtility.HtmlEncode(betakey));
 
-        var message = string.Format("You have been invited to signup at <a href=\"{0}\">{1}</a>.",
-            signupLink, SiteInfo.SiteName);
+        // TODO: the message should be read from a message template table
+        var message = $"You have been invited to signup at <a href=\"{signupLink}\">{SiteInfo.SiteName}</a>.";
         message += " Your beta key is below. <br><br>";
-        message += string.Format("<strong>{0}</strong>", betakey);
+        message += $"<strong>{betakey}</strong>";
 
         await email.SendMail(message, subject, emailAddress, true, null, EmailTemplates.BetaKey);
 
@@ -110,10 +110,8 @@ public class BetaKeys
         var betakey = GenerateKeyAndMarkSent();
         var subject = SiteInfo.SiteName + " Invite";
 
-        var signupLink = string.Format("{0}/?betaemail={1}&betacode={2}",
-            SiteInfo.SiteUrl,
-            HttpUtility.HtmlEncode(emailAddressSendTo),
-            HttpUtility.HtmlEncode(betakey));
+        var signupLink =
+            $"{SiteInfo.SiteUrl}/?betaemail={HttpUtility.HtmlEncode(emailAddressSendTo)}&betacode={HttpUtility.HtmlEncode(betakey)}";
 
         var message = string.Format(
             "You have been invited to signup at <a href=\"{0}\">{1}</a> by {2} {3} ({4}).<br><br>",
@@ -121,7 +119,7 @@ public class BetaKeys
             HttpUtility.HtmlEncode(sentFromEmailAddress));
 
         message += " Your beta key is below. <br><br>";
-        message += string.Format("<strong>{0}</strong>", betakey);
+        message += $"<strong>{betakey}</strong>";
 
         await email.SendMail(message, subject, emailAddressSendTo, true, null, EmailTemplates.BetaKey);
 

@@ -21,7 +21,7 @@ public class GenerateResetCode
         chars = key.ToCharArray();
         var size = maxSize;
         var data = new byte[1];
-        var crypto = new RNGCryptoServiceProvider();
+        using var crypto = new RNGCryptoServiceProvider();
         crypto.GetNonZeroBytes(data);
 
         data = new byte[size];

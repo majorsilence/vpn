@@ -19,15 +19,12 @@ public class Hashes
     public static string GetSHA512StringHash(string nonHashedString, string salt)
     {
         var hashValue = "";
-        using (SHA512 _sha512 = new SHA512Managed())
-        {
-            var data = Encoding.UTF8.GetBytes(salt + nonHashedString);
-            var retVal = _sha512.ComputeHash(data);
-            // hex string
-            hashValue = BitConverter.ToString(retVal).Replace("-", "");
-        }
-
-
+        using SHA512 _sha512 = SHA512.Create();
+        var data = Encoding.UTF8.GetBytes(salt + nonHashedString);
+        var retVal = _sha512.ComputeHash(data);
+        // hex string
+        hashValue = BitConverter.ToString(retVal).Replace("-", "");
+        
         return hashValue;
     }
 }

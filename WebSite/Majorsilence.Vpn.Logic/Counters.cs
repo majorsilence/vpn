@@ -16,6 +16,7 @@ public static class Counters
     /// <returns></returns>
     public static ulong GetSetVpnNum(IDbTransaction txn, IDbConnection cn)
     {
+        // TODO: delete counters, use guids/uniqueidentifiers
         var count = cn.Query<Poco.Counters>("SELECT * FROM Counters WHERE Code = @Code",
             new { Code = "VPNCERT" });
 

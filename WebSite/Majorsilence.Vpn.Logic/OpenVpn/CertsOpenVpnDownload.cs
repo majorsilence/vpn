@@ -28,7 +28,7 @@ public class CertsOpenVpnDownload
                 var userCerts = db.Query<UserOpenVpnCerts>("SELECT * FROM UserOpenVpnCerts WHERE UserId=@UserId",
                     new { UserId = userid });
 
-                if (userCerts.Count() > 0)
+                if (userCerts.Any())
                 {
                     zip.AddEntry("majorsilencevpn/other/ca.crt", userCerts.First().CertCa);
                     zip.AddEntry("majorsilencevpn/other/majorvpn.key", userCerts.First().CertKey);

@@ -44,12 +44,12 @@ public class CreateAccount
     {
         ValidateData();
 
-        using (var db = _dbSettings.DbFactory)
+        await using (var db = _dbSettings.DbFactory)
         {
-            db.Open();
+            await db.OpenAsync();
 
 
-            using (var txn = db.BeginTransaction())
+            await using (var txn = await db.BeginTransactionAsync())
             {
                 var pwd = new CreatePasswords(details.Password, details.Firstname + details.Lastname);
 
@@ -70,10 +70,10 @@ public class CreateAccount
                 if (RequiresBetaKey())
                 {
                     betaKey.IsUsed = true;
-                    db.Update(betaKey);
+                    await db.UpdateAsync(betaKey);
                 }
 
-                txn.Commit();
+                await txn.CommitAsync();
 
                 if (isAdmin == false) await EmailAccountCreation();
 
@@ -84,14 +84,14 @@ public class CreateAccount
 
     private async Task EmailAccountCreation()
     {
-        var subject = string.Format("{0} Account Created", SiteInfo.SiteName);
+        // TODO: the message should be read from a message template table
+        var subject = $"{SiteInfo.SiteName} Account Created";
         var message = new StringBuilder();
 
-        message.Append(string.Format("Welcome to {0}", SiteInfo.SiteName));
+        message.Append($"Welcome to {SiteInfo.SiteName}");
         message.Append("<br><br>");
-        message.Append(string.Format("Your {0} account has been created.  ", SiteInfo.SiteName));
-        message.Append(string.Format("You can login and start using your account anytime at {0}."
-            , SiteInfo.SiteUrl));
+        message.Append($"Your {SiteInfo.SiteName} account has been created.  ");
+        message.Append($"You can login and start using your account anytime at {SiteInfo.SiteUrl}.");
 
         await email.SendMail(message.ToString(), subject, details.Email, true);
     }
