@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Poco", "Ma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site.TestsFast", "Majorsilence.Vpn.Site.TestsFast\Majorsilence.Vpn.Site.TestsFast.csproj", "{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.Site.TestsFastDebugger", "Majorsilence.Vpn.Site.TestsFastDebugger\Majorsilence.Vpn.Site.TestsFastDebugger.csproj", "{AD628056-C701-4729-97D5-49A4FE21EF6D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Majorsilence.Vpn.MajorsilenceTypes", "Majorsilence.Vpn.MajorsilenceTypes\Majorsilence.Vpn.MajorsilenceTypes.csproj", "{7DCB49F1-5840-456B-803C-F987A9CA8192}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C5C2489F-06B9-456A-A6AB-CE62C42AFFAD}"
@@ -67,14 +65,6 @@ Global
 		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Release|Any CPU.Build.0 = Release|Any CPU
 		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Release|x86.ActiveCfg = Release|Any CPU
 		{65CCF0D4-FD3D-4B4B-B02A-CCDEE0D08592}.Release|x86.Build.0 = Release|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Debug|x86.Build.0 = Debug|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|x86.ActiveCfg = Release|Any CPU
-		{AD628056-C701-4729-97D5-49A4FE21EF6D}.Release|x86.Build.0 = Release|Any CPU
 		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DCB49F1-5840-456B-803C-F987A9CA8192}.Debug|x86.ActiveCfg = Debug|Any CPU
