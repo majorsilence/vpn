@@ -7,11 +7,12 @@ namespace Majorsilence.Vpn.Logic.Admin;
 public class ErrorReports
 {
     private readonly DatabaseSettings _dbSettings;
+
     public ErrorReports(DatabaseSettings dbSettings)
     {
         _dbSettings = dbSettings;
     }
-    
+
     public IEnumerable<Errors> RetrieveAll()
     {
         using (var db = _dbSettings.DbFactory)

@@ -12,9 +12,9 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class ResetPassword
 {
+    private readonly DatabaseSettings _dbSettings;
     private readonly IEmail email;
     private readonly GenerateResetCode generateCode;
-    private readonly DatabaseSettings _dbSettings;
 
     private ResetPassword()
     {

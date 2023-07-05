@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;

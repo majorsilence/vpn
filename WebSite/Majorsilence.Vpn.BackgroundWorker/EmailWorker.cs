@@ -3,15 +3,15 @@ using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.AppSettings;
 using Majorsilence.Vpn.Logic.Email;
-using Majorsilence.Vpn.Logic.Helpers;
+using EmailWorkQueue = Majorsilence.Vpn.Poco.EmailWorkQueue;
 
 namespace Majorsilence.Vpn.BackgroundWorker;
 
 public class EmailWorker : BackgroundService
 {
-    private readonly IEmail email;
-    private readonly ILogger _logger;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ILogger _logger;
+    private readonly IEmail email;
 
     public EmailWorker(ILogger logger, SmtpSettings smtp, IConfiguration configuration,
         DatabaseSettings dbSettings)
@@ -24,13 +24,12 @@ public class EmailWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
-        {
             try
             {
                 using (var db = _dbSettings.DbFactory)
                 {
-                    var queuedEmails = 
-                        await db.QueryAsync<Poco.EmailWorkQueue>(
+                    var queuedEmails =
+                        await db.QueryAsync<EmailWorkQueue>(
                             "SELECT * FROM EmailWorkQueue WHERE SentDateTimeUtc IS NULL ORDER BY ToSendDateUtc DESC");
 
                     foreach (var message in queuedEmails)
@@ -49,6 +48,5 @@ public class EmailWorker : BackgroundService
             {
                 _logger.LogError(ex, "EmailWorker: It appears the server setup failed");
             }
-        }
     }
 }

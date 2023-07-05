@@ -11,26 +11,26 @@
         <OutputPath>bin\Release</OutputPath>
     </PropertyGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj" />
-        <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj" />
-        <ProjectReference Include="..\Majorsilence.Vpn.Site\Majorsilence.Vpn.Site.csproj" />
+        <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj"/>
+        <ProjectReference Include="..\Majorsilence.Vpn.Poco\Majorsilence.Vpn.Poco.csproj"/>
+        <ProjectReference Include="..\Majorsilence.Vpn.Site\Majorsilence.Vpn.Site.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
-        <PackageReference Include="Moq" Version="4.16.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="Stripe.net" Version="41.5.0" />
-        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="Dapper.Contrib" Version="2.0.78"/>
+        <PackageReference Include="Moq" Version="4.16.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.2"/>
+        <PackageReference Include="NUnit" Version="3.13.3"/>
+        <PackageReference Include="Stripe.net" Version="41.5.0"/>
+        <PackageReference Include="System.Net.Http" Version="4.3.4"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="CreateAccountTest.cs" />
-        <Compile Remove="Setup.cs" />
-        <Compile Remove="Test.cs" />
+        <Compile Remove="CreateAccountTest.cs"/>
+        <Compile Remove="Setup.cs"/>
+        <Compile Remove="Test.cs"/>
     </ItemGroup>
     <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>

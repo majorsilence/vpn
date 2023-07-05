@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
 using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Logic.Payments;
@@ -16,9 +15,10 @@ namespace Majorsilence.Vpn.Logic;
 
 public class DailyProcessing : ICommand
 {
-    private readonly ILogger _logger;
-    private readonly DatabaseSettings _dbSettings;
     private readonly ActionLog _actionLog;
+    private readonly DatabaseSettings _dbSettings;
+    private readonly ILogger _logger;
+
     public DailyProcessing(ILogger logger, DatabaseSettings dbSettings,
         ActionLog actionLog)
     {
@@ -26,7 +26,7 @@ public class DailyProcessing : ICommand
         _dbSettings = dbSettings;
         _actionLog = actionLog;
     }
-    
+
     public void Execute()
     {
         CheckForNewPayments();

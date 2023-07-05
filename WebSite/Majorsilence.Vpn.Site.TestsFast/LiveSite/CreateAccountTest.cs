@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Majorsilence.Vpn.Logic;
 using NUnit.Framework;
 
 namespace Majorsilence.Vpn.Site.TestsFast.LiveSite;

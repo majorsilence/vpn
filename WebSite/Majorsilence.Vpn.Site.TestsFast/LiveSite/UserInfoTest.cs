@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
@@ -63,7 +62,7 @@ public class UserInfoTest
 
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var info = new UserInfo(userid, logger, LiveSite.Setup.DbSettings);
+        var info = new UserInfo(userid, logger, Setup.DbSettings);
         var profile = info.GetProfile();
 
         Assert.That("Peter", Is.EqualTo(profile.FirstName));
@@ -97,7 +96,7 @@ public class UserInfoTest
 
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var info = new UserInfo(userid, logger, LiveSite.Setup.DbSettings);
+        var info = new UserInfo(userid, logger, Setup.DbSettings);
         var profile = info.GetProfile();
 
         Assert.That("Peter", Is.EqualTo(profile.FirstName));
@@ -113,7 +112,7 @@ public class UserInfoTest
         Assert.That(unicodeEmailAddress, Is.EqualTo(profile.Email));
 
 
-        var info2 = new UserInfo(userid, logger, LiveSite.Setup.DbSettings);
+        var info2 = new UserInfo(userid, logger, Setup.DbSettings);
         var profile2 = info2.GetProfile();
         Assert.That("Happy", Is.EqualTo(profile2.FirstName));
         Assert.That("Dude", Is.EqualTo(profile2.LastName));
@@ -145,7 +144,7 @@ public class UserInfoTest
 
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var info = new UserInfo(userid, logger, LiveSite.Setup.DbSettings);
+        var info = new UserInfo(userid, logger, Setup.DbSettings);
         // var profile = info.GetProfile();
 
         Assert.Throws<InvalidDataException>(() => info.UpdateProfile(unicodeEmailAddress, "", "Dude"));
@@ -175,7 +174,7 @@ public class UserInfoTest
 
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var info = new UserInfo(userid, logger, LiveSite.Setup.DbSettings);
+        var info = new UserInfo(userid, logger, Setup.DbSettings);
         var profile = info.GetProfile();
 
         Assert.Throws<InvalidDataException>(() =>
@@ -206,7 +205,7 @@ public class UserInfoTest
 
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var info = new UserInfo(userid, logger, LiveSite.Setup.DbSettings);
+        var info = new UserInfo(userid, logger, Setup.DbSettings);
         var profile = info.GetProfile();
 
         Assert.Throws<InvalidDataException>(() => info.UpdateProfile("", "Happy", "Dude"));
@@ -252,7 +251,7 @@ public class UserInfoTest
 
         var mock = new Mock<ILogger>();
         var logger = mock.Object;
-        var info = new UserInfo(userid, logger, LiveSite.Setup.DbSettings);
+        var info = new UserInfo(userid, logger, Setup.DbSettings);
         var profile = info.GetProfile();
 
         Assert.Throws<EmailAddressAlreadyUsedException>(() =>

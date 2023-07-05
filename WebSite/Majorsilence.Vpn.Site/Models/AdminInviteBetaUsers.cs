@@ -7,8 +7,9 @@ namespace Majorsilence.Vpn.Site.Models;
 
 public class AdminInviteBetaUsers : CustomViewLayout
 {
-    private readonly IEmail _email;
     private readonly DatabaseSettings _dbSettings;
+    private readonly IEmail _email;
+
     public AdminInviteBetaUsers(IEmail email, DatabaseSettings dbSettings)
     {
         _email = email;

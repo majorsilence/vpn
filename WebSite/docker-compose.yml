@@ -15,7 +15,7 @@ services:
       - dbdata:/var/lib/mysql
       #- ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
     restart: always
-    
+  
   majorsilence_vpn_backgroundworker:
     image: ${DOCKER_REGISTRY-}majorsilencevpnsite
     depends_on:

@@ -9,10 +9,10 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AdminInviteBetaUsersController : Controller
 {
-    private readonly ISessionVariables sessionInstance;
     private readonly DatabaseSettings _dbSettings;
     private readonly IEmail _email;
-    
+    private readonly ISessionVariables sessionInstance;
+
     public AdminInviteBetaUsersController(ISessionVariables sessionInstance,
         DatabaseSettings dbSettings,
         IEmail email)

@@ -9,8 +9,9 @@ namespace Majorsilence.Vpn.Logic;
 
 public class Login
 {
-    private readonly ILogger _logger;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ILogger _logger;
+
     private Login()
     {
     }

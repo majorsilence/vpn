@@ -6,12 +6,10 @@ using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.DTO;
 using Majorsilence.Vpn.Logic.Exceptions;
-using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Logic.OpenVpn;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -19,10 +17,11 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class ApiV2Controller : Controller
 {
-    private readonly ISessionVariables sessionVars;
-    private readonly ILogger<ApiV2Controller> _logger;
-    private readonly IEncryptionKeysSettings _keys;
     private readonly DatabaseSettings _dbSettings;
+    private readonly IEncryptionKeysSettings _keys;
+    private readonly ILogger<ApiV2Controller> _logger;
+    private readonly ISessionVariables sessionVars;
+
     public ApiV2Controller(ISessionVariables sessionInstance, ILogger<ApiV2Controller> logger,
         IEncryptionKeysSettings keys,
         DatabaseSettings dbSettings)

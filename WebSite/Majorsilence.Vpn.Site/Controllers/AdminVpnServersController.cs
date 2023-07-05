@@ -7,8 +7,8 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AdminVpnServersController : Controller
 {
-    private readonly ISessionVariables sessionInstance;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ISessionVariables sessionInstance;
 
     public AdminVpnServersController(ISessionVariables sessionInstance,
         DatabaseSettings dbSettings)

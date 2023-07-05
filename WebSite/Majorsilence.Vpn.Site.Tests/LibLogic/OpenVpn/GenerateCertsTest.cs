@@ -30,7 +30,7 @@ public class GenerateCertsTest
         using (var sftp = new FakeSftp())
         {
             var certs = new CertsOpenVpnGenerateCommand(2, 1, sshNewServer,
-                sshRevokeServer, sftp, SiteTests.Setup.DbSettings, 
+                sshRevokeServer, sftp, SiteTests.Setup.DbSettings,
                 new ActionLog(SiteTests.Setup.DbSettings));
             certs.Execute();
         }

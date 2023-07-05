@@ -6,10 +6,12 @@ namespace Majorsilence.Vpn.Logic.Site;
 public class TermsOfService
 {
     private readonly DatabaseSettings _dbSettings;
+
     public TermsOfService(DatabaseSettings dbSettings)
     {
         _dbSettings = dbSettings;
     }
+
     public Poco.TermsOfService CurrentTermsOfService()
     {
         using (var cn = _dbSettings.DbFactory)

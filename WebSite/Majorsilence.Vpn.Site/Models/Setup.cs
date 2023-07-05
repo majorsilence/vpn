@@ -7,7 +7,7 @@ namespace Majorsilence.Vpn.Site.Models;
 
 public class Setup : CustomViewLayout
 {
-    public Setup(int userid, string username, 
+    public Setup(int userid, string username,
         DatabaseSettings dbSettings)
     {
         var details = new ServerDetails(dbSettings);

@@ -7,11 +7,12 @@ namespace Majorsilence.Vpn.Site.Controllers;
 public class PrivacyController : Controller
 {
     private readonly DatabaseSettings _dbSettings;
+
     public PrivacyController(DatabaseSettings dbSettings)
     {
         _dbSettings = dbSettings;
     }
-    
+
     public ActionResult Index()
     {
         var model = new Privacy(_dbSettings);

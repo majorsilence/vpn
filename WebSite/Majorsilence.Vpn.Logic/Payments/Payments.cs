@@ -11,9 +11,10 @@ namespace Majorsilence.Vpn.Logic.Payments;
 
 public class Payment
 {
+    private readonly DatabaseSettings _dbSettings;
     private readonly int userId;
     private readonly Users userInfo;
-    private readonly DatabaseSettings _dbSettings;
+
     private Payment()
     {
     }

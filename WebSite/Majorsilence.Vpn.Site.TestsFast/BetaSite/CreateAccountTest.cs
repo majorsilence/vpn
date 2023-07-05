@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
@@ -296,7 +295,7 @@ public class CreateAccountTest
             }
             , true, new FakeEmail());
 
-        Assert.Throws<InvalidDataException>(async() => await peterAccount.ExecuteAsync());
+        Assert.Throws<InvalidDataException>(async () => await peterAccount.ExecuteAsync());
     }
 
     [Test]
@@ -353,7 +352,7 @@ public class CreateAccountTest
             }
             , true, new FakeEmail());
 
-        Assert.Throws<BetaKeyAlreadyUsedException>(async() => await peterAccount2.ExecuteAsync());
+        Assert.Throws<BetaKeyAlreadyUsedException>(async () => await peterAccount2.ExecuteAsync());
 
 
         Assert.That(AccountExists(emailAddress), Is.True);
@@ -403,7 +402,7 @@ public class CreateAccountTest
             }
             , true, new FakeEmail());
 
-        Assert.Throws<InvalidBetaKeyException>(async() => await peterAccount.ExecuteAsync());
+        Assert.Throws<InvalidBetaKeyException>(async () => await peterAccount.ExecuteAsync());
 
 
         Assert.That(AccountExists(emailAddress), Is.False);

@@ -14,10 +14,10 @@ public class PaypalPayment
 {
     private static string accessToken = "";
     private static string paymentid = "";
-    private readonly IPaypalSettings _paypalSettings;
-    private string url;
-    private readonly int userId;
     private readonly DatabaseSettings _dbSettings;
+    private readonly IPaypalSettings _paypalSettings;
+    private readonly int userId;
+    private string url;
 
     private PaypalPayment()
     {

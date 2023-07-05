@@ -10,21 +10,22 @@ namespace Majorsilence.Vpn.Logic;
 public class InitiateGlobalStaticVariables
 {
     private readonly DatabaseSettings _dbSettings;
+
     public InitiateGlobalStaticVariables(DatabaseSettings dbSettings)
     {
         _dbSettings = dbSettings;
     }
-    
+
     public void Execute()
     {
         LoadCacheVariables();
     }
-    
+
     private void LoadCacheVariables()
     {
         LoadSiteInfo();
     }
-    
+
     private void LoadSiteInfo()
     {
         using (var db = _dbSettings.DbFactory)

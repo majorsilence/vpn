@@ -7,8 +7,8 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AdminRegionsController : Controller
 {
-    private readonly ISessionVariables sessionInstance;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ISessionVariables sessionInstance;
 
     public AdminRegionsController(ISessionVariables sessionInstance,
         DatabaseSettings dbSettings)
@@ -16,7 +16,7 @@ public class AdminRegionsController : Controller
         this.sessionInstance = sessionInstance;
         _dbSettings = dbSettings;
     }
-    
+
     public ActionResult Index()
     {
         if (sessionInstance.LoggedIn == false || sessionInstance.IsAdmin == false) return null;

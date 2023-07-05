@@ -6,11 +6,12 @@ namespace Majorsilence.Vpn.Logic.Site;
 public class Privacy
 {
     private readonly DatabaseSettings _dbSettings;
+
     public Privacy(DatabaseSettings dbSettings)
     {
         _dbSettings = dbSettings;
     }
-    
+
     public Poco.Privacy CurrentPrivacy()
     {
         using (var cn = _dbSettings.DbFactory)

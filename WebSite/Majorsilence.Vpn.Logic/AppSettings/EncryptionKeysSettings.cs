@@ -1,5 +1,3 @@
-using Majorsilence.Vpn.Logic;
-
 namespace Majorsilence.Vpn.Logic.AppSettings;
 
 public class EncryptionKeysSettings : IEncryptionKeysSettings

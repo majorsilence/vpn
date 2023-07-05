@@ -16,18 +16,17 @@ using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using NuGet.Common;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AccountController : Controller
 {
+    private readonly ActionLog _actionLog;
+    private readonly DatabaseSettings _dbSettings;
+    private readonly ILogger<AccountController> _logger;
     private readonly IEmail email;
     private readonly IStringLocalizer<AccountController> localizer;
     private readonly ISessionVariables sessionInstance;
-    private readonly ILogger<AccountController> _logger;
-    private readonly ActionLog _actionLog;
-    private readonly DatabaseSettings _dbSettings;
 
     public AccountController(IEmail email, ISessionVariables sessionInstance,
         IStringLocalizer<AccountController> localizer,
@@ -71,7 +70,7 @@ public class AccountController : Controller
             await pay.CancelSubscription();
             HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
-             _actionLog.Log("Subscription Cancelled", sessionInstance.UserId);
+            _actionLog.Log("Subscription Cancelled", sessionInstance.UserId);
         }
         catch (Exception ex)
         {

@@ -35,11 +35,11 @@ namespace Majorsilence.Vpn.Site.TestsFast.ApiV2;
 public class Setup
 {
     private static string testingdb;
-    public static DatabaseSettings DbSettings { get; private set; }
 
     public static readonly string emailAddress = "testlogins@majorsilence.com";
     public static readonly string betaKey = "abc1";
     public static readonly string password = "Password3";
+    public static DatabaseSettings DbSettings { get; private set; }
 
     public static string token1 { get; private set; }
 
@@ -82,7 +82,7 @@ public class Setup
             var logger = mockLogger.Object;
             var keysMock = new Mock<IEncryptionKeysSettings>();
             var keys = keysMock.Object;
-            var controller = new ApiV2Controller(sessionVars, logger, keys, ApiV2.Setup.DbSettings);
+            var controller = new ApiV2Controller(sessionVars, logger, keys, DbSettings);
 
             var header = new NameValueCollection();
             header.Add("Authorization", headerAuth.ToString());
@@ -136,7 +136,7 @@ public class Setup
         // setup database and stuff
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false);
+            .AddJsonFile("appsettings.json", false);
 
         IConfiguration config = builder.Build();
         var cnBuilder = new MySqlConnectionStringBuilder(config["ConnectionStrings:MySqlVpn"]);

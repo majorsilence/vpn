@@ -1,15 +1,12 @@
 using Majorsilence.Vpn.Logic;
-using Majorsilence.Vpn.Logic.AppSettings;
-using Majorsilence.Vpn.Logic.Email;
-using Majorsilence.Vpn.Logic.Helpers;
 
 namespace Majorsilence.Vpn.BackgroundWorker;
 
 public class DatabaseMigrationWorker : BackgroundService
 {
-    private readonly ILogger _logger;
     private readonly DatabaseSettings _dbSettings;
-    
+    private readonly ILogger _logger;
+
     public DatabaseMigrationWorker(ILogger logger, DatabaseSettings dbSettings)
     {
         _logger = logger;

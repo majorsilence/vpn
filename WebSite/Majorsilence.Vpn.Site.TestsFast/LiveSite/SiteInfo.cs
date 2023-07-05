@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Poco;
 using NUnit.Framework;
 

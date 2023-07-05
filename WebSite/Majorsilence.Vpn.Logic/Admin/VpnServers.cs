@@ -7,11 +7,12 @@ namespace Majorsilence.Vpn.Logic.Admin;
 public class VpnServers
 {
     private readonly DatabaseSettings _dbSettings;
+
     public VpnServers(DatabaseSettings dbSettings)
     {
         _dbSettings = dbSettings;
     }
-    
+
     public IEnumerable<Poco.VpnServers> Select()
     {
         using (var db = _dbSettings.DbFactory)

@@ -19,7 +19,7 @@
     html.Append("<th>Time Created</th>");
     html.AppendLine("</tr>");
 
-    var errors = new ErrorReports(@Model);
+    var errors = new ErrorReports(Model);
     foreach (var err in errors.RetrieveAll())
     {
         html.AppendLine("<tr>");

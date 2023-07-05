@@ -16,23 +16,23 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.13" />
-        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11" />
-        <PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0" />
+        <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.13"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.11"/>
+        <PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj" />
+        <ProjectReference Include="..\Majorsilence.Vpn.Logic\Majorsilence.Vpn.Logic.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Areas\Admin\Data\" />
-        <Folder Include="Areas\Admin\Models\" />
-        <Folder Include="Areas\KB\Data\" />
-        <Folder Include="Areas\KB\Models\" />
-        <Folder Include="Views\account\stripe\" />
+        <Folder Include="Areas\Admin\Data\"/>
+        <Folder Include="Areas\Admin\Models\"/>
+        <Folder Include="Areas\KB\Data\"/>
+        <Folder Include="Areas\KB\Models\"/>
+        <Folder Include="Views\account\stripe\"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -168,7 +168,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Remove="app.config" />
+        <Content Remove="app.config"/>
     </ItemGroup>
 
 

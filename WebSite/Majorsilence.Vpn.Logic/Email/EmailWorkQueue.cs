@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Net;
-using System.Net.Mail;
 using System.Reflection;
 using System.Threading.Tasks;
-using Dapper;
 using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic.Helpers;
 
@@ -13,21 +10,22 @@ namespace Majorsilence.Vpn.Logic.Email;
 public class EmailWorkQueue : IEmail
 {
     private readonly DatabaseSettings _dbSettings;
+
     public EmailWorkQueue(DatabaseSettings dbSettings)
     {
         _dbSettings = dbSettings;
     }
-    
+
     public async Task SendMail(string message, string subject, string to,
         bool isHtml, byte[] attachment = null, EmailTemplates template = EmailTemplates.None)
     {
         // TODO: replace with kafka, redis streams, or something similar
         using var db = _dbSettings.DbFactory;
         db.Open();
-        
+
         var sendMessage = message;
         if (template != EmailTemplates.None) sendMessage = ProcessMessage(template, message, subject);
-        var email = new Poco.EmailWorkQueue()
+        var email = new Poco.EmailWorkQueue
         {
             HtmlMessage = sendMessage,
             Attachment = attachment,

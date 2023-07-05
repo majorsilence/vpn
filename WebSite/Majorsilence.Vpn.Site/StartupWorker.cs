@@ -1,15 +1,7 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Dapper;
-using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic;
-using Majorsilence.Vpn.Logic.AppSettings;
-using Majorsilence.Vpn.Logic.Email;
-using Majorsilence.Vpn.Logic.Helpers;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Majorsilence.Vpn.Site;
 

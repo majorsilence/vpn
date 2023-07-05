@@ -9,13 +9,15 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class UserApiTokens
 {
-    private readonly IEncryptionKeysSettings _keys;
     private readonly DatabaseSettings _dbSettings;
+    private readonly IEncryptionKeysSettings _keys;
+
     public UserApiTokens(IEncryptionKeysSettings keys, DatabaseSettings dbSettings)
     {
         _keys = keys;
         _dbSettings = dbSettings;
     }
+
     private string GenerateToken()
     {
         var codes = new GenerateResetCode(_keys);

@@ -1,20 +1,15 @@
 using System;
-using System.Security.Policy;
 using Majorsilence.Vpn.Logic;
+using Majorsilence.Vpn.Logic.AppSettings;
 using Majorsilence.Vpn.Logic.Email;
-using Majorsilence.Vpn.Logic.Helpers;
-using Majorsilence.Vpn.Logic.Payments;
 using Majorsilence.Vpn.Site;
 using Majorsilence.Vpn.Site.Helpers;
-using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,19 +28,16 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "App_GlobalR
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<Majorsilence.Vpn.Logic.AppSettings.Settings>(i =>
-{
-    return builder.Configuration.GetSection("Settings").Get<Majorsilence.Vpn.Logic.AppSettings.Settings>();
-});
+builder.Services.AddScoped(i => { return builder.Configuration.GetSection("Settings").Get<Settings>(); });
 builder.Services.AddScoped<IEmail>(i =>
 {
-    var s = i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Smtp;
+    var s = i.GetService<Settings>().Smtp;
     return new EmailWorkQueue(i.GetService<DatabaseSettings>());
 });
-builder.Services.AddScoped<IPaypalSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().Paypal);
-builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Majorsilence.Vpn.Logic.AppSettings.Settings>().EncryptionKeys);
+builder.Services.AddScoped(i => i.GetService<Settings>().Paypal);
+builder.Services.AddScoped<IEncryptionKeysSettings>(i => i.GetService<Settings>().EncryptionKeys);
 builder.Services.AddScoped<ISessionVariables, SessionVariables>();
-builder.Services.AddScoped<DatabaseSettings>(i => new DatabaseSettings(builder.Configuration["ConnectionStrings:MySqlVpn"],
+builder.Services.AddScoped(i => new DatabaseSettings(builder.Configuration["ConnectionStrings:MySqlVpn"],
     builder.Configuration["ConnectionStrings:MySqlSessions"],
     false,
     i.GetService<ILogger>()

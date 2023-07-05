@@ -6,12 +6,12 @@ namespace Majorsilence.Vpn.Logic.Ssh;
 
 public class LiveSftp : ISftp
 {
-    private SftpClient client;
-    private bool disposed;
-    private bool isLoggedIn;
     private readonly string password;
     private readonly int port;
     private readonly string username;
+    private SftpClient client;
+    private bool disposed;
+    private bool isLoggedIn;
 
     public LiveSftp(int port, string username, string password)
     {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -42,10 +41,10 @@ public class Setup
         var logger = mockLogger.Object;
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false);
+            .AddJsonFile("appsettings.json", false);
 
         IConfiguration config = builder.Build();
-        
+
         var cnBuilder = new MySqlConnectionStringBuilder(config["ConnectionStrings:MySqlVpn"]);
         testingdb = cnBuilder.Database;
         DbSettings = new DatabaseSettings(config["ConnectionStrings:MySqlVpn"],

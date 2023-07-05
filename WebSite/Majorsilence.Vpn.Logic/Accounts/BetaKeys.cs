@@ -12,8 +12,8 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class BetaKeys
 {
-    private readonly IEmail email;
     private readonly DatabaseSettings _dbSettings;
+    private readonly IEmail email;
 
     public BetaKeys(IEmail email, DatabaseSettings dbSettings)
     {

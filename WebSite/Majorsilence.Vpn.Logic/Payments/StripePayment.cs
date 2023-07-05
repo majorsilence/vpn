@@ -14,9 +14,9 @@ namespace Majorsilence.Vpn.Logic.Payments;
 
 public class StripePayment
 {
+    private readonly DatabaseSettings _dbSettings;
     private readonly int _userId;
     private readonly IEmail email;
-    private readonly DatabaseSettings _dbSettings;
 
     private StripePayment()
     {
@@ -71,7 +71,7 @@ public class StripePayment
             db.Update(data);
 
             await email.SendMail("Your vpn credit card account has been deleted.  " +
-                                            "You will not be billed again.  You will continue to have access until your current payment expires.",
+                                 "You will not be billed again.  You will continue to have access until your current payment expires.",
                 "VPN Credit Card Account Deleted", data.Email, true, null,
                 EmailTemplates.Generic);
         }
@@ -96,7 +96,7 @@ public class StripePayment
             db.Update(data);
 
             await email.SendMail("Your vpn account subscription has been cancelled.  " +
-                                            "You will not be billed again.  You will continue to have access until your current payment expires.",
+                                 "You will not be billed again.  You will continue to have access until your current payment expires.",
                 "VPN Account Subscription Cancelled", data.Email, true, null,
                 EmailTemplates.Generic);
         }

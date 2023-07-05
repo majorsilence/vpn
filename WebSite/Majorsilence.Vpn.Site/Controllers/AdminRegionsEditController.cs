@@ -8,8 +8,8 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AdminRegionsEditController : Controller
 {
-    private readonly ISessionVariables sessionInstance;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ISessionVariables sessionInstance;
 
     public AdminRegionsEditController(ISessionVariables sessionInstance,
         DatabaseSettings dbSettings)

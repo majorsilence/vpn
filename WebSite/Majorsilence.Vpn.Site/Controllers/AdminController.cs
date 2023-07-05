@@ -4,22 +4,23 @@ using System.Web;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
-using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Logic.Payments;
+using Majorsilence.Vpn.Poco;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SiteInfo = Majorsilence.Vpn.Poco.SiteInfo;
+using Users = Majorsilence.Vpn.Site.Models.Users;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AdminController : Controller
 {
+    private readonly DatabaseSettings _dbSettings;
     private readonly IEmail email;
     private readonly ISessionVariables sessionInstance;
-    private ILogger _logger;
-    private readonly DatabaseSettings _dbSettings;
+    private readonly ILogger _logger;
+
     public AdminController(IEmail email, ISessionVariables sessionInstance,
         ILogger logger,
         DatabaseSettings dbSettings)

@@ -13,7 +13,6 @@ using FluentMigrator.Runner.Processors.MySql;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Poco;
-using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 
 namespace Majorsilence.Vpn.Logic;
@@ -63,7 +62,7 @@ public class DataMigrations
     }
 
     /// <summary>
-    ///     Create the dabase if it does not exist.
+    ///     Create the database if it does not exist.
     /// </summary>
     /// <remarks>Mysql/mariadb specific</remarks>
     private void CreateIfNotExists()
@@ -114,27 +113,25 @@ public class DataMigrations
     {
         // TODO: Replace values with settings in appSetting.json
 
-        using (var db = _dbSettings.DbFactory)
+        await using var db = _dbSettings.DbFactory;
+        db.Open();
+        var peter = db.Query<Users>("SELECT * FROM Users WHERE Email = @Email",
+            new { Email = "atestuser@majorsilence.com" });
+        if (peter.Count() == 0)
         {
-            db.Open();
-            var peter = db.Query<Users>("SELECT * FROM Users WHERE Email = @Email",
-                new { Email = "atestuser@majorsilence.com" });
-            if (peter.Count() == 0)
-            {
-                var peterAccount = new CreateAccount(
-                    new CreateAccountInfo
-                    {
-                        Email = "atestuser@majorsilence.com",
-                        EmailConfirm = "atestuser@majorsilence.com",
-                        Firstname = "A Test",
-                        Lastname = "User",
-                        Password = "Password1",
-                        PasswordConfirm = "Password1",
-                        BetaKey = "AbC56#"
-                    }
-                    , true, new FakeEmail());
-                await peterAccount.ExecuteAsync();
-            }
+            var peterAccount = new CreateAccount(
+                new CreateAccountInfo
+                {
+                    Email = "atestuser@majorsilence.com",
+                    EmailConfirm = "atestuser@majorsilence.com",
+                    Firstname = "A Test",
+                    Lastname = "User",
+                    Password = "Password1",
+                    PasswordConfirm = "Password1",
+                    BetaKey = "AbC56#"
+                }
+                , true, new FakeEmail());
+            await peterAccount.ExecuteAsync();
         }
     }
 }

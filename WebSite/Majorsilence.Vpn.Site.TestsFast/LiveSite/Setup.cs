@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using Dapper.Contrib.Extensions;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Poco;
-using Majorsilence.Vpn.Site.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -25,7 +23,7 @@ public class Setup
 {
     private static string testingdb;
     public static DatabaseSettings DbSettings { get; private set; }
-    
+
     /// <summary>
     ///     Called once before unit tests in a namespace are tested.  Only called once for all tests.
     /// </summary>
@@ -38,7 +36,7 @@ public class Setup
         var logger = mockLogger.Object;
         var builder = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false);
+            .AddJsonFile("appsettings.json", false);
 
         IConfiguration config = builder.Build();
         var cnBuilder = new MySqlConnectionStringBuilder(config["ConnectionStrings:MySqlVpn"]);

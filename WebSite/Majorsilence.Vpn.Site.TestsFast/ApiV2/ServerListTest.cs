@@ -37,7 +37,7 @@ public class ServerListTest
             var logger = mockLogger.Object;
             var keysMock = new Mock<IEncryptionKeysSettings>();
             var keys = keysMock.Object;
-            var controller = new ApiV2Controller(sessionVars, logger, keys, ApiV2.Setup.DbSettings);
+            var controller = new ApiV2Controller(sessionVars, logger, keys, Setup.DbSettings);
 
             FakeControllerContext.SetContext(controller, header);
 

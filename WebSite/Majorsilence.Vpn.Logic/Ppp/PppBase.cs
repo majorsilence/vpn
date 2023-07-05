@@ -12,13 +12,13 @@ namespace Majorsilence.Vpn.Logic.Ppp;
 
 public abstract class PppBase
 {
+    private readonly DatabaseSettings _dbSettings;
     private readonly ISsh sshNewServer;
     private readonly ISsh sshRevokeServer;
     protected Users userData;
     protected string userRequestedPassword;
     protected VpnServers vpnData;
-    private readonly DatabaseSettings _dbSettings;
-    
+
     protected PppBase()
     {
     }

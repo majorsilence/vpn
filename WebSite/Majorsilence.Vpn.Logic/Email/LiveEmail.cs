@@ -1,10 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Mail;
-using System.Reflection;
 using System.Threading.Tasks;
-using Majorsilence.Vpn.Logic.Helpers;
 
 namespace Majorsilence.Vpn.Logic.Email;
 
@@ -31,7 +28,7 @@ public class LiveEmail : IEmail
         using var mm = new MailMessage();
         using var smcl = new SmtpClient();
         mm.To.Add(to);
-        
+
         mm.From = new MailAddress(fromAddress);
         mm.IsBodyHtml = isHtml;
         mm.Body = message;
@@ -46,7 +43,7 @@ public class LiveEmail : IEmail
         smcl.Port = port;
         smcl.Credentials = new NetworkCredential(username, password);
         smcl.EnableSsl = true;
-        
+
         await smcl.SendMailAsync(mm);
     }
 }

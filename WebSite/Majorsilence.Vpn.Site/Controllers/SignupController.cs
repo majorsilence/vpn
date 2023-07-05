@@ -5,7 +5,6 @@ using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Accounts;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
-using Majorsilence.Vpn.Logic.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +12,10 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class SignupController : Controller
 {
-    private readonly IEmail email;
-    private ILogger _logger;
     private readonly DatabaseSettings _dbSettings;
-    
+    private readonly IEmail email;
+    private readonly ILogger _logger;
+
     public SignupController(IEmail email, ILogger logger,
         DatabaseSettings dbSettings)
     {

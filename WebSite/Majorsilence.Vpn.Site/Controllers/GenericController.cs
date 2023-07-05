@@ -19,12 +19,13 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class GenericController : Controller
 {
+    private readonly ActionLog _actionLog;
+    private readonly DatabaseSettings _dbSettings;
     private readonly IEmail email;
     private readonly ISessionVariables sessionInstance;
-    private ILogger _logger;
-    private IEncryptionKeysSettings _keys;
-    private readonly DatabaseSettings _dbSettings;
-    private readonly ActionLog _actionLog;
+    private readonly IEncryptionKeysSettings _keys;
+    private readonly ILogger _logger;
+
     public GenericController(IEmail email, ISessionVariables sessionInstance,
         ILogger logger,
         IEncryptionKeysSettings keys,

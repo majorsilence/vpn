@@ -1,20 +1,18 @@
 ﻿using System;
 using Majorsilence.Vpn.Logic;
 using Majorsilence.Vpn.Logic.Admin;
-using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Site.Helpers;
 using Majorsilence.Vpn.Site.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NuGet.Common;
 
 namespace Majorsilence.Vpn.Site.Controllers;
 
 public class AdminVpnServersEditController : Controller
 {
-    private readonly ISessionVariables sessionInstance;
-    private readonly ILogger<AdminVpnServersEditController> _logger;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ILogger<AdminVpnServersEditController> _logger;
+    private readonly ISessionVariables sessionInstance;
 
     public AdminVpnServersEditController(ISessionVariables sessionInstance,
         ILogger<AdminVpnServersEditController> logger,

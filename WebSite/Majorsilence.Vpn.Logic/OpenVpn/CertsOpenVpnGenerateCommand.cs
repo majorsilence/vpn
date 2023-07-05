@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data.SqlServerCe;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -14,13 +13,13 @@ namespace Majorsilence.Vpn.Logic.OpenVpn;
 
 public class CertsOpenVpnGenerateCommand : ICommand
 {
-    private readonly Users userData;
-    private readonly VpnServers vpnData;
+    private readonly ActionLog _actionLog;
+    private readonly DatabaseSettings _dbSettings;
     private readonly ISftp sftpClient;
     private readonly ISsh sshClientNewServer;
     private readonly ISsh sshClientRevokeServer;
-    private readonly DatabaseSettings _dbSettings;
-    private readonly ActionLog _actionLog;
+    private readonly Users userData;
+    private readonly VpnServers vpnData;
 
     private CertsOpenVpnGenerateCommand()
     {

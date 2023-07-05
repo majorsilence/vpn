@@ -11,10 +11,11 @@ namespace Majorsilence.Vpn.Logic.OpenVpn;
 
 public class CertsOpenVpnRevokeCommand : ICommand
 {
+    private readonly ActionLog _actionLog;
+    private readonly DatabaseSettings _dbSettings;
     private readonly ISsh sshClient;
     private readonly Users userData;
-    private readonly DatabaseSettings _dbSettings;
-    private readonly ActionLog _actionLog;
+
     private CertsOpenVpnRevokeCommand()
     {
     }

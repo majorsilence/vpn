@@ -1,16 +1,15 @@
 using Majorsilence.Vpn.Logic;
-using Majorsilence.Vpn.Logic.AppSettings;
 using Majorsilence.Vpn.Logic.Email;
-using Majorsilence.Vpn.Logic.Helpers;
 
 namespace Majorsilence.Vpn.BackgroundWorker;
 
 public class DailyProcessingWorker : BackgroundService
 {
+    private readonly ActionLog _actionLog;
+    private readonly DatabaseSettings _dbSettings;
     private readonly IEmail _email;
     private readonly ILogger _logger;
-    private readonly DatabaseSettings _dbSettings;
-    private readonly ActionLog _actionLog;
+
     public DailyProcessingWorker(ILogger logger, IEmail email, DatabaseSettings dbSettings,
         ActionLog actionLog)
     {
@@ -34,8 +33,8 @@ public class DailyProcessingWorker : BackgroundService
             {
                 _logger.LogError(ex, "DailyProcessingWorker: Failed running DailyProcessing");
             }
+
             await Task.Delay(1000 * 60 * 60 * 2, stoppingToken); // every 2 hours
         }
-        
     }
 }

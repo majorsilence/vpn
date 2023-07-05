@@ -3,7 +3,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Majorsilence.Vpn.Logic.Email;
 using Majorsilence.Vpn.Logic.Exceptions;
-using Majorsilence.Vpn.Logic.Helpers;
 using Majorsilence.Vpn.Site.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,9 +11,9 @@ namespace Majorsilence.Vpn.Site.Controllers;
 
 public class SupportController : Controller
 {
+    private readonly ILogger<SupportController> _logger;
     private readonly IEmail email;
     private readonly ISessionVariables sessionInstance;
-    private readonly ILogger<SupportController> _logger;
 
     public SupportController(IEmail email, ISessionVariables sessionInstance,
         ILogger<SupportController> logger)

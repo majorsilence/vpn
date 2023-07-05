@@ -10,9 +10,10 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class UserInfo
 {
-    private readonly Users details;
-    private readonly ILogger _logger;
     private readonly DatabaseSettings _dbSettings;
+    private readonly ILogger _logger;
+    private readonly Users details;
+
     private UserInfo()
     {
     }

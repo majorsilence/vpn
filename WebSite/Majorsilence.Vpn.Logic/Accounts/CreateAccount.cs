@@ -13,13 +13,13 @@ namespace Majorsilence.Vpn.Logic.Accounts;
 
 public class CreateAccount
 {
-    private Poco.BetaKeys betaKey;
+    private readonly DatabaseSettings _dbSettings;
 
     private readonly CreateAccountInfo details;
     private readonly IEmail email;
 
     private readonly bool isAdmin;
-    private readonly DatabaseSettings _dbSettings;
+    private Poco.BetaKeys betaKey;
 
     private CreateAccount()
     {
